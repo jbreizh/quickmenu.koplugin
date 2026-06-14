@@ -3,28 +3,38 @@ local Config = {}
 local DEFAULTS = {
     sections = {
         actions = {
-            enabled = true,
+            enabled_f = true,
+            enabled_r = true,
+            show_title = false,
             show_label = true,
             items = { "wifi", "night", "light", "rotate", "lock", "usb", "restart" }
         },
         frontlight = {
-            enabled = true
+            enabled_f = true,
+            enabled_r = true,
+            show_title = true
         },
         warmth = {
-            enabled = true
+            enabled_f = true,
+            enabled_r = true,
+            show_title = true
         },
         shortcuts = {
-            enabled = true,
+            enabled_f = true,
+            enabled_r = false,
+            show_title = true,
             show_label = true,
             max_cols = 3,
             items = { "history", "collections", "statistics", "search", "dictionary", "cloud" }
         },
         info = {
-            enabled = true,
+            enabled_r = true,
+            show_title = true,
             show_thumbnail = true
         },
         skim = {
-            enabled = true
+            enabled_r = true,
+            show_title = false
         },
     },
 
@@ -50,25 +60,35 @@ end
 
 function Config.load()
     local cfg = G_reader_settings:readSetting("quick_menu_panel", {})
-
     cfg.sections = cfg.sections or {}
 
-    for id, defaults in pairs(DEFAULTS.sections) do
-        if not cfg.sections[id] then
-            cfg.sections[id] = {}
+    -- 1. Nettoyage du 1er niveau (les sections)
+    -- On utilise 'section_id' et 'section_data' pour rendre la boucle explicite
+    for section_id, section_data in pairs(cfg.sections) do
+        if not DEFAULTS.sections[section_id] then
+            cfg.sections[section_id] = nil
+        end
+    end
+
+    -- 2. Nettoyage et Remplissage du 2ème niveau
+    for section_id, defaults in pairs(DEFAULTS.sections) do
+        cfg.sections[section_id] = cfg.sections[section_id] or {}
+
+        -- Nettoyage des paramètres obsolètes dans cette section
+        -- 'param_key' remplace l'itérateur anonyme
+        for param_key, param_value in pairs(cfg.sections[section_id]) do
+            if defaults[param_key] == nil then
+                cfg.sections[section_id][param_key] = nil
+            end
         end
 
-        copyMissing(cfg.sections[id], defaults)
-        cfg.sections[id].label = nil
+        copyMissing(cfg.sections[section_id], defaults)
+        cfg.sections[section_id].label = nil
     end
 
-    if cfg.open_on_start == nil then
-        cfg.open_on_start = DEFAULTS.open_on_start
-    end
-
-    if cfg.add_exit_tab == nil then
-        cfg.add_exit_tab = DEFAULTS.add_exit_tab
-    end
+    -- 3. Initialisation des paramètres globaux
+    if cfg.open_on_start == nil then cfg.open_on_start = DEFAULTS.open_on_start end
+    if cfg.add_exit_tab == nil then cfg.add_exit_tab = DEFAULTS.add_exit_tab end
 
     return cfg
 end

@@ -1,8 +1,6 @@
-local CenterContainer = require("ui/widget/container/centercontainer")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
 local VerticalGroup = require("ui/widget/verticalgroup")
-local VerticalSpan = require("ui/widget/verticalspan")
 local TextWidget = require("ui/widget/textwidget")
 
 local Font = require("ui/font")
@@ -18,17 +16,27 @@ local _               = Translation._
 local Actions = {}
 
 function Actions.build(ctx)
-    local config = ctx.config
+    local config       = ctx.config
+    local filemanager  = ctx.filemanager
+    local reader       = ctx.reader
+    local inner_width  = ctx.inner_width
+    local screen       = ctx.screen
+    local theme        = ctx.theme or {}
     local section = Utils.getSection(config, "actions")
 
-    if not section or not section.enabled then return nil end
+    if not section then return nil end
+
+    if filemanager and not section.enabled_f then return nil end
+
+    if reader and not section.enabled_r then return nil end
+
     section.items = section.items or {}
 
     -- style
-    local gap            = ctx.theme.gap or ctx.screen:scaleBySize(4)
-    local btn_radius     = ctx.theme.btn_radius or 0
-    local btn_bordersize = ctx.theme.btn_bordersize  or 0
-    local btn_font_size  = ctx.theme.btn_font_size  or 16
+    local gap            = theme.gap or screen:scaleBySize(4)
+    local btn_radius     = theme.btn_radius or 0
+    local btn_bordersize = theme.btn_bordersize  or 0
+    local btn_font_size  = theme.btn_font_size  or 16
 
     local action_defs = ActionDefs.get()
     local visible_actions = {}
@@ -44,12 +52,12 @@ function Actions.build(ctx)
     if num_actions == 0 then return nil end
 
     --
-    local action_row = HorizontalGroup:new{ align = "center" }
-    local action_btn_size = math.min(math.floor(ctx.inner_width / num_actions), ctx.screen:scaleBySize(64))
-    local ratio = ctx.screen:scaleBySize(100) / 100
+    local row = HorizontalGroup:new{ align = "center" }
+    local action_btn_size = math.min(math.floor(inner_width / num_actions), screen:scaleBySize(64))
+    local ratio = screen:scaleBySize(100) / 100
     local action_icon_size = math.floor((action_btn_size * 0.4) / ratio + 0.5)
     local action_label_size = math.floor((action_btn_size * 0.18) / ratio + 0.5)
-    local btn_gap = num_actions > 1 and math.max(0, math.floor((ctx.inner_width - num_actions * action_btn_size) / (num_actions - 1))) or 0
+    local btn_gap = num_actions > 1 and math.max(0, math.floor((inner_width - num_actions * action_btn_size) / (num_actions - 1))) or 0
 
     for i, entry in ipairs(visible_actions) do
         local def = entry.def
@@ -73,7 +81,6 @@ function Actions.build(ctx)
             final_widget = VerticalGroup:new{
                 align = "center",
                 btn_widget,
-                VerticalSpan:new{ height = ctx.screen:scaleBySize(4) },
                 TextWidget:new{
                     text = label_text,
                     face = Font:getFace("cfont", action_label_size),
@@ -82,16 +89,24 @@ function Actions.build(ctx)
             }
         end
 
-        table.insert(action_row, final_widget)
+        table.insert(row, final_widget)
         if i < num_actions and btn_gap > 0 then
-            table.insert(action_row, HorizontalSpan:new{ width = btn_gap })
+            table.insert(row, HorizontalSpan:new{ width = btn_gap })
         end
     end
 
-    local container_h = action_btn_size + (section.show_label and ctx.screen:scaleBySize(20) or 0)
-    local container = CenterContainer:new{ dimen = require("ui/geometry"):new{ w = ctx.panel_width, h = container_h }, action_row }
+    local group = VerticalGroup:new{ align = "center", row }
 
-    return { widget = container }
+    if section.show_title then
+        local actions_label = TextWidget:new{
+            text = _("Actions") .. " :",
+            face =  Font:getFace("cfont", btn_font_size), bold = true,
+            max_width = inner_width,
+        }
+        table.insert(group, 1, actions_label)
+    end
+
+    return { widget = group }
 end
 
 function Actions.getSettings(config, saveConfig, ctx)
@@ -149,24 +164,34 @@ function Actions.getSettings(config, saveConfig, ctx)
 
     return {
         {
-            text = _("Show actions controls"),
-            checked_func = function() return section.enabled end,
-            callback = function() section.enabled = not section.enabled; saveConfig() end
+            text = _("Enabled in filemanager"),
+            checked_func = function() return section.enabled_f end,
+            callback = function() section.enabled_f = not section.enabled_f; saveConfig() end
         },
         {
-            text = _("Show actions controls labels"),
+            text = _("Enabled in reader"),
+            checked_func = function() return section.enabled_r end,
+            callback = function() section.enabled_r = not section.enabled_r; saveConfig() end
+        },
+        {
+            text = _("Show title"),
+            checked_func = function() return section.show_title end,
+            callback = function() section.show_title = not section.show_title saveConfig() end
+        },
+        {
+            text = _("Show labels"),
             checked_func = function() return section.show_label end,
             callback = function() section.show_label = not section.show_label; saveConfig() end
         },
         {
             text_func = function()
                 local count = #(section.items or {})
-                return _("Select actions controls") .. " (" .. count .. ")"
+                return _("Select controls") .. " (" .. count .. ")"
             end,
             sub_item_table = select_items
         },
         {
-            text = _("Arrange actions controls"),
+            text = _("Arrange controls"),
             keep_menu_open = true,
             callback = function()
                 local sort_items = {}
@@ -181,7 +206,7 @@ function Actions.getSettings(config, saveConfig, ctx)
                 end
 
                 UIManager:show(SortWidget:new{
-                    title = _("Arrange actions controls"),
+                    title = _("Arrange controls"),
                     item_table = sort_items,
                     callback = function()
                         section.items = {}

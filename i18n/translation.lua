@@ -14,14 +14,9 @@ local I18N = {
         ["Are you sure you want to exit book ?"] = "Are you sure you want to exit book ?",
         ["Quick menu"] = "Quick menu", ["Always start on quick menu tab"] = "Always start on quick menu tab",
         ["Add exit tab (need restart)"] = "Add exit tab (need restart)",
-        ["Select actions controls"] = "Select actions controls", ["Arrange actions controls"] = "Arrange actions controls",
-        ["Show actions controls"] = "Show actions controls", ["Show actions controls labels"] = "Show actions controls labels",
-        ["Select shortcuts controls"] = "Select shortcuts controls", ["Arrange shortcuts controls"] = "Arrange shortcuts controls",
-        ["Show shortcuts controls"] = "Show shortcuts controls", ["Show shortcuts controls labels"] = "Show shortcuts controls labels",
-        ["Show frontlight controls"] = "Show frontlight controls", ["Show warmth controls"] = "Show warmth controls",
-        ["Show info controls"] = "Show info controls", ["Show skim controls"] = "Show skim controls",
-        ["Columns of shortcuts"] = "Columns of shortcuts",
-        ["Show info thumbnail"] = "Show info thumbnail"
+        ["Select controls"] = "Select controls", ["Arrange controls"] = "Arrange controls",
+        ["Enabled in filemanager"] = "Enabled in filemanager", ["Enabled in reader"] = "Enabled in reader", ["Show labels"] = "Show labels",
+        ["Columns"] = "Columns", ["Show thumbnail"] = "Show thumbnail", ["Show title"] = "Show title"
     },
     fr = {
         ["Actions"] = "Actions", ["Frontlight"] = "Éclairage", ["Warmth"] = "Température",
@@ -36,14 +31,9 @@ local I18N = {
         ["Are you sure you want to exit book ?"] = "Voulez-vous vraiment fermer le livre ?",
         ["Quick menu"] = "Menu rapide", ["Always start on quick menu tab"] = "Toujours ouvrir sur l'onglet du menu rapide",
         ["Add exit tab (need restart)"] = "Ajouter l'onglet de sortie (redémarrage requis)",
-        ["Select actions controls"] = "Sélectionner les contrôles d'actions", ["Arrange actions controls"] = "Organiser les contrôles d'actions",
-        ["Show actions controls"] = "Afficher les contrôles d'actions", ["Show actions controls labels"] = "Afficher les étiquettes des contrôles d'actions",
-        ["Select shortcuts controls"] = "Sélectionner les raccourcis", ["Arrange shortcuts controls"] = "Organiser les raccourcis",
-        ["Show shortcuts controls"] = "Afficher les raccourcis", ["Show shortcuts controls labels"] = "Afficher les étiquettes des raccourcis",
-        ["Show frontlight controls"] = "Afficher les contrôles d'éclairage", ["Show warmth controls"] = "Afficher les contrôles de température",
-        ["Show info controls"] = "Afficher les contrôles d'information", ["Show skim controls"] = "Afficher les contrôles de feuilletage",
-        ["Columns of shortcuts"] = "Colonnes de raccourcis",
-        ["Show info thumbnail"] = "Afficher la miniature d'information"
+        ["Select controls"] = "Sélectionner les contrôles", ["Arrange controls"] = "Organiser les contrôles",
+        ["Enabled in filemanager"] = "Activé dans le gestionnaire de fichiers", ["Enabled in reader"] = "Activé dans le lecteur", ["Show labels"] = "Afficher les étiquettes",
+        ["Columns"] = "Colonnes", ["Show thumbnail"] = "Afficher la vignette", ["Show title"] = "Afficher le titre"
     },
     pt = {
         ["Actions"] = "Ações", ["Frontlight"] = "Iluminação", ["Warmth"] = "Temperatura",
@@ -58,14 +48,9 @@ local I18N = {
         ["Are you sure you want to exit book ?"] = "Tem certeza de que deseja fechar o livro ?",
         ["Quick menu"] = "Menu rápido", ["Always start on quick menu tab"] = "Sempre abrir na aba do menu rápido",
         ["Add exit tab (need restart)"] = "Adicionar aba de saída (requer reiniciar)",
-        ["Select actions controls"] = "Selecionar controles de ações", ["Arrange actions controls"] = "Organizar controles de ações",
-        ["Show actions controls"] = "Mostrar controles de ações", ["Show actions controls labels"] = "Mostrar rótulos de controles de ações",
-        ["Select shortcuts controls"] = "Selecionar atalhos", ["Arrange shortcuts controls"] = "Organizar atalhos",
-        ["Show shortcuts controls"] = "Mostrar atalhos", ["Show shortcuts controls labels"] = "Mostrar rótulos de atalhos",
-        ["Show frontlight controls"] = "Mostrar controles de iluminação", ["Show warmth controls"] = "Mostrar controles de temperatura",
-        ["Show info controls"] = "Mostrar controles de informação", ["Show skim controls"] = "Mostrar controles de navegação",
-        ["Columns of shortcuts"] = "Colunas de atalhos",
-        ["Show info thumbnail"] = "Mostrar miniatura de informações"
+        ["Select controls"] = "Selecionar controles", ["Arrange controls"] = "Organizar controles",
+        ["Enabled in filemanager"] = "Ativado no gerenciador de arquivos", ["Enabled in reader"] = "Ativado no leitor", ["Show labels"] = "Mostrar rótulos",
+        ["Columns"] = "Colunas", ["Show thumbnail"] = "Mostrar miniatura", ["Show title"] = "Mostrar título"
     },
     es = {
         ["Actions"] = "Acciones", ["Frontlight"] = "Luz frontal", ["Warmth"] = "Temperatura",
@@ -80,14 +65,9 @@ local I18N = {
         ["Are you sure you want to exit book ?"] = "¿Seguro que quieres cerrar el libro ?",
         ["Quick menu"] = "Menú rápido", ["Always start on quick menu tab"] = "Abrir siempre en la pestaña del menú rápido",
         ["Add exit tab (need restart)"] = "Añadir pestaña de salida (requiere reiniciar)",
-        ["Select actions controls"] = "Seleccionar controles de acciones", ["Arrange actions controls"] = "Organizar controles de acciones",
-        ["Show actions controls"] = "Mostrar controles de acciones", ["Show actions controls labels"] = "Mostrar etiquetas de controles de acciones",
-        ["Select shortcuts controls"] = "Seleccionar accesos directos", ["Arrange shortcuts controls"] = "Organizar accesos directos",
-        ["Show shortcuts controls"] = "Mostrar accesos directos", ["Show shortcuts controls labels"] = "Mostrar etiquetas de accesos directos",
-        ["Show frontlight controls"] = "Mostrar controles de luz frontal", ["Show warmth controls"] = "Mostrar controles de temperatura",
-        ["Show info controls"] = "Mostrar controles de información", ["Show skim controls"] = "Mostrar controles de lectura rápida",
-        ["Columns of shortcuts"] = "Columnas de accesos directos",
-        ["Show info thumbnail"] = "Mostrar miniatura de información"
+        ["Select controls"] = "Seleccionar controles", ["Arrange controls"] = "Organizar controles",
+        ["Enabled in filemanager"] = "Activado en el gestor de archivos", ["Enabled in reader"] = "Activado en el lector", ["Show labels"] = "Mostrar etiquetas",
+        ["Columns"] = "Columnas", ["Show thumbnail"] = "Mostrar miniatura", ["Show title"] = "Mostrar título"
     },
     de = {
         ["Actions"] = "Aktionen", ["Frontlight"] = "Beleuchtung", ["Warmth"] = "Farbtemperatur",
@@ -102,14 +82,9 @@ local I18N = {
         ["Are you sure you want to exit book ?"] = "Möchtest du das Buch wirklich schließen?",
         ["Quick menu"] = "Schnellmenü", ["Always start on quick menu tab"] = "Immer auf dem Schnellmenü-Tab öffnen",
         ["Add exit tab (need restart)"] = "Beenden-Tab hinzufügen (Neustart nötig)",
-        ["Select actions controls"] = "Aktionssteuerung auswählen", ["Arrange actions controls"] = "Aktionssteuerung anordnen",
-        ["Show actions controls"] = "Aktionssteuerung anzeigen", ["Show actions controls labels"] = "Beschriftung der Aktionen anzeigen",
-        ["Select shortcuts controls"] = "Kurzbefehle auswählen", ["Arrange shortcuts controls"] = "Kurzbefehle anordnen",
-        ["Show shortcuts controls"] = "Kurzbefehle anzeigen", ["Show shortcuts controls labels"] = "Beschriftung der Kurzbefehle anzeigen",
-        ["Show frontlight controls"] = "Beleuchtungssteuerung anzeigen", ["Show warmth controls"] = "Farbtemperatursteuerung anzeigen",
-        ["Show info controls"] = "Infosteuerung anzeigen", ["Show skim controls"] = "Skim-Steuerung anzeigen",
-        ["Columns of shortcuts"] = "Spalten für Kurzbefehle",
-        ["Show info thumbnail"] = "Infovorschau anzeigen"
+        ["Select controls"] = "Bedienelemente auswählen", ["Arrange controls"] = "Bedienelemente anordnen",
+        ["Enabled in filemanager"] = "Im Dateimanager aktiviert", ["Enabled in reader"] = "Im Reader aktiviert", ["Show labels"] = "Beschriftungen anzeigen",
+        ["Columns"] = "Spalten", ["Show thumbnail"] = "Miniaturansicht anzeigen", ["Show title"] = "Titel anzeigen"
     },
     it = {
         ["Actions"] = "Azioni", ["Frontlight"] = "Luce frontale", ["Warmth"] = "Temperatura",
@@ -124,14 +99,9 @@ local I18N = {
         ["Are you sure you want to exit book ?"] = "Sei sicuro di voler chiudere il libro ?",
         ["Quick menu"] = "Menu rapido", ["Always start on quick menu tab"] = "Apri sempre sulla scheda del menu rapido",
         ["Add exit tab (need restart)"] = "Aggiungi scheda di uscita (riavvio richiesto)",
-        ["Select actions controls"] = "Seleziona controlli azioni", ["Arrange actions controls"] = "Organizza controlli azioni",
-        ["Show actions controls"] = "Mostra controlli azioni", ["Show actions controls labels"] = "Mostra etichette controlli azioni",
-        ["Select shortcuts controls"] = "Seleziona scorciatoie", ["Arrange shortcuts controls"] = "Organizza scorciatoie",
-        ["Show shortcuts controls"] = "Mostra scorciatoie", ["Show shortcuts controls labels"] = "Mostra etichette scorciatoie",
-        ["Show frontlight controls"] = "Mostra controlli luce", ["Show warmth controls"] = "Mostra controlli temperatura",
-        ["Show info controls"] = "Mostra controlli informazioni", ["Show skim controls"] = "Mostra controlli skim",
-        ["Columns of shortcuts"] = "Colonne di scorciatoie",
-        ["Show info thumbnail"] = "Mostra miniatura informazioni"
+        ["Select controls"] = "Seleziona controlli", ["Arrange controls"] = "Organizza controlli",
+        ["Enabled in filemanager"] = "Abilitato nel file manager", ["Enabled in reader"] = "Abilitato nel lettore", ["Show labels"] = "Mostra etichette",
+        ["Columns"] = "Colonne", ["Show thumbnail"] = "Mostra miniatura", ["Show title"] = "Mostra titolo"
     },
     ru = {
         ["Actions"] = "Действия", ["Frontlight"] = "Подсветка", ["Warmth"] = "Теплота",
@@ -146,25 +116,20 @@ local I18N = {
         ["Are you sure you want to exit book ?"] = "Вы действительно хотите закрыть книгу?",
         ["Quick menu"] = "Быстрое меню", ["Always start on quick menu tab"] = "Всегда открывать на вкладке быстрого меню",
         ["Add exit tab (need restart)"] = "Добавить вкладку выхода (требуется перезапуск)",
-        ["Select actions controls"] = "Настройка действий", ["Arrange actions controls"] = "Упорядочить действия",
-        ["Show actions controls"] = "Показывать панель действий", ["Show actions controls labels"] = "Показывать подписи к кнопкам",
-        ["Select shortcuts controls"] = "Выбрать ярлыки", ["Arrange shortcuts controls"] = "Упорядочить ярлыки",
-        ["Show shortcuts controls"] = "Показывать ярлыки", ["Show shortcuts controls labels"] = "Показывать подписи к ярлыкам",
-        ["Show frontlight controls"] = "Показывать яркость", ["Show warmth controls"] = "Показывать теплоту",
-        ["Show info controls"] = "Показывать информацию", ["Show skim controls"] = "Показывать навигацию",
-        ["Columns of shortcuts"] = "Колонки ярлыков",
-        ["Show info thumbnail"] = "Показывать миниатюру информации"
+        ["Select controls"] = "Выбрать элементы управления", ["Arrange controls"] = "Упорядочить элементы управления",
+        ["Enabled in filemanager"] = "Включено в файловом менеджере", ["Enabled in reader"] = "Включено в читалке", ["Show labels"] = "Показать подписи",
+        ["Columns"] = "Столбцы", ["Show thumbnail"] = "Показать миниатюру", ["Show title"] = "Показать заголовок"
     }
 }
 
 function Translation._(msg)
     local lang = "en"
     if G_reader_settings and G_reader_settings.readSetting then
-        local current = G_reader_settings:readSetting("language") or "en"
-        lang = string.sub(current, 1, 2)
+        local current = G_reader_settings:readSetting("language")
+        if current then lang = string.sub(current, 1, 2) end
     end
-    local map = I18N[lang] or I18N.en or {}
-    return map[msg] or msg
+    -- Recherche dans la langue, sinon anglais par défaut, sinon le message original
+    return (I18N[lang] and I18N[lang][msg]) or (I18N.en[msg] or msg)
 end
 
 return Translation

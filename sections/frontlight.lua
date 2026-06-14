@@ -1,3 +1,6 @@
+local TextWidget = require("ui/widget/textwidget")
+local Font            = require("ui/font")
+
 local Device        = require("device")
 local Math          = require("optmath")
 
@@ -10,11 +13,21 @@ local FrontlightSection = {}
 
 function FrontlightSection.build(ctx)
     local config       = ctx.config
+    local touch_menu   = ctx.touch_menu
+    local filemanager  = ctx.filemanager
+    local reader       = ctx.reader
     local powerd       = ctx.powerd
+    local inner_width  = ctx.inner_width
+    local screen       = ctx.screen
     local theme        = ctx.theme or {}
 
     local section = Utils.getSection(config, "frontlight")
-    if not section or not section.enabled or not Device:hasFrontlight() then return nil end
+
+    if not section or not Device:hasFrontlight() then return nil end
+
+    if filemanager and not section.enabled_f then return nil end
+
+    if reader and not section.enabled_r then return nil end
 
     local min_val    = powerd.fl_min or 0
     local max_val    = powerd.fl_max or 100
@@ -29,10 +42,10 @@ function FrontlightSection.build(ctx)
         powerd:setIntensity(val)
     end
 
-    return SliderSection.build{
-        touch_menu         = ctx.touch_menu,
-        inner_width        = ctx.inner_width,
-        screen             = ctx.screen,
+    local sliderSection = SliderSection.build{
+        touch_menu         = touch_menu,
+        inner_width        = inner_width,
+        screen             = screen,
 
         btn_width          = theme.btn_width,
         btn_radius         = theme.btn_radius,
@@ -50,6 +63,17 @@ function FrontlightSection.build(ctx)
         text_minus         = "\u{F111}",
         text_plus          = "\u{F185}",
     }
+
+    if section.show_title then
+        local frontlight_label = TextWidget:new{
+            text = _("Frontlight") .. " : " .. powerd:frontlightIntensity() .. "%",
+            face =  Font:getFace("cfont", theme.btn_font_size), bold = true,
+            max_width = inner_width,
+        }
+        table.insert(sliderSection.widget, 1, frontlight_label)
+    end
+
+    return sliderSection
 end
 
 function FrontlightSection.getSettings(config, saveConfig, ctx)
@@ -60,10 +84,20 @@ function FrontlightSection.getSettings(config, saveConfig, ctx)
 
     return {
         {
-            text = _("Show frontlight controls"),
-            checked_func = function() return section.enabled end,
+            text = _("Enabled in filemanager"),
+            checked_func = function() return section.enabled_f end,
+            callback = function() section.enabled_f = not section.enabled_f; saveConfig() end
+        },
+        {
+            text = _("Enabled in reader"),
+            checked_func = function() return section.enabled_r end,
+            callback = function() section.enabled_r = not section.enabled_r; saveConfig() end
+        },
+        {
+            text = _("Show title"),
+            checked_func = function() return section.show_title end,
             callback = function()
-                section.enabled = not section.enabled
+                section.show_title = not section.show_title
                 saveConfig()
             end
         }

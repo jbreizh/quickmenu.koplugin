@@ -2,6 +2,10 @@ local Button          = require("ui/widget/button")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
 local VerticalGroup   = require("ui/widget/verticalgroup")
+local VerticalSpan  = require("ui/widget/verticalspan")
+local TextWidget      = require("ui/widget/textwidget")
+
+local Font            = require("ui/font")
 
 local Math            = require("optmath")
 local Size            = require("ui/size")
@@ -18,23 +22,25 @@ local SkimSection = {}
 function SkimSection.build(ctx)
     local config       = ctx.config
     local touch_menu   = ctx.touch_menu
+    local filemanager  = ctx.filemanager
     local reader       = ctx.reader
     local inner_width  = ctx.inner_width
-    local section_span = ctx.section_span
+    local screen       = ctx.screen
     local theme        = ctx.theme or {}
 
     local section = Utils.getSection(config, "skim")
-    if not section or not section.enabled or not reader then return nil end
+    if not section or not section.enabled_r or not reader then return nil end
 
     local refs = { buttons = {}, sliders = {}, widgets = {} }
     local group = VerticalGroup:new{ align = "center" }
 
     -- style
-    local gap            = theme.gap or ctx.screen:scaleBySize(4)
-    local btn_width      = theme.btn_width or ctx.screen:scaleBySize(50)
+    local gap            = theme.gap or screen:scaleBySize(4)
+    local vgap           = theme.vgap or screen:scaleBySize(4)
+    local btn_width      = theme.btn_width or screen:scaleBySize(50)
     local btn_radius     = theme.btn_radius or Size.radius.button
     local btn_bordersize = theme.btn_bordersize  or 0
-    local btn_font       = theme.btn_font_size or 16
+    local btn_font_size  = theme.btn_font_size or 16
     local ticks_width    = theme.slider_ticks_width or Size.line.medium
 
     -- Utilitaires de gestion du menu
@@ -88,7 +94,7 @@ function SkimSection.build(ctx)
     local row1 = SliderSection.build{
         touch_menu         = touch_menu,
         inner_width        = inner_width,
-        screen             = ctx.screen,
+        screen             = screen,
         min                = 1,
         max                = skim.page_count,
         get                = function() return skim.curr_page end,
@@ -99,7 +105,7 @@ function SkimSection.build(ctx)
         btn_width          = btn_width,
         btn_radius         = btn_radius,
         btn_bordersize     = btn_bordersize,
-        btn_font_size      = btn_font,
+        btn_font_size      = btn_font_size,
         slider_ticks_width = ticks_width
     }
 
@@ -114,7 +120,7 @@ function SkimSection.build(ctx)
         props.width = btn_width
         props.radius = btn_radius
         props.bordersize = btn_bordersize
-        props.text_font_size = btn_font
+        props.text_font_size = btn_font_size
         props.show_parent = touch_menu.show_parent
         return Button:new(props)
     end
@@ -139,8 +145,17 @@ function SkimSection.build(ctx)
     table.insert(row2, createBtn{ text = "\u{25B6}", callback = function() goEvent("GotoNextBookmarkFromPage"); refreshMenu() end })
 
     table.insert(group, row1.widget)
-    table.insert(group, section_span)
+    table.insert(group, VerticalSpan:new{ width = vgap })
     table.insert(group, row2)
+
+    if section.show_title then
+        local skim_label = TextWidget:new{
+            text = _("Skim") .. " :",
+            face =  Font:getFace("cfont", btn_font_size), bold = true,
+            max_width = inner_width,
+        }
+        table.insert(group, 1, skim_label)
+    end
 
     table.insert(refs.sliders, row1.refs.sliders[1])
 
@@ -153,9 +168,17 @@ function SkimSection.getSettings(config, saveConfig, ctx)
 
     return {
         {
-            text = _("Show skim controls"),
-            checked_func = function() return section.enabled end,
-            callback = function() section.enabled = not section.enabled; saveConfig() end
+            text = _("Enabled in reader"),
+            checked_func = function() return section.enabled_r end,
+            callback = function() section.enabled_r = not section.enabled_r; saveConfig() end
+        },
+        {
+            text = _("Show title"),
+            checked_func = function() return section.show_title end,
+            callback = function()
+                section.show_title = not section.show_title
+                saveConfig()
+            end
         }
     }
 end

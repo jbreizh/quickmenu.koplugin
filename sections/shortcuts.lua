@@ -2,6 +2,10 @@ local Button          = require("ui/widget/button")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
 local VerticalGroup   = require("ui/widget/verticalgroup")
+local VerticalSpan  = require("ui/widget/verticalspan")
+local TextWidget      = require("ui/widget/textwidget")
+
+local Font            = require("ui/font")
 
 local Math            = require("optmath")
 local UIManager       = require("ui/uimanager")
@@ -14,17 +18,29 @@ local _               = Translation._
 local Shortcuts = {}
 
 function Shortcuts.build(ctx)
-    local config = ctx.config
+    local config       = ctx.config
+    local touch_menu   = ctx.touch_menu
+    local filemanager  = ctx.filemanager
+    local reader       = ctx.reader
+    local inner_width  = ctx.inner_width
+    local screen       = ctx.screen
+    local theme        = ctx.theme or {}
     local section = Utils.getSection(config, "shortcuts")
 
-    if not section or not section.enabled then return nil end
+    if not section then return nil end
+
+    if filemanager and not section.enabled_f then return nil end
+
+    if reader and not section.enabled_r then return nil end
+
     section.items = section.items or {}
 
     -- style
-    local gap            = ctx.theme.gap or ctx.screen:scaleBySize(4)
-    local btn_radius     = ctx.theme.btn_radius or 0
-    local btn_bordersize = ctx.theme.btn_bordersize  or 0
-    local btn_font_size  = ctx.theme.btn_font_size  or 16
+    local gap            = theme.gap or screen:scaleBySize(4)
+    local vgap           = theme.vgap or screen:scaleBySize(4)
+    local btn_radius     = theme.btn_radius or 0
+    local btn_bordersize = theme.btn_bordersize  or 0
+    local btn_font_size  = theme.btn_font_size  or 16
 
     local action_defs = ActionDefs.get()
     local visible_actions = {}
@@ -40,10 +56,9 @@ function Shortcuts.build(ctx)
     if num_actions == 0 then return nil end
 
     local max_cols =  section.max_cols or 3
-    local btn_width = Math.round((ctx.inner_width  - gap * (max_cols - 1)) / max_cols)
+    local btn_width = Math.round((inner_width  - gap * (max_cols - 1)) / max_cols)
 
-    local main_container = VerticalGroup:new{ align = "center" }
-    local refs = { buttons = {}, sliders = {}, widgets = {} }
+    local group = VerticalGroup:new{ align = "center" }
 
     local function createButton(def)
         local icon = def.unicode or ""
@@ -56,13 +71,13 @@ function Shortcuts.build(ctx)
             radius         = btn_radius,
             bordersize     = btn_bordersize,
             text_font_size = btn_font_size,
-            show_parent    = ctx.touch_menu.show_parent,
+            show_parent    = touch_menu.show_parent,
             callback       = function()
-                ctx.touch_menu:updateItems(1)
+                touch_menu:updateItems(1)
                 if def.callback then def.callback(ctx) end
             end,
             hold_callback  = def.hold_callback and function()
-                ctx.touch_menu:updateItems(1)
+                touch_menu:updateItems(1)
                 def.hold_callback(ctx)
             end or nil,
         }
@@ -75,12 +90,6 @@ function Shortcuts.build(ctx)
             local entry = visible_actions[j]
             local btn_widget = createButton(entry.def)
 
-            table.insert(refs.buttons, {
-                widget = btn_widget,
-                callback = btn_widget.callback,
-                hold_callback = btn_widget.hold_callback,
-            })
-
             table.insert(row, btn_widget)
 
             if j < math.min(i + max_cols - 1, num_actions) then
@@ -88,14 +97,23 @@ function Shortcuts.build(ctx)
             end
         end
 
-        table.insert(main_container, row)
+        table.insert(group, row)
 
         if i + max_cols <= num_actions then
-            table.insert(main_container, ctx.section_span)
+            table.insert(group, VerticalSpan:new{ width = vgap })
         end
     end
 
-    return { widget = main_container, refs = refs }
+    if section.show_title then
+        local shortcuts_label = TextWidget:new{
+            text = _("Shortcuts") .. " :",
+            face =  Font:getFace("cfont", btn_font_size), bold = true,
+            max_width = inner_width,
+        }
+        table.insert(group, 1, shortcuts_label)
+    end
+
+    return { widget = group }
 end
 
 
@@ -158,17 +176,30 @@ function Shortcuts.getSettings(config, saveConfig, ctx)
 
     return {
         {
-            text = _("Show shortcuts controls"),
-            checked_func = function() return section.enabled end,
-            callback = function() section.enabled = not section.enabled; saveConfig() end
+            text = _("Enabled in filemanager"),
+            checked_func = function() return section.enabled_f end,
+            callback = function() section.enabled_f = not section.enabled_f; saveConfig() end
         },
         {
-            text = _("Show shortcuts controls labels"),
+            text = _("Enabled in reader"),
+            checked_func = function() return section.enabled_r end,
+            callback = function() section.enabled_r = not section.enabled_r; saveConfig() end
+        },
+        {
+            text = _("Show title"),
+            checked_func = function() return section.show_title end,
+            callback = function()
+                section.show_title = not section.show_title
+                saveConfig()
+            end
+        },
+        {
+            text = _("Show labels"),
             checked_func = function() return section.show_label end,
             callback = function() section.show_label = not section.show_label; saveConfig() end
         },
         {
-            text_func = function() return _("Columns of shortcuts") .. " (" .. (section.max_cols or 3) .. ")" end,
+            text_func = function() return _("Columns") .. " (" .. (section.max_cols or 3) .. ")" end,
             sub_item_table = {
                 {
                     text = "1",
@@ -223,12 +254,12 @@ function Shortcuts.getSettings(config, saveConfig, ctx)
         {
             text_func = function()
                 local count = #(section.items or {})
-                return _("Select shortcuts controls") .. " (" .. count .. ")"
+                return _("Select controls") .. " (" .. count .. ")"
             end,
             sub_item_table = select_items
         },
         {
-            text = _("Arrange shortcuts controls"),
+            text = _("Arrange controls"),
             keep_menu_open = true,
             callback = function()
                 local sort_items = {}
@@ -244,7 +275,7 @@ function Shortcuts.getSettings(config, saveConfig, ctx)
                 end
 
                 UIManager:show(SortWidget:new{
-                    title = _("Arrange shortcuts controls"),
+                    title = _("Arrange controls"),
                     item_table = sort_items,
                     callback = function()
                         section.items = {}

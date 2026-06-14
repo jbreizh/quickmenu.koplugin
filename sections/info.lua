@@ -4,6 +4,7 @@ local VerticalGroup   = require("ui/widget/verticalgroup")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
 local TextBoxWidget   = require("ui/widget/textboxwidget")
+local TextWidget      = require("ui/widget/textwidget")
 
 local Font            = require("ui/font")
 local RenderImage     = require("ui/renderimage")
@@ -24,17 +25,21 @@ local InfoSection = {}
 function InfoSection.build(ctx)
     local config       = ctx.config
     local touch_menu   = ctx.touch_menu
+    local filemanager  = ctx.filemanager
     local reader       = ctx.reader
+    local inner_width  = ctx.inner_width
+    local screen       = ctx.screen
+    local theme        = ctx.theme or {}
     local section      = Utils.getSection(config, "info")
 
-    if not section or not section.enabled or not reader then return nil end
+    if not section or not section.enabled_r or not reader then return nil end
 
     -- style
-    local gap            = ctx.theme.gap or ctx.screen:scaleBySize(4)
-    local btn_radius     = ctx.theme.btn_radius or 0
-    local btn_bordersize = ctx.theme.btn_bordersize  or 0
-    local btn_font_size  = ctx.theme.btn_font_size  or 16
-    local color_gray     = ctx.theme.color_gray or Blitbuffer.COLOR_DARK_GRAY
+    local gap            = theme.gap or screen:scaleBySize(4)
+    local btn_radius     = theme.btn_radius or 0
+    local btn_bordersize = theme.btn_bordersize  or 0
+    local btn_font_size  = theme.btn_font_size  or 16
+    local color_gray     = theme.color_gray or Blitbuffer.COLOR_DARK_GRAY
 
     -- thumbnail
     local info_thumbnail, cover_w = nil, 0
@@ -42,7 +47,7 @@ function InfoSection.build(ctx)
     if not ok or not section.show_thumbnail then thumbnail = nil end
 
     if thumbnail then
-        local max_h = ctx.screen:scaleBySize(100) -- TODO change for a clever value
+        local max_h = screen:scaleBySize(100) -- TODO change for a clever value
         local w, h = thumbnail:getWidth(), thumbnail:getHeight()
         if h > max_h then
             w = math.floor(w * max_h / h + 0.5); h = max_h
@@ -57,7 +62,7 @@ function InfoSection.build(ctx)
     end
 
     -- text
-    local txt_w = ctx.inner_width - gap - (info_thumbnail and (cover_w + gap) or 0) - (gap * 2) -- WARNING (gap*2) for padding ClickableGroup
+    local txt_w = inner_width - 2 * gap - (info_thumbnail and (cover_w + 3 * gap) or 0) -- WARNING (gap*2) for padding clickable_text_container and (gap*2) for padding info_thumbnail
     local info_title = TextBoxWidget:new{
         text = (reader.doc_props or {}).display_title or reader.props.title or _("Unknown title"),
         width = txt_w, alignment = "center", face =  Font:getFace("cfont", btn_font_size), bold = true
@@ -91,12 +96,23 @@ function InfoSection.build(ctx)
     }
 
     local row = HorizontalGroup:new{ align = "center", clickable_text_container }
+
     if info_thumbnail then
         table.insert(row, 1, HorizontalSpan:new{ width = gap })
         table.insert(row, 1, info_thumbnail)
     end
 
     local group = VerticalGroup:new{ align = "center", row }
+
+    if section.show_title then
+        local info_label = TextWidget:new{
+            text = _("Informations") .. " :",
+            face =  Font:getFace("cfont", btn_font_size), bold = true,
+            max_width = inner_width,
+        }
+        table.insert(group, 1, info_label)
+    end
+
     return { widget = group }
 end
 
@@ -106,12 +122,20 @@ function InfoSection.getSettings(config, saveConfig, ctx)
 
     return {
         {
-            text = _("Show info controls"),
-            checked_func = function() return section.enabled end,
-            callback = function() section.enabled = not section.enabled; saveConfig() end
+            text = _("Enabled in reader"),
+            checked_func = function() return section.enabled_r end,
+            callback = function() section.enabled_r = not section.enabled_r; saveConfig() end
         },
         {
-            text = _("Show info thumbnail"),
+            text = _("Show title"),
+            checked_func = function() return section.show_title end,
+            callback = function()
+                section.show_title = not section.show_title
+                saveConfig()
+            end
+        },
+        {
+            text = _("Show thumbnail"),
             checked_func = function() return section.show_thumbnail end,
             callback = function() section.show_thumbnail = not section.show_thumbnail; saveConfig() end
         }

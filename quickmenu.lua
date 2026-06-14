@@ -56,8 +56,6 @@ end
 -- Shared Context Builder
 -- ============================================================
 
-local section_span = VerticalSpan:new{ width = Screen:scaleBySize(4) }
-
 local function buildContext(config, touch_menu)
     local panel_width = touch_menu and touch_menu.item_width or 0
     local padding = Screen:scaleBySize(10)
@@ -72,9 +70,9 @@ local function buildContext(config, touch_menu)
         screen = Screen,
         panel_width = panel_width,
         inner_width = inner_width,
-        section_span = section_span,
         theme = {
             gap = Screen:scaleBySize(4),
+            vgap = Screen:scaleBySize(4),
             btn_width = Screen:scaleBySize(50),
             btn_radius = Size.radius.button,
             btn_bordersize = Size.border.button,
@@ -103,21 +101,17 @@ function QuickMenu.createPanel(config, touch_menu)
     local added_count = 0
 
     for idx, id in ipairs(ORDER) do
-        local section = Utils.getSection(config, id)
-        if section and section.enabled then
-            local section_mod = SECTIONS[id]
-
-            if section_mod and type(section_mod.build) == "function" then
-                local ok, result = pcall(section_mod.build, ctx)
-                if ok and result and result.widget then
-                    if added_count > 0 then
-                        table.insert(panel, section_span)
-                    end
-
-                    table.insert(panel, result.widget)
-                    mergeRefs(refs, result.refs)
-                    added_count = added_count + 1
+        local section_mod = SECTIONS[id]
+        if section_mod and type(section_mod.build) == "function" then
+            local ok, result = pcall(section_mod.build, ctx)
+            if ok and result and result.widget then
+                if added_count > 0 then
+                    table.insert(panel, VerticalSpan:new{ width = Screen:scaleBySize(4) })
                 end
+
+                table.insert(panel, result.widget)
+                mergeRefs(refs, result.refs)
+                added_count = added_count + 1
             end
         end
     end

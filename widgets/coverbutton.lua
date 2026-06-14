@@ -1,6 +1,6 @@
 local InputContainer = require("ui/widget/container/inputcontainer")
 local FrameContainer = require("ui/widget/container/framecontainer")
-local IconWidget = require("ui/widget/iconwidget")
+local ImageWidget = require("ui/widget/imagewidget")
 local GestureRange = require("ui/gesturerange")
 
 local CoverButton = InputContainer:extend{
@@ -15,7 +15,7 @@ local CoverButton = InputContainer:extend{
 }
 
 function CoverButton:init()
-    local image_widget = IconWidget:new{
+    local image_widget = ImageWidget:new{
         image = self.image,
         width = self.width,
         height = self.height,

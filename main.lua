@@ -287,7 +287,7 @@ end
 local QuickMenu = require("quickmenu")
 
 local quick_menu_tab = {
-    icon = "koreader",
+    icon = "home",
     remember = function() return not config.open_on_start end,-- Dynamique : si l'option est décochée, on autorise la mémorisation
     panel = function(touch_menu) return QuickMenu.createPanel(config, touch_menu) end
 }
@@ -359,6 +359,28 @@ function FileManagerMenu:setUpdateItemTable()
     end
 end
 
+-- don't open last tab when exit_tab is insert
+if config.add_exit_tab then
+    function FileManagerMenu:_getTabIndexFromLocation(ges)
+        if self.tab_item_table == nil then
+            self:setUpdateItemTable()
+        end
+        local last_tab_index = G_reader_settings:readSetting("filemanagermenu_tab_index") or 1
+        if not ges then
+            return last_tab_index
+        -- if the start position is far right
+        elseif ges.pos.x > Screen:getWidth() * (2/3) then
+            return BD.mirroredUILayout() and 1 or (#self.tab_item_table - 1)
+        -- if the start position is far left
+        elseif ges.pos.x < Screen:getWidth() * (1/3) then
+            return BD.mirroredUILayout() and (#self.tab_item_table - 1) or 1
+        -- if center return the last index
+        else
+            return last_tab_index
+        end
+    end
+end
+
 -- ============================================================
 -- Inject ReaderMenu
 -- ============================================================
@@ -370,7 +392,6 @@ local orig_reader_setUpdateItemTable = ReaderMenu.setUpdateItemTable
 function ReaderMenu:setUpdateItemTable()
     -- inject settings
     if not is_injected(ReaderMenuOrder.setting, "quick_menu_config") then
-        table.insert(ReaderMenuOrder.setting, "----------------------------")
         table.insert(ReaderMenuOrder.setting, "quick_menu_config")
     end
     self.menu_items.quick_menu_config = QuickMenu.buildSettingsMenu(config, saveConfig)
@@ -410,6 +431,27 @@ function ReaderMenu:setUpdateItemTable()
                     })
                 end
             })
+        end
+    end
+end
+
+-- don't open last tab when exit_tab is insert
+if config.add_exit_tab then
+    function ReaderMenu:_getTabIndexFromLocation(ges)
+        if self.tab_item_table == nil then
+            self:setUpdateItemTable()
+        end
+        if not ges then
+            return self.last_tab_index
+        -- if the start position is far right
+        elseif ges.pos.x > Screen:getWidth() * (2/3) then
+            return BD.mirroredUILayout() and 1 or (#self.tab_item_table - 1)
+        -- if the start position is far left
+        elseif ges.pos.x < Screen:getWidth() * (1/3) then
+            return BD.mirroredUILayout() and (#self.tab_item_table - 1) or 1
+        -- if center return the last index
+        else
+            return self.last_tab_index
         end
     end
 end
