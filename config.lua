@@ -91,6 +91,7 @@ function Config.load()
     -- 3. Initialisation des paramètres globaux
     if cfg.open_on_start == nil then cfg.open_on_start = DEFAULTS.open_on_start end
     if cfg.add_exit_tab == nil then cfg.add_exit_tab = DEFAULTS.add_exit_tab end
+    if cfg.add_quickmenu_tab == nil then cfg.add_quickmenu_tab = DEFAULTS.add_quickmenu_tab end
 
     return cfg
 end
