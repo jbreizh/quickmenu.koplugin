@@ -287,6 +287,7 @@ end
 local QuickMenu = require("quickmenu")
 
 local quick_menu_tab = {
+    id = "quick_menu_tab",
     icon = "home",
     remember = function() return not config.open_on_start end,-- Dynamique : si l'option est décochée, on autorise la mémorisation
     panel = function(touch_menu) return QuickMenu.createPanel(config, touch_menu) end
@@ -295,13 +296,6 @@ local quick_menu_tab = {
 -- ============================================================
 -- Inject functions
 -- ============================================================
-local function find_tab_index(tab_list, id)
-    for i, tab in ipairs(tab_list) do
-        if tab.id == id then return i end
-    end
-    return nil
-end
-
 local function is_injected(list, id)
     for _, v in ipairs(list) do
         if v == id then return true end
@@ -314,10 +308,6 @@ end
 -- ============================================================
 local FileManagerMenu = require("apps/filemanager/filemanagermenu")
 local FileManagerMenuOrder = require("ui/elements/filemanager_menu_order")
-local ConfirmBox = require("ui/widget/confirmbox")
-local Event = require("ui/event")
-local Translation = require("i18n/translation")
-local _ = Translation._
 
 local orig_fm_setUpdateItemTable = FileManagerMenu.setUpdateItemTable
 
@@ -327,57 +317,35 @@ function FileManagerMenu:setUpdateItemTable()
         table.insert(FileManagerMenuOrder.setting, "----------------------------")
         table.insert(FileManagerMenuOrder.setting, "quick_menu_config")
     end
-    self.menu_items.quick_menu_config = QuickMenu.buildSettingsMenu(config, saveConfig)
+    self.menu_items.quick_menu_config = QuickMenu.buildSettingsMenu(config, saveConfig, self)
 
     -- inject ori
     orig_fm_setUpdateItemTable(self)
 
     -- 3. Gestion des onglets
     if self.tab_item_table then
-        -- insert quick Menu tab
-        if not find_tab_index(self.tab_item_table, "quick_menu_tab") then
-            table.insert(self.tab_item_table, 1, quick_menu_tab)
-        end
-
-        -- insert exit tab
-        if not find_tab_index(self.tab_item_table, "exit_tab") and config.add_exit_tab then
-            table.insert(self.tab_item_table, {
-                id = "exit_tab",
-                icon = "exit",
-                remember = false,
-                callback = function() self:onCloseFileManagerMenu() end,
-                hold_callback = function()
-                    self:onCloseFileManagerMenu()
-                    UIManager:show(ConfirmBox:new{
-                        text = _("Are you sure you want to exit KOReader ?"),
-                        ok_text = _("Exit"),
-                        ok_callback = function() UIManager:broadcastEvent(Event:new("Exit")) end
-                    })
-                end
-            })
-        end
+        QuickMenu.updateTab(config, self)
     end
 end
 
--- don't open last tab when exit_tab is insert
-if config.add_exit_tab then
-    function FileManagerMenu:_getTabIndexFromLocation(ges)
-        if self.tab_item_table == nil then
-            self:setUpdateItemTable()
-        end
-        local last_tab_index = G_reader_settings:readSetting("filemanagermenu_tab_index") or 1
-        if not ges then
-            return last_tab_index
-        -- if the start position is far right
-        elseif ges.pos.x > Screen:getWidth() * (2/3) then
-            return BD.mirroredUILayout() and 1 or (#self.tab_item_table - 1)
-        -- if the start position is far left
-        elseif ges.pos.x < Screen:getWidth() * (1/3) then
-            return BD.mirroredUILayout() and (#self.tab_item_table - 1) or 1
-        -- if center return the last index
-        else
-            return last_tab_index
-        end
+function FileManagerMenu:_getTabIndexFromLocation(ges)
+    if self.tab_item_table == nil then
+        self:setUpdateItemTable()
+    end
+    local last_tab_index = G_reader_settings:readSetting("filemanagermenu_tab_index") or 1
+    -- If exit_tab is present, exclude it from the navigation boundary (-1).
+    local nav_limit = config.add_exit_tab and (#self.tab_item_table - 1) or #self.tab_item_table
+    if not ges then
+        return last_tab_index
+    -- if the start position is far right
+    elseif ges.pos.x > Screen:getWidth() * (2/3) then
+        return BD.mirroredUILayout() and 1 or nav_limit
+    -- if the start position is far left
+    elseif ges.pos.x < Screen:getWidth() * (1/3) then
+        return BD.mirroredUILayout() and nav_limit or 1
+    -- if center return the last index
+    else
+        return last_tab_index
     end
 end
 
@@ -394,65 +362,34 @@ function ReaderMenu:setUpdateItemTable()
     if not is_injected(ReaderMenuOrder.setting, "quick_menu_config") then
         table.insert(ReaderMenuOrder.setting, "quick_menu_config")
     end
-    self.menu_items.quick_menu_config = QuickMenu.buildSettingsMenu(config, saveConfig)
+    self.menu_items.quick_menu_config = QuickMenu.buildSettingsMenu(config, saveConfig, self)
     -- inject ori
     orig_reader_setUpdateItemTable(self)
 
     -- tab
     if self.tab_item_table then
-        -- insert quick Menu tab
-        if not find_tab_index(self.tab_item_table, "quick_menu_tab") then
-            table.insert(self.tab_item_table, 1, quick_menu_tab)
-        end
-
-        -- remove filemanager
-        local fm_idx = find_tab_index(self.tab_item_table, "filemanager")
-        if fm_idx and config.add_exit_tab then
-            table.remove(self.tab_item_table, fm_idx)
-        end
-
-        -- Insert exit_tab
-        if not find_tab_index(self.tab_item_table, "exit_tab") and config.add_exit_tab  then
-            table.insert(self.tab_item_table, {
-                id = "exit_tab",
-                icon = "exit",
-                remember = false,
-                callback = function() self:onTapCloseMenu() end,
-                hold_callback = function()
-                    self:onTapCloseMenu()
-                    UIManager:show(ConfirmBox:new{
-                        text = _("Are you sure you want to exit book ?"),
-                        ok_text = _("Exit"),
-                        ok_callback = function()
-                            local file = self.ui.document and self.ui.document.file
-                            self.ui:onClose()
-                            if file then self.ui:showFileManager(file) end
-                        end
-                    })
-                end
-            })
-        end
+        QuickMenu.updateTab(config, self)
     end
 end
 
 -- don't open last tab when exit_tab is insert
-if config.add_exit_tab then
-    function ReaderMenu:_getTabIndexFromLocation(ges)
-        if self.tab_item_table == nil then
-            self:setUpdateItemTable()
-        end
-        if not ges then
-            return self.last_tab_index
-        -- if the start position is far right
-        elseif ges.pos.x > Screen:getWidth() * (2/3) then
-            return BD.mirroredUILayout() and 1 or (#self.tab_item_table - 1)
-        -- if the start position is far left
-        elseif ges.pos.x < Screen:getWidth() * (1/3) then
-            return BD.mirroredUILayout() and (#self.tab_item_table - 1) or 1
-        -- if center return the last index
-        else
-            return self.last_tab_index
-        end
+function ReaderMenu:_getTabIndexFromLocation(ges)
+    if self.tab_item_table == nil then
+        self:setUpdateItemTable()
+    end
+    -- If exit_tab is present, exclude it from the navigation boundary (-1).
+    local nav_limit = config.add_exit_tab and (#self.tab_item_table - 1) or #self.tab_item_table
+    if not ges then
+        return self.last_tab_index
+    -- if the start position is far right
+    elseif ges.pos.x > Screen:getWidth() * (2/3) then
+        return BD.mirroredUILayout() and 1 or nav_limit
+    -- if the start position is far left
+    elseif ges.pos.x < Screen:getWidth() * (1/3) then
+        return BD.mirroredUILayout() and nav_limit or 1
+    -- if center return the last index
+    else
+        return self.last_tab_index
     end
 end
 

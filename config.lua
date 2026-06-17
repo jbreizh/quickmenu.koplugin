@@ -30,16 +30,18 @@ local DEFAULTS = {
         info = {
             enabled_r = true,
             show_title = true,
-            show_thumbnail = true
+            show_thumbnail = true,
+            show_skim = true
         },
         skim = {
-            enabled_r = true,
+            enabled_r = false,
             show_title = false
         },
     },
 
     open_on_start = true,
     add_exit_tab = true,
+    add_quickmenu_tab = true,
 }
 
 local function copyMissing(dst, defaults)

@@ -94,6 +94,7 @@ function ActionDefs.get()
             unicode = "\u{F0E2}",
             label = _("Restart"),
             callback = function(ctx)
+                ctx.touch_menu:closeMenu()
                 UIManager:show(ConfirmBox:new{
                     text = _("Are you sure you want to restart KOReader ?"),
                     ok_text = _("Restart"),
@@ -105,6 +106,7 @@ function ActionDefs.get()
             unicode = "\u{274C}",
             label = _("Exit"),
             callback = function(ctx)
+                ctx.touch_menu:closeMenu()
                 UIManager:show(ConfirmBox:new{
                     text = _("Are you sure you want to exit KOReader ?"),
                     ok_text = _("Exit"),
@@ -116,6 +118,7 @@ function ActionDefs.get()
             unicode = "\u{F04C}",
             label = _("Sleep"),
             callback = function(ctx)
+                ctx.touch_menu:closeMenu()
                 if Device:canSuspend() then UIManager:broadcastEvent(Event:new("RequestSuspend"))
                 elseif Device:canPowerOff() then UIManager:broadcastEvent(Event:new("RequestPowerOff")) end
             end,
@@ -152,8 +155,12 @@ function ActionDefs.get()
         search = {
             unicode = "\u{F002}",
             label = _("Search"),
-            callback = function(ctx) UIManager:broadcastEvent(Event:new("ShowFileSearch")) end,
+            callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                UIManager:broadcastEvent(Event:new("ShowFileSearch"))
+            end,
             hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("calibre") then UIManager:broadcastEvent(Event:new("CalibreSearch"))
                 else UIManager:show(InfoMessage:new{ text = "Calibre : " .. _("Plugin not activated.") }) end
             end
@@ -163,28 +170,48 @@ function ActionDefs.get()
             label = _("Search in Calibre"),
             visible_func = function() return Utils.hasPlugin("calibre") end,
             callback = function(ctx)
+                ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("calibre") then UIManager:broadcastEvent(Event:new("CalibreSearch"))
                 else UIManager:show(InfoMessage:new{ text = "Calibre : " .. _("Plugin not activated.") }) end
             end,
-            hold_callback = function(ctx) UIManager:broadcastEvent(Event:new("ShowFileSearch")) end
+            hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                UIManager:broadcastEvent(Event:new("ShowFileSearch"))
+                end
         },
         dictionary = {
             unicode = "\u{F02D}",
             label = _("Dictionary"),
-            callback = function(ctx) UIManager:broadcastEvent(Event:new("ShowDictionaryLookup")) end,
-            hold_callback = function(ctx) UIManager:broadcastEvent(Event:new("ShowWikipediaLookup")) end
+            callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                UIManager:broadcastEvent(Event:new("ShowDictionaryLookup"))
+            end,
+            hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                UIManager:broadcastEvent(Event:new("ShowWikipediaLookup"))
+            end
         },
         wikipedia = {
             unicode = "\u{F266}",
             label = _("Wikipedia"),
-            callback = function(ctx) UIManager:broadcastEvent(Event:new("ShowWikipediaLookup")) end,
-            hold_callback = function(ctx) UIManager:broadcastEvent(Event:new("ShowDictionaryLookup")) end
+            callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                UIManager:broadcastEvent(Event:new("ShowWikipediaLookup"))
+            end,
+            hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                UIManager:broadcastEvent(Event:new("ShowDictionaryLookup"))
+            end
         },
         cloud = {
             unicode = "\u{F0C2}",
             label = _("Cloud"),
-            callback = function(ctx) UIManager:broadcastEvent(Event:new("ShowCloudStorage")) end,
+            callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                UIManager:broadcastEvent(Event:new("ShowCloudStorage"))
+                end,
             hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("opds") then UIManager:broadcastEvent(Event:new("ShowOPDSCatalog"))
                 else UIManager:show(InfoMessage:new{ text = "OPDS : " .. _("Plugin not activated.") }) end
             end
@@ -194,19 +221,25 @@ function ActionDefs.get()
             label = _("OPDS"),
             visible_func = function() return Utils.hasPlugin("opds") end,
             callback = function(ctx)
+                ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("opds") then UIManager:broadcastEvent(Event:new("ShowOPDSCatalog"))
                 else UIManager:show(InfoMessage:new{ text = "OPDS : " .. _("Plugin not activated.") }) end
             end,
-            hold_callback = function(ctx) UIManager:broadcastEvent(Event:new("ShowCloudStorage")) end
+            hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                UIManager:broadcastEvent(Event:new("ShowCloudStorage"))
+            end
         },
         history = {
             unicode = "\u{F1DA}",
             label = _("History"),
             callback = function(ctx)
+                ctx.touch_menu:closeMenu()
                 if ctx.filemanager and ctx.filemanager.history then ctx.filemanager.history:onShowHist()
                 elseif ctx.reader and ctx.reader.history then ctx.reader.history:onShowHist() end
             end,
             hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
                 if ctx.filemanager and ctx.filemanager.menu then ctx.filemanager.menu:onOpenLastDoc()
                 elseif ctx.reader then ctx.reader:onOpenLastDoc() end
             end
@@ -215,10 +248,12 @@ function ActionDefs.get()
             unicode = "\u{F04B}",
             label = _("Resume"),
             callback = function(ctx)
+                ctx.touch_menu:closeMenu()
                 if ctx.filemanager and ctx.filemanager.menu then ctx.filemanager.menu:onOpenLastDoc()
                 elseif ctx.reader then ctx.reader:onOpenLastDoc() end
             end,
             hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
                 if ctx.filemanager and ctx.filemanager.history then ctx.filemanager.history:onShowHist()
                 elseif ctx.reader and ctx.reader.history then ctx.reader.history:onShowHist() end
             end
@@ -227,10 +262,12 @@ function ActionDefs.get()
             unicode = "\u{F0C9}",
             label = _("Collections"),
             callback = function(ctx)
+                ctx.touch_menu:closeMenu()
                 if ctx.filemanager and ctx.filemanager.collections then ctx.filemanager.collections:onShowCollList()
                 elseif ctx.reader and ctx.reader.collections then ctx.reader.collections:onShowCollList() end
             end,
             hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
                 if ctx.filemanager and ctx.filemanager.collections then ctx.filemanager.collections:onShowColl()
                 elseif ctx.reader and ctx.reader.collections then ctx.reader.collections:onShowColl() end
             end
@@ -239,10 +276,12 @@ function ActionDefs.get()
             unicode = "\u{F005}",
             label = _("Favorites"),
             callback = function(ctx)
+                ctx.touch_menu:closeMenu()
                 if ctx.filemanager and ctx.filemanager.collections then ctx.filemanager.collections:onShowColl()
                 elseif ctx.reader and ctx.reader.collections then ctx.reader.collections:onShowColl() end
             end,
             hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
                 if ctx.filemanager and ctx.filemanager.collections then ctx.filemanager.collections:onShowCollList()
                 elseif ctx.reader and ctx.reader.collections then ctx.reader.collections:onShowCollList() end
             end
@@ -252,10 +291,12 @@ function ActionDefs.get()
             label = _("Statistics"),
             visible_func = function() return Utils.hasPlugin and Utils.hasPlugin("statistics") end,
             callback = function(ctx)
+                ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("statistics") then UIManager:broadcastEvent(Event:new("ShowReaderProgress"))
                 else UIManager:show(InfoMessage:new{ text = "Statistics : " .. _("Plugin not activated.") }) end
             end,
             hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("statistics") then UIManager:broadcastEvent(Event:new("ShowCalendarView"))
                 else UIManager:show(InfoMessage:new{ text = "Statistics : " .. _("Plugin not activated.") }) end
             end
@@ -265,10 +306,12 @@ function ActionDefs.get()
             label = _("Statistics"),
             visible_func = function() return Utils.hasPlugin and Utils.hasPlugin("statistics") end,
             callback = function(ctx)
+                ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("statistics") then  UIManager:broadcastEvent(Event:new("ShowCalendarView"))
                 else UIManager:show(InfoMessage:new{ text = "Statistics : " .. _("Plugin not activated.") }) end
             end,
             hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("statistics") then UIManager:broadcastEvent(Event:new("ShowReaderProgress"))
                 else UIManager:show(InfoMessage:new{ text = "Statistics : " .. _("Plugin not activated.") }) end
             end

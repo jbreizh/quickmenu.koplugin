@@ -1,28 +1,24 @@
 local Blitbuffer      = require("ffi/blitbuffer")
 
 local VerticalGroup   = require("ui/widget/verticalgroup")
+local VerticalSpan    = require("ui/widget/verticalspan")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
-local TextBoxWidget   = require("ui/widget/textboxwidget")
 local TextWidget      = require("ui/widget/textwidget")
 
 local Font            = require("ui/font")
 local RenderImage     = require("ui/renderimage")
 
-local UIManager       = require("ui/uimanager")
-local InfoMessage = require("ui/widget/infomessage")
-local Event           = require("ui/event")
-
-
+local InfoSection     = require("sections/infosection")
+local SkimSection     = require("sections/skimsection")
 local CoverButton     = require("widgets/coverbutton")
-local ClickableGroup  = require("widgets/clickablegroup")
 local Utils           = require("common/utils")
 local Translation     = require("i18n/translation")
 local _               = Translation._
 
-local InfoSection = {}
+local Info = {}
 
-function InfoSection.build(ctx)
+function Info.build(ctx)
     local config       = ctx.config
     local touch_menu   = ctx.touch_menu
     local filemanager  = ctx.filemanager
@@ -33,74 +29,75 @@ function InfoSection.build(ctx)
     local section      = Utils.getSection(config, "info")
 
     if not section or not section.enabled_r or not reader then return nil end
+    local refs = { buttons = {}, sliders = {}, widgets = {} }
 
     -- style
     local gap            = theme.gap or screen:scaleBySize(4)
+    local vgap           = theme.vgap or screen:scaleBySize(4)
     local btn_radius     = theme.btn_radius or 0
     local btn_bordersize = theme.btn_bordersize  or 0
     local btn_font_size  = theme.btn_font_size  or 16
     local color_gray     = theme.color_gray or Blitbuffer.COLOR_DARK_GRAY
 
-    -- thumbnail
-    local info_thumbnail, cover_w = nil, 0
-    local ok, thumbnail = pcall(function() return reader.bookinfo:getCoverImage(reader.document) end)
-    if not ok or not section.show_thumbnail then thumbnail = nil end
+    local info_col = VerticalGroup:new{ align = "center" }
+    local infoSection = InfoSection.build(ctx)
+    table.insert(info_col, infoSection.widget)
 
-    if thumbnail then
-        local max_h = screen:scaleBySize(100) -- TODO change for a clever value
-        local w, h = thumbnail:getWidth(), thumbnail:getHeight()
-        if h > max_h then
-            w = math.floor(w * max_h / h + 0.5); h = max_h
-            thumbnail = RenderImage:scaleBlitBuffer(thumbnail, w, h, true)
-        end
-        cover_w = w
-        info_thumbnail = CoverButton:new{
-            image = thumbnail, width = w, height = h, radius = btn_radius, bordersize = btn_bordersize, padding = gap,
-            callback = function() reader.bookinfo:onShowBookCover(reader.document.file) end,
-            hold_callback = function() reader.bookinfo:onShowBookDescription(false, reader.document.file) end
-        }
+    if section.show_skim then
+        local skimSection = SkimSection.build(ctx)
+        table.insert(info_col, VerticalSpan:new{ width = vgap })
+        table.insert(info_col, skimSection.widget)
+        table.insert(refs.sliders, skimSection.refs.sliders[1])
     end
 
-    -- text
-    local txt_w = inner_width - 2 * gap - (info_thumbnail and (cover_w + 3 * gap) or 0) -- WARNING (gap*2) for padding clickable_text_container and (gap*2) for padding info_thumbnail
-    local info_title = TextBoxWidget:new{
-        text = (reader.doc_props or {}).display_title or reader.props.title or _("Unknown title"),
-        width = txt_w, alignment = "center", face =  Font:getFace("cfont", btn_font_size), bold = true
-    }
-    local info_auth = TextBoxWidget:new{
-        text = (reader.doc_props or {}).authors or _("Unknown author"),
-        width = txt_w, alignment = "center", face = Font:getFace("cfont", btn_font_size)
-    }
-    local info_chap = TextBoxWidget:new{
-        text = reader.toc:getTocTitleByPage(reader:getCurrentPage()) or _("Unknown chapter"),
-        width = txt_w, alignment = "center", face = Font:getFace("cfont", btn_font_size)
-    }
+    --
+    local row = HorizontalGroup:new{ align = "center" }
 
-    -- ClickableGroup
-    local col_text = VerticalGroup:new{ align = "center", info_title, info_auth, info_chap }
+    if section.show_thumbnail then
+        local cover_h = info_col:getSize().h
+        local cover_w = math.floor(2 * cover_h / 3 + 0.5)
+        local ok, thumbnail = pcall(function() return reader.bookinfo:getCoverImage(reader.document) end)
 
-    local clickable_text_container = ClickableGroup:new{
-        col_text,
-        radius = btn_radius,
-        padding = gap,
-        bordersize = btn_bordersize,
-        bordercolor = color_gray,
-        callback = function() reader.status:onShowBookStatus() end,
-        hold_callback = function()
-            if Utils.hasPlugin and Utils.hasPlugin("statistics") then
-                UIManager:broadcastEvent(Event:new("ShowBookStats"))
-            else
-                UIManager:show(InfoMessage:new{ text = "Statistics : " .. _("Plugin not activated.") })
+        if ok then
+            thumbnail = RenderImage:scaleBlitBuffer(thumbnail, cover_w, cover_h, true)
+            info_thumbnail = CoverButton:new{
+                image = thumbnail,
+                width = cover_w,
+                height = cover_h,
+                radius = btn_radius,
+                bordersize = btn_bordersize,
+                padding = 0, --gap,
+                callback = function()
+                    touch_menu:closeMenu()
+                    reader.bookinfo:onShowBookCover(reader.document.file)
+                end,
+                hold_callback = function()
+                    touch_menu:closeMenu()
+                    reader.bookinfo:onShowBookDescription(false, reader.document.file)
+                end
+            }
+
+            table.insert(row, info_thumbnail)
+            table.insert(row, HorizontalSpan:new{ width = gap })
+
+            local opts = {}
+            for k, v in pairs(ctx) do opts[k] = v end
+            opts.inner_width = inner_width - cover_w - 2 * gap
+
+            info_col = VerticalGroup:new{ align = "left" }
+            local infoSection = InfoSection.build(opts)
+            table.insert(info_col, infoSection.widget)
+
+            if section.show_skim then
+                local skimSection = SkimSection.build(opts)
+                table.insert(info_col, VerticalSpan:new{ width = vgap })
+                table.insert(info_col, skimSection.widget)
+                table.insert(refs.sliders, skimSection.refs.sliders[1])
             end
         end
-    }
-
-    local row = HorizontalGroup:new{ align = "center", clickable_text_container }
-
-    if info_thumbnail then
-        table.insert(row, 1, HorizontalSpan:new{ width = gap })
-        table.insert(row, 1, info_thumbnail)
     end
+
+    table.insert(row, info_col)
 
     local group = VerticalGroup:new{ align = "center", row }
 
@@ -113,10 +110,10 @@ function InfoSection.build(ctx)
         table.insert(group, 1, info_label)
     end
 
-    return { widget = group }
+    return { widget = group , refs = refs }
 end
 
-function InfoSection.getSettings(config, saveConfig, ctx)
+function Info.getSettings(config, saveConfig, ctx)
     local section = Utils.getSection(config, "info")
     if not section then return {} end
 
@@ -129,17 +126,19 @@ function InfoSection.getSettings(config, saveConfig, ctx)
         {
             text = _("Show title"),
             checked_func = function() return section.show_title end,
-            callback = function()
-                section.show_title = not section.show_title
-                saveConfig()
-            end
+            callback = function() section.show_title = not section.show_title; saveConfig() end
         },
         {
             text = _("Show thumbnail"),
             checked_func = function() return section.show_thumbnail end,
             callback = function() section.show_thumbnail = not section.show_thumbnail; saveConfig() end
-        }
+        },
+        {
+            text = _("Show skim"),
+            checked_func = function() return section.show_skim end,
+            callback = function() section.show_skim = not section.show_skim; saveConfig() end
+        },
     }
 end
 
-return InfoSection
+return Info
