@@ -1,20 +1,29 @@
-local Event      = require("ui/event")
-local ConfirmBox = require("ui/widget/confirmbox")
-local InfoMessage = require("ui/widget/infomessage")
-local NetworkMgr = require("ui/network/manager")
-local Device     = require("device")
-local UIManager  = require("ui/uimanager")
-local Util       = require("util")
-local Utils      = require("common/utils")
-local Translation = require("i18n/translation")
-local _          = Translation._
+local Event        = require("ui/event")
+local ConfirmBox   = require("ui/widget/confirmbox")
+local ButtonDialog = require("ui/widget/buttondialog")
+local InfoMessage  = require("ui/widget/infomessage")
+local NetworkMgr   = require("ui/network/manager")
+local Menu         = require("ui/widget/menu")
+
+local Device       = require("device")
+
+local UIManager    = require("ui/uimanager")
+
+local Util         = require("util")
+local Utils        = require("common/utils")
+local Translation  = require("i18n/translation")
+local _            = Translation._
 
 local ActionDefs = {}
 
 function ActionDefs.get()
     return {
         wifi = {
-            unicode = "\u{F1EB}",
+            unicode = "", --"\u{F1EB}"
+            unicode_func =  function()
+                if NetworkMgr:isWifiOn() then return "" end
+                return ""
+            end,
             label = _("Wi-Fi"),
             label_func = function()
                 if NetworkMgr:isWifiOn() then
@@ -50,6 +59,10 @@ function ActionDefs.get()
         },
         light = {
             unicode = "\u{F185}",
+            unicode_func =  function()
+                if Device:getPowerDevice():isFrontlightOn() then return "\u{F185}" end
+                return "\u{F111}" -- off
+            end,
             label = _("Light"),
             visible_func = function() return Device:hasFrontlight() end,
             active_func = function() return Device:getPowerDevice():isFrontlightOn() end,
@@ -59,13 +72,25 @@ function ActionDefs.get()
             end,
         },
         rotate = {
-            unicode = "\u{F01E}",
+            unicode = "\u{F151}",
+            unicode_func =  function()
+                local rot = Device.screen:getRotationMode()
+                if     rot == 1 then return "\u{F191}" -- 90°
+                elseif rot == 2 then return "\u{F150}" -- 180°
+                elseif rot == 3 then return "\u{F152}" -- 270°
+                else                 return "\u{F151}" -- 0°
+                end
+            end,
             label = _("Rotate"),
             callback = function(ctx) UIManager:broadcastEvent(Event:new("SwapRotation")) end,
             hold_callback = function(ctx) UIManager:broadcastEvent(Event:new("InvertRotation")) end
         },
         lock = {
             unicode = "\u{F023}",
+            unicode_func =  function()
+                if G_reader_settings:isTrue("input_lock_gsensor") or G_reader_settings:isTrue("input_ignore_gsensor") then return "\u{F023}" end
+                return "\u{f09c}"
+            end,
             label = _("Lock"),
             visible_func = function() return Device:hasGSensor() end,
             active_func = function() return G_reader_settings:isTrue("input_lock_gsensor") or G_reader_settings:isTrue("input_ignore_gsensor") end,
@@ -91,7 +116,7 @@ function ActionDefs.get()
             callback = function(ctx) UIManager:broadcastEvent(Event:new("RequestUSBMS")) end,
         },
         restart = {
-            unicode = "\u{F0E2}",
+            unicode = "\u{F021}",
             label = _("Restart"),
             callback = function(ctx)
                 ctx.touch_menu:closeMenu()
@@ -99,6 +124,14 @@ function ActionDefs.get()
                     text = _("Are you sure you want to restart KOReader ?"),
                     ok_text = _("Restart"),
                     ok_callback = function() UIManager:broadcastEvent(Event:new("Restart")) end
+                })
+            end,
+            hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                UIManager:show(ConfirmBox:new{
+                    text = _("Are you sure you want to exit KOReader ?"),
+                    ok_text = _("Exit"),
+                    ok_callback = function() UIManager:broadcastEvent(Event:new("Exit")) end
                 })
             end,
         },
@@ -113,14 +146,144 @@ function ActionDefs.get()
                     ok_callback = function() UIManager:broadcastEvent(Event:new("Exit")) end
                 })
             end,
+            hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                UIManager:show(ConfirmBox:new{
+                    text = _("Are you sure you want to restart KOReader ?"),
+                    ok_text = _("Restart"),
+                    ok_callback = function() UIManager:broadcastEvent(Event:new("Restart")) end
+                })
+            end,
         },
         sleep = {
             unicode = "\u{F04C}",
             label = _("Sleep"),
+            visible_func = function() return Device:canSuspend() end,
             callback = function(ctx)
                 ctx.touch_menu:closeMenu()
-                if Device:canSuspend() then UIManager:broadcastEvent(Event:new("RequestSuspend"))
-                elseif Device:canPowerOff() then UIManager:broadcastEvent(Event:new("RequestPowerOff")) end
+                if Device:canSuspend() then
+                    UIManager:broadcastEvent(Event:new("RequestSuspend"))
+                else
+                    UIManager:show(InfoMessage:new{ text =  _("Sleep") .. " : " .. _("Not possible") })
+                end
+            end,
+        },
+        poweroff = {
+            unicode = "\u{F04D}",
+            label = _("Power off"),
+            visible_func = function() return Device:canPowerOff() end,
+            callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                if Device:canPowerOff() then
+                    UIManager:askForPowerOff()
+                else
+                    UIManager:show(InfoMessage:new{ text =  _("Power off") .. " : " .. _("Not possible") })
+                end
+            end,
+            hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                if Device:canReboot() then
+                    UIManager:askForReboot()
+                else
+                    UIManager:show(InfoMessage:new{ text =  _("Reboot") .. " : " .. _("Not possible") })
+                end
+            end,
+        },
+        reboot = {
+            unicode = "\u{F0E2}",
+            label = _("Reboot"),
+            visible_func = function() return Device:canReboot() end,
+            callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                if Device:canReboot() then
+                    UIManager:askForReboot()
+                else
+                    UIManager:show(InfoMessage:new{ text =  _("Reboot") .. " : " .. _("Not possible") })
+                end
+            end,
+            hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                if Device:canPowerOff() then
+                    UIManager:askForPowerOff()
+                else
+                    UIManager:show(InfoMessage:new{ text =  _("Power off") .. " : " .. _("Not possible") })
+                end
+            end,
+        },
+        power = {
+            unicode = "\u{F011}",
+            label = _("Power"),
+            callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+
+                local buttons = {}
+                if Device:canRestart() then
+                    buttons[#buttons + 1] = {{
+                        text = _("Restart") .. " KOReader",
+                        callback = function()
+                            local d = power_dialog
+                            power_dialog = nil
+                            UIManager:close(d)
+                            UIManager:show(ConfirmBox:new{
+                                text = _("Are you sure you want to restart KOReader ?"),
+                                ok_text = _("Restart"),
+                                ok_callback = function() UIManager:broadcastEvent(Event:new("Restart")) end
+                            })
+                        end
+                    }}
+                end
+                buttons[#buttons + 1] = {{
+                    text = _("Exit") .. " KOreader",
+                    callback = function()
+                        local d = power_dialog
+                        power_dialog = nil
+                        UIManager:close(d)
+                        UIManager:show(ConfirmBox:new{
+                            text = _("Are you sure you want to exit KOReader ?"),
+                            ok_text = _("Exit"),
+                            ok_callback = function() UIManager:broadcastEvent(Event:new("Exit")) end
+                        })
+                    end
+                }}
+                if Device:canReboot() then
+                    buttons[#buttons + 1] = {{
+                        text = _("Reboot"),
+                        callback = function()
+                            local d = power_dialog
+                            power_dialog = nil
+                            UIManager:close(d)
+                            UIManager:askForReboot()
+                        end
+                    }}
+                end
+                if Device:canSuspend() then
+                    buttons[#buttons + 1] = {{
+                        text = _("Sleep"),
+                        callback = function()
+                            local d = power_dialog
+                            power_dialog = nil
+                            UIManager:close(d)
+                            UIManager:suspend()
+                        end
+                    }}
+                end
+                if Device:canPowerOff() then
+                    buttons[#buttons + 1] = {{
+                        text = _("Power off"),
+                        callback = function()
+                            local d = power_dialog
+                            power_dialog = nil
+                            UIManager:close(d)
+                            UIManager:askForPowerOff()
+                        end
+                    }}
+                end
+
+                power_dialog = ButtonDialog:new{
+                    width              = math.floor(ctx.screen:getWidth() * 0.5),
+                    buttons            = buttons,
+                }
+                UIManager:show(power_dialog)
             end,
         },
         ssh = {
@@ -315,7 +478,7 @@ function ActionDefs.get()
                 if Utils.hasPlugin and Utils.hasPlugin("statistics") then UIManager:broadcastEvent(Event:new("ShowReaderProgress"))
                 else UIManager:show(InfoMessage:new{ text = "Statistics : " .. _("Plugin not activated.") }) end
             end
-        }
+        },
     }
 end
 

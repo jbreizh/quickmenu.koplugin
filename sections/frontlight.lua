@@ -1,17 +1,25 @@
-local TextWidget = require("ui/widget/textwidget")
-local Font            = require("ui/font")
+local TextWidget       = require("ui/widget/textwidget")
+local Font             = require("ui/font")
+local VerticalGroup    = require("ui/widget/verticalgroup")
+local VerticalSpan     = require("ui/widget/verticalspan")
+local ConfirmBox       = require("ui/widget/confirmbox")
 
-local Device        = require("device")
-local Math          = require("optmath")
+local Device           = require("device")
+local Math             = require("optmath")
 
-local SliderSection = require("sections/slidersection")
-local Utils         = require("common/utils")
-local Translation   = require("i18n/translation")
-local _             = Translation._
+local UIManager       = require("ui/uimanager")
 
-local FrontlightSection = {}
+local IntensitySection = require("sections/intensitysection")
+local WarmthSection    = require("sections/warmthsection")
 
-function FrontlightSection.build(ctx)
+local Config           = require("config")
+local Utils            = require("common/utils")
+local Translation      = require("i18n/translation")
+local _                = Translation._
+
+local Frontlight = {}
+
+function Frontlight.build(ctx)
     local config       = ctx.config
     local touch_menu   = ctx.touch_menu
     local filemanager  = ctx.filemanager
@@ -23,60 +31,61 @@ function FrontlightSection.build(ctx)
 
     local section = Utils.getSection(config, "frontlight")
 
-    if not section or not Device:hasFrontlight() then return nil end
+    if not section then return nil end
 
     if filemanager and not section.enabled_f then return nil end
 
     if reader and not section.enabled_r then return nil end
 
-    local min_val    = powerd.fl_min or 0
-    local max_val    = powerd.fl_max or 100
-    local tick_count = 25
+    if not Device:hasFrontlight() then return nil end
 
-    local function getValue()
-        return powerd:frontlightIntensity()
-    end
-
-    local function setValue(value)
-        local val = math.max(min_val, math.min(max_val, Math.round(value)))
-        powerd:setIntensity(val)
-    end
-
-    local sliderSection = SliderSection.build{
-        touch_menu         = touch_menu,
-        inner_width        = inner_width,
-        screen             = screen,
-
-        btn_width          = theme.btn_width,
-        btn_radius         = theme.btn_radius,
-        btn_bordersize     = theme.btn_bordersize,
-        btn_font_size      = theme.btn_font_size,
-        slider_ticks_width = theme.slider_ticks_width,
-        gap                = theme.gap,
-
-        min                = min_val,
-        max                = max_val,
-        get                = getValue,
-        set                = setValue,
-        ticks              = SliderSection.buildTicks(min_val, max_val, tick_count),
-
-        text_minus         = "\u{F111}",
-        text_plus          = "\u{F185}",
-    }
+    local refs = { buttons = {}, sliders = {}, widgets = {} }
+    local group = VerticalGroup:new{ align = "center" }
 
     if section.show_title then
+        local label = _("Frontlight") .. " : " .. powerd:frontlightIntensity() .. "%"
+        if  Device:hasNaturalLight() then label = label .. " - " .._("Warmth") .. " : " .. powerd:frontlightWarmth() .. "%" end
         local frontlight_label = TextWidget:new{
+            text = label,
+            face =  Font:getFace("cfont", theme.btn_font_size), bold = true,
+            max_width = inner_width,
+        }
+        table.insert(group, frontlight_label)
+    end
+
+    if section.split_title then
+        local intensity_label = TextWidget:new{
             text = _("Frontlight") .. " : " .. powerd:frontlightIntensity() .. "%",
             face =  Font:getFace("cfont", theme.btn_font_size), bold = true,
             max_width = inner_width,
         }
-        table.insert(sliderSection.widget, 1, frontlight_label)
+        table.insert(group, intensity_label)
     end
 
-    return sliderSection
+    local intensitySection = IntensitySection.build(ctx)
+    table.insert(group, intensitySection.widget)
+    table.insert(refs.sliders, intensitySection.refs.sliders[1])
+
+    if section.split_title and Device:hasNaturalLight() then
+        local warmth_label = TextWidget:new{
+            text = _("Warmth") .. " : " .. powerd:frontlightWarmth() .. "%",
+            face =  Font:getFace("cfont", theme.btn_font_size), bold = true,
+            max_width = inner_width,
+        }
+        table.insert(group, warmth_label)
+    end
+
+    if Device:hasNaturalLight() then
+        local warmthSection = WarmthSection.build(ctx)
+        if not section.split_title then table.insert(group, VerticalSpan:new{ width = theme.vgap }) end
+        table.insert(group, warmthSection.widget)
+        table.insert(refs.sliders, warmthSection.refs.sliders[1])
+    end
+
+    return { widget = group , refs = refs }
 end
 
-function FrontlightSection.getSettings(config, saveConfig, ctx)
+function Frontlight.getSettings(config, saveConfig, ctx)
     if not Device:hasFrontlight() then return nil end
 
     local section = Utils.getSection(config, "frontlight")
@@ -100,8 +109,31 @@ function FrontlightSection.getSettings(config, saveConfig, ctx)
                 section.show_title = not section.show_title
                 saveConfig()
             end
+        },
+        {
+            text = _("Split title"),
+            checked_func = function() return section.split_title end,
+            callback = function()
+                section.split_title = not section.split_title
+                saveConfig()
+            end,
+            separator = true
+        },
+        {
+            text = _("Reset to defaults"),
+            callback = function()
+                UIManager:show(ConfirmBox:new{
+                    text = _("Are you sure you want to reset to defaults ?"),
+                    ok_text = _("Reset"),
+                    ok_callback = function()
+                        local defaults = Config.DEFAULTS.sections.frontlight
+                        Utils.resetSectionToDefaults(section, defaults)
+                        saveConfig()
+                    end
+                })
+            end
         }
     }
 end
 
-return FrontlightSection
+return Frontlight

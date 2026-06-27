@@ -1,7 +1,6 @@
 local Button          = require("ui/widget/button")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
-local VerticalGroup   = require("ui/widget/verticalgroup")
 local ProgressWidget  = require("ui/widget/progresswidget")
 
 local SliderSection = {}
@@ -30,7 +29,6 @@ function SliderSection.build(opts)
     local slider_width       = inner_width - 2 * btn_width - 2 * gap
 
     local refs = { buttons = {}, sliders = {}, widgets = {} }
-    local group = VerticalGroup:new{ align = "center" }
 
     -- logic
     local progress
@@ -97,8 +95,6 @@ function SliderSection.build(opts)
         plus,
     }
 
-    table.insert(group, row)
-
     table.insert(refs.sliders, {
         widget = progress,
         get    = getValue,
@@ -107,7 +103,7 @@ function SliderSection.build(opts)
         max    = opts.max,
     })
 
-    return { widget = group, refs = refs }
+    return { widget = row, refs = refs }
 end
 
 return SliderSection

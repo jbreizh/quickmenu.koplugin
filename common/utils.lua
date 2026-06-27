@@ -12,10 +12,25 @@ function M.getSection(config, id)
     if section then
         section.items = section.items or {}
     end
-
     return section
 end
 
+--- Reset a section to defaults.
+--- @param section  table  The section current settings.
+--- @param defaults table  The section defaults settings.
+function M.resetSectionToDefaults(section, defaults)
+    if not section or not defaults then return end
+    for k, v in pairs(defaults) do
+        if type(v) == "table" then
+            section[k] = {}
+            for key, val in pairs(v) do
+                section[k][key] = val
+            end
+        else
+            section[k] = v
+        end
+    end
+end
 
 --- Verify plugin in present in active instance.
 --- @param slot      string  plugin name

@@ -6,6 +6,8 @@
 -- Definition
 -- ============================================================
 local WidgetContainer = require("ui/widget/container/widgetcontainer")
+local QuickMenu = require("quickmenu")
+
 local QuickMenuPlugin = WidgetContainer:extend{ name = "quickmenu_plugin" }
 
 -- ============================================================
@@ -26,8 +28,8 @@ local Screen        = Device.screen
 local TouchMenu = require("ui/widget/touchmenu")
 local FocusManager = require("ui/widget/focusmanager")
 local GestureRange = require("ui/gesturerange")
-local datetime = require("datetime")
-local BD = require("ui/bidi")
+
+
 
 -- Hook init to
 local orig_init = TouchMenu.init
@@ -135,33 +137,7 @@ function TouchMenu:updateItems(target_page, target_item_id)
     self.page = 1
 
     -- Update intensity/warmth/time/battery in footer
-    local time_info_txt = ""
-    local powerd = Device:getPowerDevice()
-    if Device:hasFrontlight() then
-        local intensity_symbol = "\u{F185}"
-        local intensity_lvl = powerd:frontlightIntensity()
-        time_info_txt = BD.wrap(intensity_symbol) .. BD.wrap(intensity_lvl .. "%")
-        if Device:hasNaturalLight() then
-            local warmth_symbol = "\u{F186}"
-            local warmth_lvl = powerd:frontlightWarmth()
-            time_info_txt = time_info_txt .. " " .. BD.wrap(warmth_symbol) .. BD.wrap(warmth_lvl .. "%")
-        end
-    end
-
-    time_info_txt = time_info_txt .. " " .. BD.wrap(datetime.secondsToHour(os.time(), G_reader_settings:isTrue("twelve_hour_clock")))
-
-    if Device:hasBattery() then
-        local batt_lvl = powerd:getCapacity()
-        local batt_symbol = powerd:getBatterySymbol(powerd:isCharged(), powerd:isCharging(), batt_lvl)
-        time_info_txt = time_info_txt .. " " .. BD.wrap("⌁") .. BD.wrap(batt_symbol) .. BD.wrap(batt_lvl .. "%")
-        if Device:hasAuxBattery() and powerd:isAuxBatteryConnected() then
-            local aux_batt_lvl = powerd:getAuxCapacity()
-            local aux_batt_symbol = powerd:getBatterySymbol(powerd:isAuxCharged(), powerd:isAuxCharging(), aux_batt_lvl)
-            time_info_txt = time_info_txt .. " " .. BD.wrap("+") .. BD.wrap(aux_batt_symbol) ..  BD.wrap(aux_batt_lvl .. "%")
-        end
-    end
-
-    self.time_info:setText(time_info_txt)
+    self.time_info:setText(QuickMenu.get_footer_text(config))
 
     -- Recalculate dimen
     local old_dimen = self.dimen:copy()
@@ -282,18 +258,6 @@ if orig_onNextPage then
 end
 
 -- ============================================================
--- Quick Menu tab definition
--- ============================================================
-local QuickMenu = require("quickmenu")
-
-local quick_menu_tab = {
-    id = "quick_menu_tab",
-    icon = "home",
-    remember = function() return not config.open_on_start end,-- Dynamique : si l'option est décochée, on autorise la mémorisation
-    panel = function(touch_menu) return QuickMenu.createPanel(config, touch_menu) end
-}
-
--- ============================================================
 -- Inject functions
 -- ============================================================
 local function is_injected(list, id)
@@ -308,6 +272,7 @@ end
 -- ============================================================
 local FileManagerMenu = require("apps/filemanager/filemanagermenu")
 local FileManagerMenuOrder = require("ui/elements/filemanager_menu_order")
+local BD = require("ui/bidi")
 
 local orig_fm_setUpdateItemTable = FileManagerMenu.setUpdateItemTable
 
@@ -322,12 +287,13 @@ function FileManagerMenu:setUpdateItemTable()
     -- inject ori
     orig_fm_setUpdateItemTable(self)
 
-    -- 3. Gestion des onglets
+    -- tab
     if self.tab_item_table then
         QuickMenu.updateTab(config, self)
     end
 end
 
+-- don't open last tab when exit_tab is insert
 function FileManagerMenu:_getTabIndexFromLocation(ges)
     if self.tab_item_table == nil then
         self:setUpdateItemTable()

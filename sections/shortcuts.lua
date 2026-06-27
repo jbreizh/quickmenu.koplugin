@@ -2,14 +2,16 @@ local Button          = require("ui/widget/button")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
 local VerticalGroup   = require("ui/widget/verticalgroup")
-local VerticalSpan  = require("ui/widget/verticalspan")
+local VerticalSpan    = require("ui/widget/verticalspan")
 local TextWidget      = require("ui/widget/textwidget")
+local ConfirmBox      = require("ui/widget/confirmbox")
 
 local Font            = require("ui/font")
 
 local Math            = require("optmath")
 local UIManager       = require("ui/uimanager")
 
+local Config          = require("config")
 local ActionDefs      = require("sections/action_defs")
 local Utils           = require("common/utils")
 local Translation     = require("i18n/translation")
@@ -25,7 +27,7 @@ function Shortcuts.build(ctx)
     local inner_width  = ctx.inner_width
     local screen       = ctx.screen
     local theme        = ctx.theme or {}
-    local section = Utils.getSection(config, "shortcuts")
+    local section      = Utils.getSection(config, "shortcuts")
 
     if not section then return nil end
 
@@ -61,7 +63,7 @@ function Shortcuts.build(ctx)
     local group = VerticalGroup:new{ align = "center" }
 
     local function createButton(def)
-        local icon = def.unicode or ""
+        local icon = def.unicode_func and def.unicode_func() or (def.unicode or "")
         local label = def.label_func and def.label_func() or def.label
         local btn_text = section.show_label and (icon .. " " .. _(label)) or icon
 
@@ -196,60 +198,26 @@ function Shortcuts.getSettings(config, saveConfig, ctx)
         {
             text = _("Show labels"),
             checked_func = function() return section.show_label end,
-            callback = function() section.show_label = not section.show_label; saveConfig() end
+            callback = function() section.show_label = not section.show_label; saveConfig() end,
+            separator = true
         },
         {
             text_func = function() return _("Columns") .. " (" .. (section.max_cols or 3) .. ")" end,
-            sub_item_table = {
-                {
-                    text = "1",
-                    checked_func = function() return section.max_cols == 1 end,
-                    callback = function()
-                        section.max_cols = 1
-                        saveConfig()
-                    end
-                },
-                {
-                    text = "2",
-                    checked_func = function() return section.max_cols == 2 end,
-                    callback = function()
-                        section.max_cols = 2
-                        saveConfig()
-                    end
-                },
-                {
-                    text = "3",
-                    checked_func = function() return section.max_cols == 3 end,
-                    callback = function()
-                        section.max_cols = 3
-                        saveConfig()
-                    end
-                },
-                {
-                    text = "4",
-                    checked_func = function() return section.max_cols == 4 end,
-                    callback = function()
-                        section.max_cols = 4
-                        saveConfig()
-                    end
-                },
-                {
-                    text = "5",
-                    checked_func = function() return section.max_cols == 5 end,
-                    callback = function()
-                        section.max_cols = 5
-                        saveConfig()
-                    end
-                },
-                {
-                    text = "6",
-                    checked_func = function() return section.max_cols == 6 end,
-                    callback = function()
-                        section.max_cols = 6
-                        saveConfig()
-                    end
-                },
-            }
+            sub_item_table = (function()
+                local items = {}
+                for i = 1, 10 do
+                    table.insert(items, {
+                        text = tostring(i),
+                        checked_func = function() return section.max_cols == i end,
+                        callback = function()
+                            section.max_cols = i
+                            saveConfig()
+                        end
+                    })
+                end
+                return items
+            end)(),
+            separator = true
         },
         {
             text_func = function()
@@ -287,6 +255,20 @@ function Shortcuts.getSettings(config, saveConfig, ctx)
                 })
             end,
             separator = true
+        },
+        {
+            text = _("Reset to defaults"),
+            callback = function()
+                UIManager:show(ConfirmBox:new{
+                    text = _("Are you sure you want to reset to defaults ?"),
+                    ok_text = _("Reset"),
+                    ok_callback = function()
+                        local defaults = Config.DEFAULTS.sections.shortcuts
+                        Utils.resetSectionToDefaults(section, defaults)
+                        saveConfig()
+                    end
+                })
+            end
         }
     }
 end

@@ -5,10 +5,14 @@ local VerticalSpan    = require("ui/widget/verticalspan")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
 local TextWidget      = require("ui/widget/textwidget")
+local ConfirmBox       = require("ui/widget/confirmbox")
 
 local Font            = require("ui/font")
 local RenderImage     = require("ui/renderimage")
 
+local UIManager       = require("ui/uimanager")
+
+local Config           = require("config")
 local InfoSection     = require("sections/infosection")
 local SkimSection     = require("sections/skimsection")
 local CoverButton     = require("widgets/coverbutton")
@@ -136,8 +140,23 @@ function Info.getSettings(config, saveConfig, ctx)
         {
             text = _("Show skim"),
             checked_func = function() return section.show_skim end,
-            callback = function() section.show_skim = not section.show_skim; saveConfig() end
+            callback = function() section.show_skim = not section.show_skim; saveConfig() end,
+            separator = true
         },
+        {
+            text = _("Reset to defaults"),
+            callback = function()
+                UIManager:show(ConfirmBox:new{
+                    text = _("Are you sure you want to reset to defaults ?"),
+                    ok_text = _("Reset"),
+                    ok_callback = function()
+                        local defaults = Config.DEFAULTS.sections.info
+                        Utils.resetSectionToDefaults(section, defaults)
+                        saveConfig()
+                    end
+                })
+            end
+        }
     }
 end
 

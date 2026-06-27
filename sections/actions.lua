@@ -1,12 +1,14 @@
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
-local VerticalGroup = require("ui/widget/verticalgroup")
-local TextWidget = require("ui/widget/textwidget")
+local VerticalGroup   = require("ui/widget/verticalgroup")
+local TextWidget      = require("ui/widget/textwidget")
+local ConfirmBox      = require("ui/widget/confirmbox")
 
-local Font = require("ui/font")
+local Font            = require("ui/font")
 
 local UIManager       = require("ui/uimanager")
 
+local Config          = require("config")
 local CircleButton    = require("widgets/circlebutton")
 local ActionDefs      = require("sections/action_defs")
 local Utils           = require("common/utils")
@@ -22,7 +24,7 @@ function Actions.build(ctx)
     local inner_width  = ctx.inner_width
     local screen       = ctx.screen
     local theme        = ctx.theme or {}
-    local section = Utils.getSection(config, "actions")
+    local section      = Utils.getSection(config, "actions")
 
     if not section then return nil end
 
@@ -64,7 +66,7 @@ function Actions.build(ctx)
 
         -- button
         local btn_widget = CircleButton:new{
-            icon = def.unicode,
+            icon = def.unicode_func and def.unicode_func() or (def.unicode or ""),
             size = action_btn_size,
             icon_size = action_icon_size,
             bordersize = btn_bordersize,
@@ -138,6 +140,7 @@ function Actions.getSettings(config, saveConfig, ctx)
 
         table.insert(select_items, {
             text = label,
+            -- sensitive = is_currently_visible,
             checked_func = function()
                 for _, item_id in ipairs(section.items) do
                     if item_id == id then return true end
@@ -181,7 +184,8 @@ function Actions.getSettings(config, saveConfig, ctx)
         {
             text = _("Show labels"),
             checked_func = function() return section.show_label end,
-            callback = function() section.show_label = not section.show_label; saveConfig() end
+            callback = function() section.show_label = not section.show_label; saveConfig() end,
+            separator = true
         },
         {
             text_func = function()
@@ -218,6 +222,20 @@ function Actions.getSettings(config, saveConfig, ctx)
                 })
             end,
             separator = true
+        },
+        {
+            text = _("Reset to defaults"),
+            callback = function()
+                UIManager:show(ConfirmBox:new{
+                    text = _("Are you sure you want to reset to defaults ?"),
+                    ok_text = _("Reset"),
+                    ok_callback = function()
+                        local defaults = Config.DEFAULTS.sections.actions
+                        Utils.resetSectionToDefaults(section, defaults)
+                        saveConfig()
+                    end
+                })
+            end
         }
     }
 end
