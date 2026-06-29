@@ -2,6 +2,8 @@
 -- Adds a new tab at the far left with Wi-Fi, action buttons, and frontlight/warmth sliders.
 -- Works in both File Manager and Book Reader views.
 
+require("common/inject_icons")
+
 -- ============================================================
 -- Definition
 -- ============================================================
@@ -28,7 +30,8 @@ local Screen        = Device.screen
 local TouchMenu = require("ui/widget/touchmenu")
 local FocusManager = require("ui/widget/focusmanager")
 local GestureRange = require("ui/gesturerange")
-
+local datetime = require("datetime")
+local BD = require("ui/bidi")
 
 
 -- Hook init to
@@ -137,7 +140,34 @@ function TouchMenu:updateItems(target_page, target_item_id)
     self.page = 1
 
     -- Update intensity/warmth/time/battery in footer
-    self.time_info:setText(QuickMenu.get_footer_text(config))
+    if config.footer.enabled then
+        self.time_info:setText(QuickMenu.get_footer_text(config))
+    else
+        local time_info_txt = ""
+        local powerd = Device:getPowerDevice()
+
+        if Device:hasFrontlight() then
+            local intensity_lvl = powerd:frontlightIntensity()
+            time_info_txt = BD.wrap("✺") .. BD.wrap(intensity_lvl .. "%")
+            if Device:hasNaturalLight() then
+                local warmth_lvl = powerd:frontlightWarmth()
+                time_info_txt = time_info_txt .. " " .. BD.wrap("⊛") .. BD.wrap(warmth_lvl .. "%")
+            end
+        end
+
+        time_info_txt = time_info_txt .. " " .. BD.wrap(datetime.secondsToHour(os.time(), G_reader_settings:isTrue("twelve_hour_clock")))
+
+        if Device:hasBattery() then
+            local batt_lvl = powerd:getCapacity()
+            local batt_symbol = powerd:getBatterySymbol(powerd:isCharged(), powerd:isCharging(), batt_lvl)
+            time_info_txt = time_info_txt .. " " .. BD.wrap("⌁") .. BD.wrap(batt_symbol) .. BD.wrap(batt_lvl .. "%")
+            if Device:hasAuxBattery() and powerd:isAuxBatteryConnected() then
+                local aux_batt_lvl = powerd:getAuxCapacity()
+                local aux_batt_symbol = powerd:getBatterySymbol(powerd:isAuxCharged(), powerd:isAuxCharging(), aux_batt_lvl)
+                time_info_txt = time_info_txt .. " " .. BD.wrap("+") .. BD.wrap(aux_batt_symbol) ..  BD.wrap(aux_batt_lvl .. "%")
+            end
+        end
+    end
 
     -- Recalculate dimen
     local old_dimen = self.dimen:copy()

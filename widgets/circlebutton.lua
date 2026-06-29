@@ -2,6 +2,7 @@ local InputContainer = require("ui/widget/container/inputcontainer")
 local FrameContainer = require("ui/widget/container/framecontainer")
 local CenterContainer = require("ui/widget/container/centercontainer")
 local TextWidget = require("ui/widget/textwidget")
+local IconWidget = require("ui/widget/iconwidget")
 
 local GestureRange = require("ui/gesturerange")
 local Geom = require("ui/geometry")
@@ -12,6 +13,7 @@ local UIManager = require("ui/uimanager")
 
 local CircleButton = InputContainer:extend{
     icon = nil,
+    unicode = nil,
     size = 64,
     icon_size = 26,
     is_active = false,
@@ -23,6 +25,21 @@ local CircleButton = InputContainer:extend{
 }
 
 function CircleButton:init()
+    local content_widget
+    if self.icon then
+        content_widget = IconWidget:new{
+            icon = self.icon,
+            width = self.icon_size,
+            height = self.icon_size,
+            alpha = true,
+        }
+    else
+        content_widget = TextWidget:new{
+            text = self.unicode,
+            face = Font:getFace("cfont", self.icon_size),
+            color = Blitbuffer.COLOR_BLACK,
+        }
+    end
 
     -- Création du cercle (le widget visuel)
     self.circle = FrameContainer:new{
@@ -37,11 +54,7 @@ function CircleButton:init()
                 w = self.size - (self.bordersize * 2),
                 h = self.size - (self.bordersize * 2),
             },
-            TextWidget:new{
-                text = self.icon,
-                face = Font:getFace("cfont", icon_size),
-                color = Blitbuffer.COLOR_BLACK,
-            }
+            content_widget
         }
     }
 

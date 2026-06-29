@@ -3,7 +3,7 @@ local Translation = {}
 local I18N = {
     en = {
         ["Actions"] = "Actions", ["Frontlight"] = "Frontlight", ["Warmth"] = "Warmth",
-        ["Shortcuts"] = "Shortcuts", ["Informations"] = "Informations", ["Skim"] = "Skim", ["Footer"] = "Footer", ["Reset to defaults"] = "Reset to defaults",
+        ["Shortcuts"] = "Shortcuts", ["Informations"] = "Informations", ["Skim"] = "Skim", ["Footer"] = "Footer", ["Reset to defaults"] = "Reset to defaults", ["Reset"] = "Reset",
         ["Restart"] = "Restart", ["Reboot"] = "Reboot", ["Exit"] = "Exit", ["Night"] = "Night", ["Day"] = "Day", ["Light"] = "Light", ["Power off"] = "Power off", ["Power"] = "Power", ["Not possible"] = "Not possible",
         ["Rotate"] = "Rotate", ["Lock"] = "Lock", ["Unlock"] = "Unlock", ["Sleep"] = "Sleep", ["Search"] = "Search", ["Resume"] = "Resume",
         ["Dictionary"] = "Dictionary", ["Cloud"] = "Cloud", ["History"] = "History",
@@ -17,13 +17,13 @@ local I18N = {
         ["Quick menu"] = "Quick menu", ["Always start on quick menu tab"] = "Always start on quick menu tab",
         ["Add exit tab"] = "Add exit tab", ["Add quick menu tab"] = "Add quick menu tab",
         ["Select controls"] = "Select controls", ["Arrange controls"] = "Arrange controls",
-        ["Enabled in filemanager"] = "Enabled in filemanager", ["Enabled in reader"] = "Enabled in reader", ["Show labels"] = "Show labels",
+        ["Enabled in filemanager"] = "Enabled in filemanager", ["Enabled in reader"] = "Enabled in reader", ["Enabled"] = "Enabled",["Show labels"] = "Show labels",
         ["Columns"] = "Columns", ["Show thumbnail"] = "Show thumbnail", ["Show title"] = "Show title", ["Split title"] = "Split title", ["Show skim"] = "Show skim",
         ["Configure footer"] = "Configure footer", ["Select items"] = "Select items", ["Arrange items"] = "Arrange items"
     },
     fr = {
         ["Actions"] = "Actions", ["Frontlight"] = "Éclairage", ["Warmth"] = "Température",
-        ["Shortcuts"] = "Raccourcis", ["Informations"] = "Informations", ["Skim"] = "Feuilletage", ["Footer"] = "Pied de page", ["Reset to defaults"] = "Réinitialiser par défaut",
+        ["Shortcuts"] = "Raccourcis", ["Informations"] = "Informations", ["Skim"] = "Feuilletage", ["Footer"] = "Pied de page", ["Reset to defaults"] = "Réinitialiser par défaut", ["Reset"] = "Réinitialiser",
         ["Restart"] = "Redémarrer", ["Reboot"] = "Redémarrer", ["Exit"] = "Quitter", ["Night"] = "Nuit", ["Day"] = "Jour", ["Light"] = "Éclairage", ["Power off"] = "Éteindre", ["Power"] = "Alimentation", ["Not possible"] = "Impossible",
         ["Rotate"] = "Tourner", ["Lock"] = "Bloquer", ["Unlock"] = "Débloquer", ["Sleep"] = "Suspendre", ["Search"] = "Rechercher", ["Resume"] = "Reprendre",
         ["Dictionary"] = "Dictionnaire", ["Cloud"] = "Cloud", ["History"] = "Historique",
@@ -37,13 +37,13 @@ local I18N = {
         ["Quick menu"] = "Menu rapide", ["Always start on quick menu tab"] = "Toujours ouvrir sur l'onglet du menu rapide",
         ["Add exit tab"] = "Ajouter l'onglet de sortie", ["Add quick menu tab"] = "Ajouter l'onglet menu rapide",
         ["Select controls"] = "Sélectionner les contrôles", ["Arrange controls"] = "Organiser les contrôles",
-        ["Enabled in filemanager"] = "Activé dans le gestionnaire de fichiers", ["Enabled in reader"] = "Activé dans le lecteur", ["Show labels"] = "Afficher les étiquettes",
+        ["Enabled in filemanager"] = "Activé dans le gestionnaire de fichiers", ["Enabled in reader"] = "Activé dans le lecteur", ["Enabled"] = "Activé", ["Show labels"] = "Afficher les étiquettes",
         ["Columns"] = "Colonnes", ["Show thumbnail"] = "Afficher la vignette", ["Show title"] = "Afficher le titre", ["Split title"] = "Diviser le titre", ["Show skim"] = "Afficher le feuilletage",
         ["Configure footer"] = "Configurer le pied de page", ["Select items"] = "Sélectionner les éléments", ["Arrange items"] = "Organiser les éléments"
     },
     pt = {
         ["Actions"] = "Ações", ["Frontlight"] = "Iluminação", ["Warmth"] = "Temperatura",
-        ["Shortcuts"] = "Atalhos", ["Informations"] = "Informações", ["Skim"] = "Navegação", ["Footer"] = "Rodapé", ["Reset to defaults"] = "Redefinir para padrão",
+        ["Shortcuts"] = "Atalhos", ["Informations"] = "Informações", ["Skim"] = "Navegação", ["Footer"] = "Rodapé", ["Reset to defaults"] = "Redefinir para padrão", ["Reset"] = "Redefinir",
         ["Restart"] = "Reiniciar", ["Reboot"] = "Reiniciar", ["Exit"] = "Sair", ["Night"] = "Noite", ["Day"] = "Dia", ["Light"] = "Luz", ["Power off"] = "Desligar", ["Power"] = "Energia", ["Not possible"] = "Impossível",
         ["Rotate"] = "Girar", ["Lock"] = "Bloquear", ["Unlock"] = "Desbloquear", ["Sleep"] = "Suspender", ["Search"] = "Pesquisar", ["Resume"] = "Retomar",
         ["Dictionary"] = "Dicionário", ["Cloud"] = "Nuvem", ["History"] = "Histórico",
@@ -57,13 +57,13 @@ local I18N = {
         ["Quick menu"] = "Menu rápido", ["Always start on quick menu tab"] = "Sempre abrir na aba do menu rápido",
         ["Add exit tab"] = "Adicionar aba de saída", ["Add quick menu tab"] = "Adicionar aba de menu rápido",
         ["Select controls"] = "Selecionar controles", ["Arrange controls"] = "Organizar controles",
-        ["Enabled in filemanager"] = "Ativado no gerenciador de arquivos", ["Enabled in reader"] = "Ativado no leitor", ["Show labels"] = "Mostrar rótulos",
+        ["Enabled in filemanager"] = "Ativado no gerenciador de arquivos", ["Enabled in reader"] = "Ativado no leitor", ["Enabled"] = "Ativado", ["Show labels"] = "Mostrar rótulos",
         ["Columns"] = "Colunas", ["Show thumbnail"] = "Mostrar miniatura", ["Show title"] = "Mostrar título", ["Split title"] = "Dividir título", ["Show skim"] = "Mostrar navegação",
         ["Configure footer"] = "Configurar rodapé", ["Select items"] = "Selecionar itens", ["Arrange items"] = "Organizar itens"
     },
     es = {
         ["Actions"] = "Acciones", ["Frontlight"] = "Luz frontal", ["Warmth"] = "Temperatura",
-        ["Shortcuts"] = "Accesos directos", ["Informations"] = "Informaciones", ["Skim"] = "Lectura rápida", ["Footer"] = "Pie de página", ["Reset to defaults"] = "Restablecer predeterminados",
+        ["Shortcuts"] = "Accesos directos", ["Informations"] = "Informaciones", ["Skim"] = "Lectura rápida", ["Footer"] = "Pie de página", ["Reset to defaults"] = "Restablecer predeterminados", ["Reset"] = "Restablecer",
         ["Restart"] = "Reiniciar", ["Reboot"] = "Reiniciar", ["Exit"] = "Salir", ["Night"] = "Noche", ["Day"] = "Día", ["Light"] = "Luz", ["Power off"] = "Apagar", ["Power"] = "Alimentación", ["Not possible"] = "Imposible",
         ["Rotate"] = "Girar", ["Lock"] = "Bloquear", ["Unlock"] = "Desbloquear", ["Sleep"] = "Suspender", ["Search"] = "Buscar", ["Resume"] = "Continuar",
         ["Dictionary"] = "Diccionario", ["Cloud"] = "Nube", ["History"] = "Historial",
@@ -77,13 +77,13 @@ local I18N = {
         ["Quick menu"] = "Menú rápido", ["Always start on quick menu tab"] = "Abrir siempre en la pestaña del menú rápido",
         ["Add exit tab"] = "Añadir pestaña de salida", ["Add quick menu tab"] = "Añadir pestaña de menú rápido",
         ["Select controls"] = "Seleccionar controles", ["Arrange controls"] = "Organizar controles",
-        ["Enabled in filemanager"] = "Activado en el gestor de archivos", ["Enabled in reader"] = "Activado en el lector", ["Show labels"] = "Mostrar etiquetas",
+        ["Enabled in filemanager"] = "Activado en el gestor de archivos", ["Enabled in reader"] = "Activado en el lector", ["Enabled"] = "Activado", ["Show labels"] = "Mostrar etiquetas",
         ["Columns"] = "Columnas", ["Show thumbnail"] = "Mostrar miniatura", ["Show title"] = "Mostrar título", ["Split title"] = "Dividir título", ["Show skim"] = "Mostrar lectura rápida",
         ["Configure footer"] = "Configurar pie de página", ["Select items"] = "Seleccionar elementos", ["Arrange items"] = "Organizar elementos"
     },
     de = {
         ["Actions"] = "Aktionen", ["Frontlight"] = "Beleuchtung", ["Warmth"] = "Farbtemperatur",
-        ["Shortcuts"] = "Kurzbefehle", ["Informations"] = "Informationen", ["Skim"] = "Skim", ["Footer"] = "Fußzeile", ["Reset to defaults"] = "Auf Standard zurücksetzen",
+        ["Shortcuts"] = "Kurzbefehle", ["Informations"] = "Informationen", ["Skim"] = "Skim", ["Footer"] = "Fußzeile", ["Reset to defaults"] = "Auf Standard zurücksetzen", ["Reset"] = "Zurücksetzen",
         ["Restart"] = "Neustart", ["Reboot"] = "Neustart", ["Exit"] = "Beenden", ["Night"] = "Nacht", ["Day"] = "Tag", ["Light"] = "Licht", ["Power off"] = "Ausschalten", ["Power"] = "Strom", ["Not possible"] = "Nicht möglich",
         ["Rotate"] = "Drehen", ["Lock"] = "Sperren", ["Unlock"] = "Entsperren", ["Sleep"] = "Standby", ["Search"] = "Suchen", ["Resume"] = "Fortsetzen",
         ["Dictionary"] = "Wörterbuch", ["Cloud"] = "Cloud", ["History"] = "Verlauf",
@@ -97,14 +97,14 @@ local I18N = {
         ["Quick menu"] = "Schnellmenü", ["Always start on quick menu tab"] = "Immer auf dem Schnellmenü-Tab öffnen",
         ["Add exit tab"] = "Beenden-Tab hinzufügen", ["Add quick menu tab"] = "Schnellmenü-Tab hinzufügen",
         ["Select controls"] = "Bedienelemente auswählen", ["Arrange controls"] = "Bedienelemente anordnen",
-        ["Enabled in filemanager"] = "Im Dateimanager aktiviert", ["Enabled in reader"] = "Im Reader aktiviert", ["Show labels"] = "Beschriftungen anzeigen",
+        ["Enabled in filemanager"] = "Im Dateimanager aktiviert", ["Enabled in reader"] = "Im Reader aktiviert", ["Enabled"] = "Aktiviert", ["Show labels"] = "Beschriftungen anzeigen",
         ["Columns"] = "Spalten", ["Show thumbnail"] = "Miniaturansicht anzeigen", ["Show title"] = "Titel anzeigen", ["Split title"] = "Titel teilen", ["Show skim"] = "Skim anzeigen",
         ["Configure footer"] = "Fußzeile konfigurieren", ["Select items"] = "Elemente auswählen", ["Arrange items"] = "Elemente anordnen"
     },
     it = {
         ["Actions"] = "Azioni", ["Frontlight"] = "Luce frontale", ["Warmth"] = "Temperatura",
-        ["Shortcuts"] = "Scorciatoie", ["Informations"] = "Informazioni", ["Skim"] = "Skim", ["Footer"] = "Piè di pagina", ["Reset to defaults"] = "Ripristina predefiniti",
-        ["Restart"] = "Riavvia", ["Reboot"] = "Riavvia", ["Exit"] = "Esci", ["Night"] = "Notte", ["Day"] = "Giorno", ["Light"] = "Luce", ["Power off"] = "Spegni", ["Power"] = "Alimentazione", ["Not possible"] = "Non possibile",
+        ["Shortcuts"] = "Scorciatoie", ["Informations"] = "Informazioni", ["Skim"] = "Skim", ["Footer"] = "Piè di pagina", ["Reset to defaults"] = "Ripristina predefiniti", ["Reset"] = "Ripristina",
+        ["Restart"] = "Riavvia", ["Reboot"] = "Riavvia", ["Esci"] = "Esci", ["Night"] = "Notte", ["Day"] = "Giorno", ["Light"] = "Luce", ["Power off"] = "Spegni", ["Power"] = "Alimentazione", ["Not possible"] = "Non possibile",
         ["Rotate"] = "Ruota", ["Lock"] = "Blocca", ["Unlock"] = "Sblocca", ["Sleep"] = "Sospendi", ["Search"] = "Cerca", ["Resume"] = "Riprendi",
         ["Dictionary"] = "Dizionario", ["Cloud"] = "Cloud", ["History"] = "Cronologia",
         ["Collections"] = "Raccolte", ["Favorites"] = "Preferiti", ["Statistics"] = "Statistiche", ["Calendar"] = "Calendario",
@@ -117,13 +117,13 @@ local I18N = {
         ["Quick menu"] = "Menu rapido", ["Always start on quick menu tab"] = "Apri sempre sulla scheda del menu rapido",
         ["Add exit tab"] = "Aggiungi scheda di uscita", ["Add quick menu tab"] = "Aggiungi scheda menu rapido",
         ["Select controls"] = "Seleziona controlli", ["Arrange controlls"] = "Organizza controlli",
-        ["Enabled in filemanager"] = "Abilitato nel file manager", ["Enabled in reader"] = "Abilitato nel lettore", ["Show labels"] = "Mostra etichette",
+        ["Enabled in filemanager"] = "Abilitato nel file manager", ["Enabled in reader"] = "Abilitato nel lettore", ["Enabled"] = "Abilitato", ["Show labels"] = "Mostra etichette",
         ["Columns"] = "Colonne", ["Show thumbnail"] = "Mostra miniatura", ["Show title"] = "Mostra titolo", ["Split title"] = "Dividi titolo", ["Show skim"] = "Mostra Skim",
         ["Configure footer"] = "Configura piè di pagina", ["Select items"] = "Seleziona elementi", ["Arrange items"] = "Organizza elementi"
     },
     ru = {
         ["Actions"] = "Действия", ["Frontlight"] = "Подсветка", ["Warmth"] = "Теплота",
-        ["Shortcuts"] = "Ярлыки", ["Informations"] = "Информация", ["Skim"] = "Навигация", ["Footer"] = "Нижний колонтитул", ["Reset to defaults"] = "Сброс настроек",
+        ["Shortcuts"] = "Ярлыки", ["Informations"] = "Информация", ["Skim"] = "Навигация", ["Footer"] = "Нижний колонтитул", ["Reset to defaults"] = "Сброс настроек", ["Reset"] = "Сброс",
         ["Restart"] = "Перезапуск", ["Reboot"] = "Перезагрузка", ["Exit"] = "Выход", ["Night"] = "Ночь", ["Day"] = "День", ["Light"] = "Подсветка", ["Power off"] = "Выключить", ["Power"] = "Питание", ["Not possible"] = "Невозможно",
         ["Rotate"] = "Поворот", ["Lock"] = "Блокировка", ["Unlock"] = "Разблокировка", ["Sleep"] = "Сон", ["Search"] = "Поиск", ["Resume"] = "Продолжить",
         ["Dictionary"] = "Словарь", ["Cloud"] = "Облако", ["History"] = "История",
@@ -137,13 +137,13 @@ local I18N = {
         ["Quick menu"] = "Быстрое меню", ["Always start on quick menu tab"] = "Всегда открывать на вкладке быстрого меню",
         ["Add exit tab"] = "Добавить вкладку выхода", ["Add quick menu tab"] = "Добавить вкладку быстрого меню",
         ["Select controls"] = "Выбрать элементы управления", ["Arrange controls"] = "Упорядочить элементы управления",
-        ["Enabled in filemanager"] = "Включено в файловом менеджере", ["Enabled in reader"] = "Включено в читалке", ["Show labels"] = "Показать подписи",
+        ["Enabled in filemanager"] = "Включено в файловом менеджере", ["Enabled in reader"] = "Включено в читалке", ["Enabled"] = "Включено", ["Show labels"] = "Показать подписи",
         ["Columns"] = "Столбцы", ["Show thumbnail"] = "Показать миниатюру", ["Show title"] = "Показать заголовок", ["Split title"] = "Разделить заголовок", ["Show skim"] = "Показать навигацию",
         ["Configure footer"] = "Настроить колонтитул", ["Select items"] = "Выбрать элементы", ["Arrange items"] = "Упорядочить элементы"
     },
     zh = {
         ["Actions"] = "操作", ["Frontlight"] = "前光", ["Warmth"] = "色温",
-        ["Shortcuts"] = "快捷方式", ["Informations"] = "信息", ["Skim"] = "预览", ["Footer"] = "页脚", ["Reset to defaults"] = "重置为默认",
+        ["Shortcuts"] = "快捷方式", ["Informations"] = "信息", ["Skim"] = "预览", ["Footer"] = "页脚", ["Reset to defaults"] = "重置为默认", ["Reset"] = "重置",
         ["Restart"] = "重启", ["Reboot"] = "重启", ["Exit"] = "退出", ["Night"] = "夜间", ["Day"] = "日间", ["Light"] = "灯光", ["Power off"] = "关机", ["Power"] = "电源", ["Not possible"] = "不可行",
         ["Rotate"] = "旋转", ["Lock"] = "锁定", ["Unlock"] = "解锁", ["Sleep"] = "休眠", ["Search"] = "搜索", ["Resume"] = "继续",
         ["Dictionary"] = "词典", ["Cloud"] = "云端", ["History"] = "历史",
@@ -157,13 +157,13 @@ local I18N = {
         ["Quick menu"] = "快速菜单", ["Always start on quick menu tab"] = "总是从快速菜单选项卡启动",
         ["Add exit tab"] = "添加退出选项卡", ["Add quick menu tab"] = "添加快速菜单选项卡",
         ["Select controls"] = "选择控件", ["Arrange controls"] = "排列控件",
-        ["Enabled in filemanager"] = "在文件管理器中启用", ["Enabled in reader"] = "在阅读器中启用", ["Show labels"] = "显示标签",
+        ["Enabled in filemanager"] = "在文件管理器中启用", ["Enabled in reader"] = "在阅读器中启用", ["Enabled"] = "已启用", ["Show labels"] = "显示标签",
         ["Columns"] = "列数", ["Show thumbnail"] = "显示缩略图", ["Show title"] = "显示标题", ["Split title"] = "拆分标题", ["Show skim"] = "显示预览",
         ["Configure footer"] = "配置页脚", ["Select items"] = "选择项目", ["Arrange items"] = "排列项目"
     },
     ja = {
         ["Actions"] = "アクション", ["Frontlight"] = "フロントライト", ["Warmth"] = "色温度",
-        ["Shortcuts"] = "ショートカット", ["Informations"] = "情報", ["Skim"] = "スキミング", ["Footer"] = "フッター", ["Reset to defaults"] = "デフォルトにリセット",
+        ["Shortcuts"] = "ショートカット", ["Informations"] = "情報", ["Skim"] = "スキミング", ["Footer"] = "フッター", ["Reset to defaults"] = "デフォルトにリセット", ["Reset"] = "リセット",
         ["Restart"] = "再起動", ["Reboot"] = "再起動", ["Exit"] = "終了", ["Night"] = "ナイトモード", ["Day"] = "デイモード", ["Light"] = "ライト", ["Power off"] = "電源オフ", ["Power"] = "電源", ["Not possible"] = "不可",
         ["Rotate"] = "回転", ["Lock"] = "ロック", ["Unlock"] = "ロック解除", ["Sleep"] = "スリープ", ["Search"] = "検索", ["Resume"] = "再開",
         ["Dictionary"] = "辞書", ["Cloud"] = "クラウド", ["History"] = "履歴",
@@ -177,13 +177,13 @@ local I18N = {
         ["Quick menu"] = "クイックメニュー", ["Always start on quick menu tab"] = "常にクイックメニュータブから開始",
         ["Add exit tab"] = "終了タブを追加", ["Add quick menu tab"] = "クイックメニュータブを追加",
         ["Select controls"] = "コントロールを選択", ["Arrange controls"] = "コントロールを配置",
-        ["Enabled in filemanager"] = "ファイルマネージャーで有効", ["Enabled in reader"] = "リーダーで有効", ["Show labels"] = "ラベルを表示",
+        ["Enabled in filemanager"] = "ファイルマネージャーで有効", ["Enabled in reader"] = "リーダーで有効", ["Enabled"] = "有効", ["Show labels"] = "ラベルを表示",
         ["Columns"] = "列", ["Show thumbnail"] = "サムネイルを表示", ["Show title"] = "タイトルを表示", ["Split title"] = "タイトルを分割", ["Show skim"] = "スキミングを表示",
         ["Configure footer"] = "フッターを設定", ["Select items"] = "項目を選択", ["Arrange items"] = "項目を配置"
     },
     nl = {
         ["Actions"] = "Acties", ["Frontlight"] = "Frontlight", ["Warmth"] = "Warmte",
-        ["Shortcuts"] = "Snelkoppelingen", ["Informations"] = "Informatie", ["Skim"] = "Skim", ["Footer"] = "Voettekst", ["Reset to defaults"] = "Herstellen naar standaard",
+        ["Shortcuts"] = "Snelkoppelingen", ["Informations"] = "Informatie", ["Skim"] = "Skim", ["Footer"] = "Voettekst", ["Reset to defaults"] = "Herstellen naar standaard", ["Reset"] = "Herstellen",
         ["Restart"] = "Herstarten", ["Reboot"] = "Opnieuw opstarten", ["Exit"] = "Afsluiten", ["Night"] = "Nacht", ["Day"] = "Dag", ["Light"] = "Licht", ["Power off"] = "Uitschakelen", ["Power"] = "Stroom", ["Not possible"] = "Niet mogelijk",
         ["Rotate"] = "Roteren", ["Lock"] = "Vergrendelen", ["Unlock"] = "Ontgrendelen", ["Sleep"] = "Slaapstand", ["Search"] = "Zoeken", ["Resume"] = "Hervatten",
         ["Dictionary"] = "Woordenboek", ["Cloud"] = "Cloud", ["History"] = "Geschiedenis",
@@ -197,7 +197,7 @@ local I18N = {
         ["Quick menu"] = "Snelmenu", ["Always start on quick menu tab"] = "Altijd starten op het snelmenu-tabblad",
         ["Add exit tab"] = "Afsluit-tabblad toevoegen", ["Add quick menu tab"] = "Snelmenu-tabblad toevoegen",
         ["Select controls"] = "Bedieningselementen selecteren", ["Arrange controls"] = "Bedieningselementen rangschikken",
-        ["Enabled in filemanager"] = "Ingeschakeld in bestandsbeheer", ["Enabled in reader"] = "Ingeschakeld in de lezer", ["Show labels"] = "Labels tonen",
+        ["Enabled in filemanager"] = "Ingeschakeld in bestandsbeheer", ["Enabled in reader"] = "Ingeschakeld in de lezer", ["Enabled"] = "Ingeschakeld", ["Show labels"] = "Labels tonen",
         ["Columns"] = "Kolommen", ["Show thumbnail"] = "Miniatuur tonen", ["Show title"] = "Titel tonen", ["Split title"] = "Titel splitsen", ["Show skim"] = "Skim tonen",
         ["Configure footer"] = "Voettekst configureren", ["Select items"] = "Items selecteren", ["Arrange items"] = "Items rangschikken"
     }

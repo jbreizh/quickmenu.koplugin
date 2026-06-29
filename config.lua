@@ -31,8 +31,7 @@ Config.DEFAULTS = {
         },
     },
     footer = {
-        enabled_f = true,
-        enabled_r = true,
+        enabled = true,
         separator = " • ",
         items = {"mempercentage", "storagepercentage", "time", "battery", "auxbattery"}
     },

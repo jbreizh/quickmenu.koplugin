@@ -66,12 +66,13 @@ function Actions.build(ctx)
 
         -- button
         local btn_widget = CircleButton:new{
-            icon = def.unicode_func and def.unicode_func() or (def.unicode or ""),
-            size = action_btn_size,
-            icon_size = action_icon_size,
-            bordersize = btn_bordersize,
-            is_active = def.active_func and def.active_func() or false,
-            callback = function() if def.callback then def.callback(ctx) end end,
+            icon          = def.icon_func and def.icon_func() or (def.icon or nil),
+            unicode       = def.unicode_func and def.unicode_func() or (def.unicode or ""),
+            size          = action_btn_size,
+            icon_size     = action_icon_size,
+            bordersize    = btn_bordersize,
+            is_active     = def.active_func and def.active_func() or false,
+            callback      = function() if def.callback then def.callback(ctx) end end,
             hold_callback = def.hold_callback and function() def.hold_callback(ctx) end or nil,
         }
 
@@ -133,6 +134,8 @@ function Actions.getSettings(config, saveConfig, ctx)
     for i, id in ipairs(sorted_keys) do
         local def = action_defs[id]
         local label = (def.unicode or "") .. " " .. def.label
+
+
         local is_currently_visible = (not def.visible_func or def.visible_func())
         if not is_currently_visible then
             label = label .. " (n/a)"
@@ -142,7 +145,7 @@ function Actions.getSettings(config, saveConfig, ctx)
             text = label,
             -- sensitive = is_currently_visible,
             checked_func = function()
-                for _, item_id in ipairs(section.items) do
+                for idx, item_id in ipairs(section.items) do
                     if item_id == id then return true end
                 end
                 return false

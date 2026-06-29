@@ -304,6 +304,12 @@ function QuickMenu.getFooterSettings(config, saveConfig)
 
     return {
         {
+            text = _("Enabled"),
+            checked_func = function() return config.footer.enabled end,
+            callback = function() config.footer.enabled = not config.footer.enabled; saveConfig() end,
+            separator = true
+        },
+        {
             text_func = function()
                 local sep = config.footer.separator or ""
                 return _("Separator") .. " (" .. sep .. ")"
