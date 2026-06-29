@@ -139,28 +139,17 @@ function TouchMenu:updateItems(target_page, target_item_id)
     self.page_num = 1
     self.page = 1
 
-    -- Update intensity/warmth/time/battery in footer
-    if config.footer.enabled then
-        self.time_info:setText(QuickMenu.get_footer_text(config))
-    else
-        local time_info_txt = ""
+    -- Update footer
+    local time_info_txt = ""
+    if config.footer.enabled then -- advance footer
+        time_info_txt = QuickMenu.get_footer_text(config)
+    else -- default footer
+        time_info_txt = datetime.secondsToHour(os.time(), G_reader_settings:isTrue("twelve_hour_clock"))
         local powerd = Device:getPowerDevice()
-
-        if Device:hasFrontlight() then
-            local intensity_lvl = powerd:frontlightIntensity()
-            time_info_txt = BD.wrap("✺") .. BD.wrap(intensity_lvl .. "%")
-            if Device:hasNaturalLight() then
-                local warmth_lvl = powerd:frontlightWarmth()
-                time_info_txt = time_info_txt .. " " .. BD.wrap("⊛") .. BD.wrap(warmth_lvl .. "%")
-            end
-        end
-
-        time_info_txt = time_info_txt .. " " .. BD.wrap(datetime.secondsToHour(os.time(), G_reader_settings:isTrue("twelve_hour_clock")))
-
         if Device:hasBattery() then
             local batt_lvl = powerd:getCapacity()
             local batt_symbol = powerd:getBatterySymbol(powerd:isCharged(), powerd:isCharging(), batt_lvl)
-            time_info_txt = time_info_txt .. " " .. BD.wrap("⌁") .. BD.wrap(batt_symbol) .. BD.wrap(batt_lvl .. "%")
+            time_info_txt = BD.wrap(time_info_txt) .. " " .. BD.wrap("⌁") .. BD.wrap(batt_symbol) ..  BD.wrap(batt_lvl .. "%")
             if Device:hasAuxBattery() and powerd:isAuxBatteryConnected() then
                 local aux_batt_lvl = powerd:getAuxCapacity()
                 local aux_batt_symbol = powerd:getBatterySymbol(powerd:isAuxCharged(), powerd:isAuxCharging(), aux_batt_lvl)
@@ -168,6 +157,7 @@ function TouchMenu:updateItems(target_page, target_item_id)
             end
         end
     end
+    self.time_info:setText(time_info_txt)
 
     -- Recalculate dimen
     local old_dimen = self.dimen:copy()

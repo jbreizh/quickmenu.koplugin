@@ -298,71 +298,6 @@ function ActionDefs.get()
                 UIManager:show(power_dialog)
             end,
         },
-        ssh = {
-            unicode = "\u{EA17}", -- lan-connect
-            unicode_func = function()
-                if Util.pathExists("/tmp/dropbear_koreader.pid") then return "\u{EA17}" end -- lan-connect
-                return "\u{EA18}" -- lan-disconnect
-            end,
-            label = _("SSH"),
-            visible_func = function() return Utils.hasPlugin("SSH") end,
-            active_func = function() return Util.pathExists("/tmp/dropbear_koreader.pid") end,
-            callback = function(ctx)
-                if Utils.hasPlugin and Utils.hasPlugin("SSH") then
-                    UIManager:broadcastEvent(Event:new("ToggleSSHServer"))
-                    UIManager:scheduleIn(2, function() ctx.touch_menu:updateItems(1) end)
-                else UIManager:show(InfoMessage:new{ text = "SSH : " .. _("Plugin not activated.") }) end
-            end,
-        },
-        calibre = {
-            unicode = "\u{EB8C}", -- server-network
-            unicode_func = function()
-                local CW = package.loaded["wireless"]
-                if CW ~= nil and CW.calibre_socket ~= nil then return "\u{EB8C}" end -- server-network
-                return "\u{EB8D}" -- server-network-off
-            end,
-            label = "Calibre",
-            visible_func = function() return Utils.hasPlugin("calibre") end,
-            active_func = function()
-                local CW = package.loaded["wireless"]
-                return CW ~= nil and CW.calibre_socket ~= nil
-            end,
-            callback = function(ctx)
-                if Utils.hasPlugin and Utils.hasPlugin("calibre") then
-                    local CW = package.loaded["wireless"]
-                    if CW and CW.calibre_socket ~= nil then UIManager:broadcastEvent(Event:new("CloseWirelessConnection"))
-                    else UIManager:broadcastEvent(Event:new("StartWirelessConnection")) end
-                    UIManager:scheduleIn(1, function() ctx.touch_menu:updateItems(1) end)
-                else UIManager:show(InfoMessage:new{ text = "Calibre : " .. _("Plugin not activated.") }) end
-            end,
-        },
-        search = {
-            unicode = "\u{F002}",
-            label = _("Search"),
-            callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-                UIManager:broadcastEvent(Event:new("ShowFileSearch"))
-            end,
-            hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-                if Utils.hasPlugin and Utils.hasPlugin("calibre") then UIManager:broadcastEvent(Event:new("CalibreSearch"))
-                else UIManager:show(InfoMessage:new{ text = "Calibre : " .. _("Plugin not activated.") }) end
-            end
-        },
-        searchcalibre = {
-            unicode = "\u{F00E}",
-            label = "Calibre",
-            visible_func = function() return Utils.hasPlugin("calibre") end,
-            callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-                if Utils.hasPlugin and Utils.hasPlugin("calibre") then UIManager:broadcastEvent(Event:new("CalibreSearch"))
-                else UIManager:show(InfoMessage:new{ text = "Calibre : " .. _("Plugin not activated.") }) end
-            end,
-            hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-                UIManager:broadcastEvent(Event:new("ShowFileSearch"))
-                end
-        },
         dictionary = {
             unicode = "\u{F02D}",
             label = _("Dictionary"),
@@ -385,33 +320,6 @@ function ActionDefs.get()
             hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
                 UIManager:broadcastEvent(Event:new("ShowDictionaryLookup"))
-            end
-        },
-        cloud = {
-            unicode = "\u{F0C2}",
-            label = _("Cloud"),
-            callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-                UIManager:broadcastEvent(Event:new("ShowCloudStorage"))
-                end,
-            hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-                if Utils.hasPlugin and Utils.hasPlugin("opds") then UIManager:broadcastEvent(Event:new("ShowOPDSCatalog"))
-                else UIManager:show(InfoMessage:new{ text = "OPDS : " .. _("Plugin not activated.") }) end
-            end
-        },
-        opds = {
-            unicode = "\u{F0ED}",
-            label = _("OPDS"),
-            visible_func = function() return Utils.hasPlugin("opds") end,
-            callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-                if Utils.hasPlugin and Utils.hasPlugin("opds") then UIManager:broadcastEvent(Event:new("ShowOPDSCatalog"))
-                else UIManager:show(InfoMessage:new{ text = "OPDS : " .. _("Plugin not activated.") }) end
-            end,
-            hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-                UIManager:broadcastEvent(Event:new("ShowCloudStorage"))
             end
         },
         history = {
@@ -470,6 +378,99 @@ function ActionDefs.get()
                 elseif ctx.reader and ctx.reader.collections then ctx.reader.collections:onShowCollList() end
             end
         },
+        -- core plugin
+        cloud = {
+            unicode = "\u{F0C2}",
+            label = _("Cloud"),
+            callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                UIManager:broadcastEvent(Event:new("ShowCloudStorage"))
+                end,
+            hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                if Utils.hasPlugin and Utils.hasPlugin("opds") then UIManager:broadcastEvent(Event:new("ShowOPDSCatalog"))
+                else UIManager:show(InfoMessage:new{ text = "OPDS : " .. _("Plugin not activated.") }) end
+            end
+        },
+        opds = {
+            unicode = "\u{F0ED}",
+            label = _("OPDS"),
+            visible_func = function() return Utils.hasPlugin("opds") end,
+            callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                if Utils.hasPlugin and Utils.hasPlugin("opds") then UIManager:broadcastEvent(Event:new("ShowOPDSCatalog"))
+                else UIManager:show(InfoMessage:new{ text = "OPDS : " .. _("Plugin not activated.") }) end
+            end,
+            hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                UIManager:broadcastEvent(Event:new("ShowCloudStorage"))
+            end
+        },
+        ssh = {
+            unicode = "\u{EA17}", -- lan-connect
+            unicode_func = function()
+                if Util.pathExists("/tmp/dropbear_koreader.pid") then return "\u{EA17}" end -- lan-connect
+                return "\u{EA18}" -- lan-disconnect
+            end,
+            label = _("SSH"),
+            visible_func = function() return Utils.hasPlugin("SSH") end,
+            active_func = function() return Util.pathExists("/tmp/dropbear_koreader.pid") end,
+            callback = function(ctx)
+                if Utils.hasPlugin and Utils.hasPlugin("SSH") then
+                    UIManager:broadcastEvent(Event:new("ToggleSSHServer"))
+                    UIManager:scheduleIn(2, function() ctx.touch_menu:updateItems(1) end)
+                else UIManager:show(InfoMessage:new{ text = "SSH : " .. _("Plugin not activated.") }) end
+            end,
+        },
+        calibre = {
+            unicode = "\u{EB8C}", -- server-network
+            unicode_func = function()
+                local CW = package.loaded["wireless"]
+                if CW ~= nil and CW.calibre_socket ~= nil then return "\u{EB8C}" end -- server-network
+                return "\u{EB8D}" -- server-network-off
+            end,
+            label = "Calibre",
+            visible_func = function() return Utils.hasPlugin("calibre") end,
+            active_func = function()
+                local CW = package.loaded["wireless"]
+                return CW ~= nil and CW.calibre_socket ~= nil
+            end,
+            callback = function(ctx)
+                if Utils.hasPlugin and Utils.hasPlugin("calibre") then
+                    local CW = package.loaded["wireless"]
+                    if CW and CW.calibre_socket ~= nil then UIManager:broadcastEvent(Event:new("CloseWirelessConnection"))
+                    else UIManager:broadcastEvent(Event:new("StartWirelessConnection")) end
+                    UIManager:scheduleIn(2, function() ctx.touch_menu:updateItems(1) end)
+                else UIManager:show(InfoMessage:new{ text = "Calibre : " .. _("Plugin not activated.") }) end
+            end,
+        },
+        search = {
+            unicode = "\u{F002}",
+            label = _("Search"),
+            callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                UIManager:broadcastEvent(Event:new("ShowFileSearch"))
+            end,
+            hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                if Utils.hasPlugin and Utils.hasPlugin("calibre") then UIManager:broadcastEvent(Event:new("CalibreSearch"))
+                else UIManager:show(InfoMessage:new{ text = "Calibre : " .. _("Plugin not activated.") }) end
+            end
+        },
+        searchcalibre = {
+            unicode = "\u{F00E}",
+            label = "Calibre",
+            visible_func = function() return Utils.hasPlugin("calibre") end,
+            callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                if Utils.hasPlugin and Utils.hasPlugin("calibre") then UIManager:broadcastEvent(Event:new("CalibreSearch"))
+                else UIManager:show(InfoMessage:new{ text = "Calibre : " .. _("Plugin not activated.") }) end
+            end,
+            hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                UIManager:broadcastEvent(Event:new("ShowFileSearch"))
+                end
+        },
         statistics = {
             unicode = "\u{F200}",
             label = _("Statistics"),
@@ -499,6 +500,30 @@ function ActionDefs.get()
                 if Utils.hasPlugin and Utils.hasPlugin("statistics") then UIManager:broadcastEvent(Event:new("ShowReaderProgress"))
                 else UIManager:show(InfoMessage:new{ text = "Statistics : " .. _("Plugin not activated.") }) end
             end
+        },
+        kosync = {
+            unicode = "\u{E866}",
+            label = _("KOSync"),
+            visible_func = function() return Utils.hasPlugin("kosync") end,
+            callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                NetworkMgr:runWhenOnline(function()
+                    UIManager:broadcastEvent(Event:new("KOSyncPushProgress"))
+                end)
+            end,
+            hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                NetworkMgr:runWhenOnline(function()
+                    UIManager:broadcastEvent(Event:new("KOSyncPullProgress"))
+                end)
+            end,
+        },
+        -- other plugin
+        zlibrary = {
+            unicode = "\u{005A}",
+            label = _("Z-Lib"),
+            visible_func = function() return Utils.hasPlugin("zlibrary") end,
+            callback = function(ctx) UIManager:broadcastEvent(Event:new("ZlibrarySearch")) end,
         },
     }
 end
