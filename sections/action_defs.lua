@@ -19,18 +19,18 @@ local ActionDefs = {}
 function ActionDefs.get()
     return {
         wifi = {
-            unicode = "", --"\u{F1EB}"
+            unicode = "\u{ECA8}", --"\u{F1EB}"
             unicode_func =  function()
-                if NetworkMgr:isWifiOn() then return "" end
-                return ""
+                if NetworkMgr:isWifiOn() then return "\u{ECA8}" end
+                return "\u{ECA9}"
             end,
-            label = _("Wi-Fi"),
+            label = _("WiFi"),
             label_func = function()
                 if NetworkMgr:isWifiOn() then
                     local net = NetworkMgr:getCurrentNetwork()
                     if net and net.ssid then return net.ssid end
                 end
-                return _("Wi-Fi")
+                return _("WiFi")
             end,
             active_func = function() return NetworkMgr:isWifiOn() end,
             callback = function(ctx)
@@ -49,8 +49,16 @@ function ActionDefs.get()
             end
         },
         night = {
-            unicode = "\u{F186}",
+            unicode = "\u{EC0D}", -- theme-light-dark
             label = _("Night"),
+            unicode_func = function()
+                if G_reader_settings:isTrue("night_mode") then return "\u{EC93}" end -- weather-night
+                return "\u{EC98}" -- weather-sunny
+            end,
+            label_func = function()
+                if G_reader_settings:isTrue("night_mode") then return _("Night") end
+                return _("Day")
+            end,
             active_func = function() return G_reader_settings:isTrue("night_mode") end,
             callback = function(ctx)
                 UIManager:broadcastEvent(Event:new("ToggleNightMode"))
@@ -58,10 +66,10 @@ function ActionDefs.get()
             end,
         },
         light = {
-            unicode = "\u{F185}",
-            unicode_func =  function()
-                if Device:getPowerDevice():isFrontlightOn() then return "\u{F185}" end
-                return "\u{F111}" -- off
+            unicode = "\u{EA2B}", -- led-on
+            unicode_func = function()
+            if Device:getPowerDevice():isFrontlightOn() then return "\u{EA2B}" end -- led-on
+                return "\u{EA2D}" -- led-variant-off "\u{EA2A}"
             end,
             label = _("Light"),
             visible_func = function() return Device:hasFrontlight() end,
@@ -72,16 +80,16 @@ function ActionDefs.get()
             end,
         },
         rotate = {
-            unicode = "\u{F151}",
-            unicode_func =  function()
+            unicode = "\u{EB74}",
+            label = _("Rotate"),
+            label_func =  function()
                 local rot = Device.screen:getRotationMode()
-                if     rot == 1 then return "\u{F191}" -- 90°
-                elseif rot == 2 then return "\u{F150}" -- 180°
-                elseif rot == 3 then return "\u{F152}" -- 270°
-                else                 return "\u{F151}" -- 0°
+                if     rot == 1 then return "90°" -- 90°
+                elseif rot == 2 then return "180°" -- 180°
+                elseif rot == 3 then return "270°" -- 270°
+                else                 return "0°" -- 0°
                 end
             end,
-            label = _("Rotate"),
             callback = function(ctx) UIManager:broadcastEvent(Event:new("SwapRotation")) end,
             hold_callback = function(ctx) UIManager:broadcastEvent(Event:new("InvertRotation")) end
         },
@@ -89,9 +97,13 @@ function ActionDefs.get()
             unicode = "\u{F023}",
             unicode_func =  function()
                 if G_reader_settings:isTrue("input_lock_gsensor") or G_reader_settings:isTrue("input_ignore_gsensor") then return "\u{F023}" end
-                return "\u{f09c}"
+                return "\u{F09C}"
             end,
             label = _("Lock"),
+            label_func = function()
+                if G_reader_settings:isTrue("input_lock_gsensor") or G_reader_settings:isTrue("input_ignore_gsensor") then return _("Lock") end
+                return _("Unlock")
+            end,
             visible_func = function() return Device:hasGSensor() end,
             active_func = function() return G_reader_settings:isTrue("input_lock_gsensor") or G_reader_settings:isTrue("input_ignore_gsensor") end,
             callback = function(ctx)
@@ -155,42 +167,8 @@ function ActionDefs.get()
                 })
             end,
         },
-        sleep = {
-            unicode = "\u{F04C}",
-            label = _("Sleep"),
-            visible_func = function() return Device:canSuspend() end,
-            callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-                if Device:canSuspend() then
-                    UIManager:broadcastEvent(Event:new("RequestSuspend"))
-                else
-                    UIManager:show(InfoMessage:new{ text =  _("Sleep") .. " : " .. _("Not possible") })
-                end
-            end,
-        },
-        poweroff = {
-            unicode = "\u{F04D}",
-            label = _("Power off"),
-            visible_func = function() return Device:canPowerOff() end,
-            callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-                if Device:canPowerOff() then
-                    UIManager:askForPowerOff()
-                else
-                    UIManager:show(InfoMessage:new{ text =  _("Power off") .. " : " .. _("Not possible") })
-                end
-            end,
-            hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-                if Device:canReboot() then
-                    UIManager:askForReboot()
-                else
-                    UIManager:show(InfoMessage:new{ text =  _("Reboot") .. " : " .. _("Not possible") })
-                end
-            end,
-        },
         reboot = {
-            unicode = "\u{F0E2}",
+            unicode = "\u{F01E}",
             label = _("Reboot"),
             visible_func = function() return Device:canReboot() end,
             callback = function(ctx)
@@ -210,6 +188,40 @@ function ActionDefs.get()
                 end
             end,
         },
+        sleep = {
+            unicode = "\u{EBB1}", -- sleep
+            label = _("Sleep"),
+            visible_func = function() return Device:canSuspend() end,
+            callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                if Device:canSuspend() then
+                    UIManager:broadcastEvent(Event:new("RequestSuspend"))
+                else
+                    UIManager:show(InfoMessage:new{ text =  _("Sleep") .. " : " .. _("Not possible") })
+                end
+            end,
+        },
+        poweroff = {
+            unicode = "\u{F011}",
+            label = _("Power off"),
+            visible_func = function() return Device:canPowerOff() end,
+            callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                if Device:canPowerOff() then
+                    UIManager:askForPowerOff()
+                else
+                    UIManager:show(InfoMessage:new{ text =  _("Power off") .. " : " .. _("Not possible") })
+                end
+            end,
+            hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                if Device:canReboot() then
+                    UIManager:askForReboot()
+                else
+                    UIManager:show(InfoMessage:new{ text =  _("Reboot") .. " : " .. _("Not possible") })
+                end
+            end,
+        },
         power = {
             unicode = "\u{F011}",
             label = _("Power"),
@@ -219,7 +231,7 @@ function ActionDefs.get()
                 local buttons = {}
                 if Device:canRestart() then
                     buttons[#buttons + 1] = {{
-                        text = _("Restart") .. " KOReader",
+                        text = "\u{F021}" .. " " ..  _("Restart") .. " " .. "KOReader",
                         callback = function()
                             local d = power_dialog
                             power_dialog = nil
@@ -233,7 +245,7 @@ function ActionDefs.get()
                     }}
                 end
                 buttons[#buttons + 1] = {{
-                    text = _("Exit") .. " KOreader",
+                    text = "\u{274C}" .. " " ..  _("Exit") .. " " .. "KOreader",
                     callback = function()
                         local d = power_dialog
                         power_dialog = nil
@@ -247,7 +259,7 @@ function ActionDefs.get()
                 }}
                 if Device:canReboot() then
                     buttons[#buttons + 1] = {{
-                        text = _("Reboot"),
+                        text = "\u{F01E}" .. " " ..  _("Reboot"),
                         callback = function()
                             local d = power_dialog
                             power_dialog = nil
@@ -258,7 +270,7 @@ function ActionDefs.get()
                 end
                 if Device:canSuspend() then
                     buttons[#buttons + 1] = {{
-                        text = _("Sleep"),
+                        text = "\u{EBB1}" .. " " ..  _("Sleep"),
                         callback = function()
                             local d = power_dialog
                             power_dialog = nil
@@ -269,7 +281,7 @@ function ActionDefs.get()
                 end
                 if Device:canPowerOff() then
                     buttons[#buttons + 1] = {{
-                        text = _("Power off"),
+                        text = "\u{F011}" .. " " ..  _("Power off"),
                         callback = function()
                             local d = power_dialog
                             power_dialog = nil
@@ -287,7 +299,11 @@ function ActionDefs.get()
             end,
         },
         ssh = {
-            unicode = "\u{F120}",
+            unicode = "\u{EA17}", -- lan-connect
+            unicode_func = function()
+                if Util.pathExists("/tmp/dropbear_koreader.pid") then return "\u{EA17}" end -- lan-connect
+                return "\u{EA18}" -- lan-disconnect
+            end,
             label = _("SSH"),
             visible_func = function() return Utils.hasPlugin("SSH") end,
             active_func = function() return Util.pathExists("/tmp/dropbear_koreader.pid") end,
@@ -295,12 +311,17 @@ function ActionDefs.get()
                 if Utils.hasPlugin and Utils.hasPlugin("SSH") then
                     UIManager:broadcastEvent(Event:new("ToggleSSHServer"))
                     UIManager:scheduleIn(2, function() ctx.touch_menu:updateItems(1) end)
-                else UIManager:show(InfoMessage:new{ text = "Calibre : " .. _("Plugin not activated.") }) end
+                else UIManager:show(InfoMessage:new{ text = "SSH : " .. _("Plugin not activated.") }) end
             end,
         },
         calibre = {
-            unicode = "\u{F0EA}",
-            label = _("Calibre"),
+            unicode = "\u{EB8C}", -- server-network
+            unicode_func = function()
+                local CW = package.loaded["wireless"]
+                if CW ~= nil and CW.calibre_socket ~= nil then return "\u{EB8C}" end -- server-network
+                return "\u{EB8D}" -- server-network-off
+            end,
+            label = "Calibre",
             visible_func = function() return Utils.hasPlugin("calibre") end,
             active_func = function()
                 local CW = package.loaded["wireless"]
@@ -328,9 +349,9 @@ function ActionDefs.get()
                 else UIManager:show(InfoMessage:new{ text = "Calibre : " .. _("Plugin not activated.") }) end
             end
         },
-        search2 = {
+        searchcalibre = {
             unicode = "\u{F00E}",
-            label = _("Search in Calibre"),
+            label = "Calibre",
             visible_func = function() return Utils.hasPlugin("calibre") end,
             callback = function(ctx)
                 ctx.touch_menu:closeMenu()
@@ -464,9 +485,9 @@ function ActionDefs.get()
                 else UIManager:show(InfoMessage:new{ text = "Statistics : " .. _("Plugin not activated.") }) end
             end
         },
-        statistics2 = {
+        statisticscalendar = {
             unicode = "\u{F073}",
-            label = _("Statistics"),
+            label = _("Calendar"),
             visible_func = function() return Utils.hasPlugin and Utils.hasPlugin("statistics") end,
             callback = function(ctx)
                 ctx.touch_menu:closeMenu()

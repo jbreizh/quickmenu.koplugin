@@ -44,8 +44,8 @@ function WarmthSection.build(ctx)
         set                = setValue,
         ticks              = SliderSection.buildTicks(min_val, max_val, tick_count),
 
-        text_minus         = "\u{F1DB}",
-        text_plus          = "\u{F186}",
+        text_minus         = "\u{F2DC}", -- frozen,
+        text_plus          = "\u{F490}", -- flame,
     }
 
     return sliderSection

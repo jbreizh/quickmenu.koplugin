@@ -34,7 +34,7 @@ Config.DEFAULTS = {
         enabled_f = true,
         enabled_r = true,
         separator = " • ",
-        items = {"mem", "time", "battery", "auxbattery"}
+        items = {"mempercentage", "storagepercentage", "time", "battery", "auxbattery"}
     },
     open_on_start = true,
     add_exit_tab = true,

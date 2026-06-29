@@ -43,8 +43,8 @@ function IntensitySection.build(opts)
         set                = setValue,
         ticks              = SliderSection.buildTicks(min_val, max_val, tick_count),
 
-        text_minus         = "\u{F111}",
-        text_plus          = "\u{F185}",
+        text_minus         = "\u{EA2A}", -- led-off
+        text_plus          = "\u{EA2B}", -- led-on
     }
 
 end
