@@ -395,7 +395,7 @@ function ActionDefs.get()
         opds = {
             unicode = "\u{F0ED}",
             label = _("OPDS"),
-            visible_func = function() return Utils.hasPlugin("opds") end,
+            visible_func = function() return Utils.hasPlugin and Utils.hasPlugin("opds") end,
             callback = function(ctx)
                 ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("opds") then UIManager:broadcastEvent(Event:new("ShowOPDSCatalog"))
@@ -413,7 +413,7 @@ function ActionDefs.get()
                 return "\u{EA18}" -- lan-disconnect
             end,
             label = _("SSH"),
-            visible_func = function() return Utils.hasPlugin("SSH") end,
+            visible_func = function() return Utils.hasPlugin and Utils.hasPlugin("SSH") end,
             active_func = function() return Util.pathExists("/tmp/dropbear_koreader.pid") end,
             callback = function(ctx)
                 if Utils.hasPlugin and Utils.hasPlugin("SSH") then
@@ -430,7 +430,7 @@ function ActionDefs.get()
                 return "\u{EB8D}" -- server-network-off
             end,
             label = "Calibre",
-            visible_func = function() return Utils.hasPlugin("calibre") end,
+            visible_func = function() return Utils.hasPlugin and Utils.hasPlugin("calibre") end,
             active_func = function()
                 local CW = package.loaded["wireless"]
                 return CW ~= nil and CW.calibre_socket ~= nil
@@ -460,7 +460,7 @@ function ActionDefs.get()
         searchcalibre = {
             unicode = "\u{F00E}",
             label = "Calibre",
-            visible_func = function() return Utils.hasPlugin("calibre") end,
+            visible_func = function() return Utils.hasPlugin and Utils.hasPlugin("calibre") end,
             callback = function(ctx)
                 ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("calibre") then UIManager:broadcastEvent(Event:new("CalibreSearch"))
@@ -504,7 +504,7 @@ function ActionDefs.get()
         kosync = {
             unicode = "\u{E866}",
             label = _("KOSync"),
-            visible_func = function() return Utils.hasPlugin("kosync") end,
+            visible_func = function() return Utils.hasPlugin and Utils.hasPlugin("kosync") end,
             callback = function(ctx)
                 ctx.touch_menu:closeMenu()
                 NetworkMgr:runWhenOnline(function()
@@ -522,8 +522,11 @@ function ActionDefs.get()
         zlibrary = {
             unicode = "\u{005A}",
             label = _("Z-Lib"),
-            visible_func = function() return Utils.hasPlugin("zlibrary") end,
-            callback = function(ctx) UIManager:broadcastEvent(Event:new("ZlibrarySearch")) end,
+            visible_func = function() return Utils.hasPlugin and Utils.hasPlugin("zlibrary") end,
+            callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                UIManager:broadcastEvent(Event:new("ZlibrarySearch"))
+            end,
         },
     }
 end
