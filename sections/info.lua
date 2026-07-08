@@ -1,5 +1,4 @@
-local Blitbuffer      = require("ffi/blitbuffer")
-
+local Button          = require("ui/widget/button")
 local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
@@ -12,36 +11,77 @@ local RenderImage     = require("ui/renderimage")
 
 local UIManager       = require("ui/uimanager")
 
-local Config           = require("config")
+local Config          = require("config")
 local InfoSection     = require("sections/infosection")
 local SkimSection     = require("sections/skimsection")
 local CoverButton     = require("widgets/coverbutton")
 local Utils           = require("common/utils")
-local Translation     = require("i18n/translation")
-local _               = Translation._
+local _               = require("common/i18n").gettext
 
 local Info = {}
 
+local SECTION = "info"
+-- ============================================================
+-- Info Builder
+-- ============================================================
 function Info.build(ctx)
-    local config       = ctx.config
-    local touch_menu   = ctx.touch_menu
-    local filemanager  = ctx.filemanager
-    local reader       = ctx.reader
-    local inner_width  = ctx.inner_width
-    local screen       = ctx.screen
-    local theme        = ctx.theme or {}
-    local section      = Utils.getSection(config, "info")
+    -- ctx import
+    local config             = ctx.config
+    local touch_menu         = ctx.touch_menu
+    local reader             = ctx.reader
+    local filemanager        = ctx.filemanager
+    local device             = ctx.device
+    local powerd             = ctx.powerd
+    local screen             = ctx.screen
+    local datetime           = ctx.datetime
+    local stat               = ctx.stat
+    local panel_width        = ctx.panel_width
+    local inner_width        = ctx.inner_width
+    local h_gap              = screen:scaleBySize(config.style.h_gap or 4)
+    local v_gap              = screen:scaleBySize(config.style.v_gap or 4)
+    local btn_width          = screen:scaleBySize(config.style.btn_width or 50)
+    local btn_radius         = screen:scaleBySize(config.style.btn_radius or 7)
+    local btn_bordersize     = screen:scaleBySize(config.style.btn_bordersize or 1.5)
+    local btn_font_size      = config.style.btn_font_size or 16
+    local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
+
+    local section      = Utils.getSection(config, SECTION)
 
     if not section or not section.enabled_r or not reader then return nil end
     local refs = { buttons = {}, sliders = {}, widgets = {} }
 
-    -- style
-    local gap            = theme.gap or screen:scaleBySize(4)
-    local vgap           = theme.vgap or screen:scaleBySize(4)
-    local btn_radius     = theme.btn_radius or 0
-    local btn_bordersize = theme.btn_bordersize  or 0
-    local btn_font_size  = theme.btn_font_size  or 16
-    local color_gray     = theme.color_gray or Blitbuffer.COLOR_DARK_GRAY
+    local group = VerticalGroup:new{ align = "center" }
+
+    if section.show_title then
+        local label_title = TextWidget:new{
+            text = _("Informations") .. " :",
+            face =  Font:getFace("cfont", btn_font_size), bold = true,
+            max_width = inner_width - btn_width,
+        }
+
+        local collapse_btn = Button:new{
+            text           = section.collapse and "\u{F078}" or "\u{F077}", -- down up
+            width          = btn_width,
+            radius         = btn_radius,
+            bordersize     = 0,
+            text_font_size = btn_font_size,
+            show_parent    = touch_menu.show_parent,
+            callback       = function()
+                section.collapse = not section.collapse
+                Config.save(config)
+                touch_menu:updateItems(1)
+            end,
+            -- hold_callback
+        }
+        local row_title = HorizontalGroup:new{
+            align = "center",
+            label_title,
+            HorizontalSpan:new{ width = inner_width - label_title:getSize().w - btn_width},
+            collapse_btn
+        }
+        table.insert(group, row_title)
+        if section.collapse then  return { widget = group , refs = refs} end
+    end
 
     local info_col = VerticalGroup:new{ align = "center" }
     local infoSection = InfoSection.build(ctx)
@@ -49,7 +89,7 @@ function Info.build(ctx)
 
     if section.show_skim then
         local skimSection = SkimSection.build(ctx)
-        table.insert(info_col, VerticalSpan:new{ width = vgap })
+        table.insert(info_col, VerticalSpan:new{ width = v_gap })
         table.insert(info_col, skimSection.widget)
         table.insert(refs.sliders, skimSection.refs.sliders[1])
     end
@@ -70,7 +110,7 @@ function Info.build(ctx)
                 height = cover_h,
                 radius = btn_radius,
                 bordersize = btn_bordersize,
-                padding = 0, --gap,
+                padding = 0, --h_gap,
                 callback = function()
                     touch_menu:closeMenu()
                     reader.bookinfo:onShowBookCover(reader.document.file)
@@ -82,11 +122,11 @@ function Info.build(ctx)
             }
 
             table.insert(row, info_thumbnail)
-            table.insert(row, HorizontalSpan:new{ width = gap })
+            table.insert(row, HorizontalSpan:new{ width = h_gap })
 
             local opts = {}
             for k, v in pairs(ctx) do opts[k] = v end
-            opts.inner_width = inner_width - cover_w - 2 * gap
+            opts.inner_width = inner_width - cover_w - 2 * h_gap
 
             info_col = VerticalGroup:new{ align = "left" }
             local infoSection = InfoSection.build(opts)
@@ -94,7 +134,7 @@ function Info.build(ctx)
 
             if section.show_skim then
                 local skimSection = SkimSection.build(opts)
-                table.insert(info_col, VerticalSpan:new{ width = vgap })
+                table.insert(info_col, VerticalSpan:new{ width = v_gap })
                 table.insert(info_col, skimSection.widget)
                 table.insert(refs.sliders, skimSection.refs.sliders[1])
             end
@@ -102,57 +142,55 @@ function Info.build(ctx)
     end
 
     table.insert(row, info_col)
-
-    local group = VerticalGroup:new{ align = "center", row }
-
-    if section.show_title then
-        local info_label = TextWidget:new{
-            text = _("Informations") .. " :",
-            face =  Font:getFace("cfont", btn_font_size), bold = true,
-            max_width = inner_width,
-        }
-        table.insert(group, 1, info_label)
-    end
+    table.insert(group, row)
 
     return { widget = group , refs = refs }
 end
 
-function Info.getSettings(config, saveConfig, ctx)
-    local section = Utils.getSection(config, "info")
+-- ============================================================
+-- Settings Menu Builder
+-- ============================================================
+function Info.getSettings(ctx)
+    -- ctx import
+    local config  = ctx.config
+    local section = Utils.getSection(config, SECTION)
+
     if not section then return {} end
 
     return {
         {
             text = _("Enabled in reader"),
             checked_func = function() return section.enabled_r end,
-            callback = function() section.enabled_r = not section.enabled_r; saveConfig() end
+            callback = function() section.enabled_r = not section.enabled_r; Config.save(config) end
         },
         {
             text = _("Show title"),
             checked_func = function() return section.show_title end,
-            callback = function() section.show_title = not section.show_title; saveConfig() end
+            callback = function() section.show_title = not section.show_title; Config.save(config) end
         },
         {
             text = _("Show thumbnail"),
             checked_func = function() return section.show_thumbnail end,
-            callback = function() section.show_thumbnail = not section.show_thumbnail; saveConfig() end
+            callback = function() section.show_thumbnail = not section.show_thumbnail; Config.save(config) end
         },
         {
             text = _("Show skim"),
             checked_func = function() return section.show_skim end,
-            callback = function() section.show_skim = not section.show_skim; saveConfig() end,
+            callback = function() section.show_skim = not section.show_skim; Config.save(config) end,
             separator = true
         },
         {
             text = _("Reset to defaults"),
-            callback = function()
+            keep_menu_open = true,
+            callback = function(touch_menu)
                 UIManager:show(ConfirmBox:new{
                     text = _("Are you sure you want to reset to defaults ?"),
                     ok_text = _("Reset"),
                     ok_callback = function()
-                        local defaults = Config.DEFAULTS.sections.info
+                        local defaults = Config.DEFAULTS.sections[SECTION]
                         Utils.resetSectionToDefaults(section, defaults)
-                        saveConfig()
+                        Config.save(config)
+                        if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end
                     end
                 })
             end

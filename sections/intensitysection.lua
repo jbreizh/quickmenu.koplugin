@@ -3,12 +3,26 @@ local SliderSection = require("sections/slidersection")
 
 local IntensitySection = {}
 
-function IntensitySection.build(opts)
-    local touch_menu   = opts.touch_menu
-    local powerd       = opts.powerd
-    local inner_width  = opts.inner_width
-    local screen       = opts.screen
-    local theme        = opts.theme or {}
+function IntensitySection.build(ctx)
+    -- ctx import
+    local config             = ctx.config
+    local touch_menu         = ctx.touch_menu
+    local reader             = ctx.reader
+    local filemanager        = ctx.filemanager
+    local device             = ctx.device
+    local powerd             = ctx.powerd
+    local screen             = ctx.screen
+    local datetime           = ctx.datetime
+    local stat               = ctx.stat
+    local panel_width        = ctx.panel_width
+    local inner_width        = ctx.inner_width
+    local h_gap              = screen:scaleBySize(config.style.h_gap or 4)
+    local v_gap              = screen:scaleBySize(config.style.v_gap or 4)
+    local btn_width          = screen:scaleBySize(config.style.btn_width or 50)
+    local btn_radius         = screen:scaleBySize(config.style.btn_radius or 7)
+    local btn_bordersize     = screen:scaleBySize(config.style.btn_bordersize or 1.5)
+    local btn_font_size      = config.style.btn_font_size or 16
+    local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
     local min_val    = powerd.fl_min or 0
     local max_val    = powerd.fl_max or 100
@@ -29,12 +43,12 @@ function IntensitySection.build(opts)
         inner_width        = inner_width,
         screen             = screen,
 
-        btn_width          = theme.btn_width,
-        btn_radius         = theme.btn_radius,
-        btn_bordersize     = theme.btn_bordersize,
-        btn_font_size      = theme.btn_font_size,
-        slider_ticks_width = theme.slider_ticks_width,
-        gap                = theme.gap,
+        btn_width          = btn_width,
+        btn_radius         = btn_radius,
+        btn_bordersize     = btn_bordersize,
+        btn_font_size      = btn_font_size,
+        slider_ticks_width = slider_ticks_width,
+        h_gap              = h_gap,
 
         min                = min_val,
         max                = max_val,
@@ -43,7 +57,7 @@ function IntensitySection.build(opts)
         set                = setValue,
         ticks              = SliderSection.buildTicks(min_val, max_val, tick_count),
 
-        text_minus         = "\u{EA2A}", -- led-off
+        text_minus         = "\u{EA2D}", -- led-off
         text_plus          = "\u{EA2B}", -- led-on
     }
 

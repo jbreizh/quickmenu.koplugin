@@ -1,3 +1,8 @@
+-- UNUSE FILE JUST BACKUP
+-- Ancien style of settings
+-- problem : doesn t update with custom action
+-- keep it for reference just in case
+
 local Button          = require("ui/widget/button")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
@@ -5,22 +10,32 @@ local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
 local TextWidget      = require("ui/widget/textwidget")
 local ConfirmBox      = require("ui/widget/confirmbox")
+local SortWidget      = require("ui/widget/sortwidget")
 
 local Font            = require("ui/font")
 
 local UIManager       = require("ui/uimanager")
 
 local ActionExec      = require("action_exec")
-local ActionDefs      = require("action_defs")
-local ActionManage    = require("action_manage")
 local Config          = require("config")
 local ActionButton    = require("widgets/actionbutton")
+local ActionDefs      = require("action_defs")
 local Utils           = require("common/utils")
 local _               = require("common/i18n").gettext
 
 local Actions = {}
 
-local SECTION = "actions"
+
+function getMerged(custom_actions)
+    local all = ActionDefs.get()
+    if custom_actions then
+        for i, custom in ipairs(custom_actions) do
+            if custom.id then all[custom.id] = custom end
+        end
+    end
+    return all
+end
+
 -- ============================================================
 -- Actions Builder
 -- ============================================================
@@ -47,7 +62,7 @@ function Actions.build(ctx)
     local btn_font_size      = config.style.btn_font_size or 16
     local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
-    local section      = Utils.getSection(config, SECTION)
+    local section      = Utils.getSection(config, "actions")
 
     if not section then return nil end
 
@@ -58,7 +73,7 @@ function Actions.build(ctx)
     section.items = section.items or {}
 
     -- actions system and custom
-    local action_defs = ActionDefs.getMerged(config.custom_actions)
+    local action_defs = getMerged(config.custom_actions)
 
     local visible_actions = {}
     for i, id in ipairs(section.items) do
@@ -193,12 +208,66 @@ end
 -- ============================================================
 -- Settings Menu Builder
 -- ============================================================
+local function table_contains(tbl, val)
+    for _, v in ipairs(tbl) do
+        if v == val then return true end
+    end
+    return false
+end
+
+local function table_remove(tbl, val)
+    for i, v in ipairs(tbl) do
+        if v == val then
+            table.remove(tbl, i)
+            return true
+        end
+    end
+    return false
+end
+
 function Actions.getSettings(ctx)
     -- ctx import
     local config  = ctx.config
-    local section = Utils.getSection(config, SECTION)
+    local section = Utils.getSection(config, "actions")
 
     if not section then return {} end
+    section.items = section.items or {}
+
+    -- actions system and custom
+    local action_defs = getMerged(config.custom_actions)
+
+    -- sorted_ids
+    local sorted_ids = {}
+    for id in pairs(action_defs) do
+        table.insert(sorted_ids, id)
+    end
+    table.sort(sorted_ids, function(a, b)
+        return action_defs[a].label < action_defs[b].label
+    end)
+
+    -- select_items
+    local select_items = {}
+    for i, id in ipairs(sorted_ids) do
+        local def = action_defs[id]
+        local label = (def.icon or "") .. " " .. def.label
+        local is_currently_visible = (not def.visible_func or def.visible_func(ctx))
+        if not is_currently_visible then label = label .. " (n/a)" end
+        table.insert(select_items, {
+            text = label,
+            -- sensitive = is_currently_visible,
+            checked_func = function() return table_contains(section.items, id) end,
+            help_text = def.help_text or "",
+            callback = function()
+                if table_contains(section.items, id) then
+                    table_remove(section.items, id)
+                else
+                    table.insert(section.items, id)
+                end
+                Config.save(config)
+                return true
+            end
+        })
+    end
 
     return {
         {
@@ -233,10 +302,40 @@ function Actions.getSettings(ctx)
             separator = true
         },
         {
-            text = _("Manage actions"),
-            --keep_menu_open = true,
-            callback = function(touch_menu)
-                ActionManage:showActionManageMenu(ctx, SECTION)
+            text_func = function()
+                local count = #(section.items or {})
+                return _("Select controls") .. " (" .. count .. ")"
+            end,
+            sub_item_table = select_items
+        },
+        {
+            text = _("Arrange controls"),
+            keep_menu_open = true,
+            callback = function()
+                local sort_items = {}
+                for idx, id in ipairs(section.items) do
+                    local def = action_defs[id]
+                    if def then
+                        local label = (def.icon or "") .. " " .. def.label
+                        local is_currently_visible = (not def.visible_func or def.visible_func(ctx))
+                        if not is_currently_visible then
+                            label = label .. " (n/a)"
+                        end
+                        table.insert(sort_items, { text = label, orig_item = id })
+                    end
+                end
+
+                UIManager:show(SortWidget:new{
+                    title = _("Arrange controls"),
+                    item_table = sort_items,
+                    callback = function()
+                        section.items = {}
+                        for idx, item in ipairs(sort_items) do
+                            table.insert(section.items, item.orig_item)
+                        end
+                        Config.save(config)
+                    end
+                })
             end,
             separator = true
         },
@@ -248,7 +347,7 @@ function Actions.getSettings(ctx)
                     text = _("Are you sure you want to reset to defaults ?"),
                     ok_text = _("Reset"),
                     ok_callback = function()
-                        local defaults = Config.DEFAULTS.sections[SECTION]
+                        local defaults = Config.DEFAULTS.sections.actions
                         Utils.resetSectionToDefaults(section, defaults)
                         Config.save(config)
                         if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end

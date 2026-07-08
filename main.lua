@@ -8,7 +8,6 @@ require("common/inject_icons")
 -- Definition
 -- ============================================================
 local WidgetContainer = require("ui/widget/container/widgetcontainer")
-local QuickMenu = require("quickmenu")
 
 local QuickMenuPlugin = WidgetContainer:extend{ name = "quickmenu_plugin" }
 
@@ -16,9 +15,7 @@ local QuickMenuPlugin = WidgetContainer:extend{ name = "quickmenu_plugin" }
 -- Configuration
 -- ============================================================
 local Config = require("config")
-
 local config = Config.load()
-local function saveConfig() Config.save(config) end
 
 -- ============================================================
 -- Hook TouchMenu to support panel tabs
@@ -32,7 +29,7 @@ local FocusManager = require("ui/widget/focusmanager")
 local GestureRange = require("ui/gesturerange")
 local datetime = require("datetime")
 local BD = require("ui/bidi")
-
+local QuickMenu = require("quickmenu")
 
 -- Hook init to
 local orig_init = TouchMenu.init
@@ -116,6 +113,12 @@ function TouchMenu:updateItems(target_page, target_item_id)
         self._qs_refs = nil -- clear refs when switching away from panel tab
         return orig_updateItems(self, target_page, target_item_id)
     end
+    
+    -- zenui
+    if not self._qs_refs then
+        self._qs_slider_locked = true
+        UIManager:scheduleIn(0.35, function() self._qs_slider_locked = false end)
+    end
 
     -- Custom panel mode: render the panel widget instead of menu items
     self.item_group:clear()
@@ -140,24 +143,7 @@ function TouchMenu:updateItems(target_page, target_item_id)
     self.page = 1
 
     -- Update footer
-    local time_info_txt = ""
-    if config.footer.enabled then -- advance footer
-        time_info_txt = QuickMenu.get_footer_text(config)
-    else -- default footer
-        time_info_txt = datetime.secondsToHour(os.time(), G_reader_settings:isTrue("twelve_hour_clock"))
-        local powerd = Device:getPowerDevice()
-        if Device:hasBattery() then
-            local batt_lvl = powerd:getCapacity()
-            local batt_symbol = powerd:getBatterySymbol(powerd:isCharged(), powerd:isCharging(), batt_lvl)
-            time_info_txt = BD.wrap(time_info_txt) .. " " .. BD.wrap("⌁") .. BD.wrap(batt_symbol) ..  BD.wrap(batt_lvl .. "%")
-            if Device:hasAuxBattery() and powerd:isAuxBatteryConnected() then
-                local aux_batt_lvl = powerd:getAuxCapacity()
-                local aux_batt_symbol = powerd:getBatterySymbol(powerd:isAuxCharged(), powerd:isAuxCharging(), aux_batt_lvl)
-                time_info_txt = time_info_txt .. " " .. BD.wrap("+") .. BD.wrap(aux_batt_symbol) ..  BD.wrap(aux_batt_lvl .. "%")
-            end
-        end
-    end
-    self.time_info:setText(time_info_txt)
+    self.time_info:setText(QuickMenu.footer)
 
     -- Recalculate dimen
     local old_dimen = self.dimen:copy()
@@ -182,38 +168,66 @@ local function handlePanelGesture(touch_menu, ges, is_hold)
     local refs = touch_menu._qs_refs
     if not refs then return false end
 
-    -- SLIDERS (GENERIC)
-    if refs.sliders then
-        for _, s in ipairs(refs.sliders) do
-            local w = s.widget
+
+    if not is_hold then
+        for _i, sr in ipairs(refs.sliders or {}) do
+            -- zen_slider
+            if sr.slider and sr.slider:handleTap(ges) then return true end
+            -- generic slider
+            local w = sr.widget
             if w and w.dimen and ges.pos:intersectWith(w.dimen) then
 
                 -- preferred API: slider defines its own conversion
                 local percent
 
-                if w.getPercentageFromPosition then
-                    percent = w:getPercentageFromPosition(ges.pos)
-                end
+                if w.getPercentageFromPosition then percent = w:getPercentageFromPosition(ges.pos) end
 
                 if percent then
                     local value
 
-                    if s.fromPercent then
-                        value = s.fromPercent(percent)
-                    else
-                        value = math.floor(
-                            (s.max - s.min) * percent + s.min + 0.5
-                        )
-                    end
+                    if sr.fromPercent then value = sr.fromPercent(percent)
+                    else value = math.floor((sr.max - sr.min) * percent + sr.min + 0.5) end
 
-                    if s.set then
-                        s.set(value)
-                        return true
-                    end
+                    if sr.set then sr.set(value) return true  end
                 end
             end
         end
     end
+
+
+
+--     -- SLIDERS (GENERIC)
+--     if refs.sliders then
+--         for _, s in ipairs(refs.sliders) do
+--             local w = s.widget
+--             if w and w.dimen and ges.pos:intersectWith(w.dimen) then
+--
+--                 -- preferred API: slider defines its own conversion
+--                 local percent
+--
+--                 if w.getPercentageFromPosition then
+--                     percent = w:getPercentageFromPosition(ges.pos)
+--                 end
+--
+--                 if percent then
+--                     local value
+--
+--                     if s.fromPercent then
+--                         value = s.fromPercent(percent)
+--                     else
+--                         value = math.floor(
+--                             (s.max - s.min) * percent + s.min + 0.5
+--                         )
+--                     end
+--
+--                     if s.set then
+--                         s.set(value)
+--                         return true
+--                     end
+--                 end
+--             end
+--         end
+--     end
 
     -- BUTTONS (GENERIC) maybe useful
 --    if refs.buttons then
@@ -236,13 +250,32 @@ local function handlePanelGesture(touch_menu, ges, is_hold)
     return false
 end
 
+local ZenSlider = require("widgets/zen_slider")
+ZenSlider.installTouchMenuHooks(TouchMenu, {
+        in_panel_mode = function(tm)
+            return tm._qs_refs ~= nil and tm.item_table ~= nil and tm.item_table.panel ~= nil
+        end,
+        get_sliders = function(tm)
+            local refs = tm._qs_refs
+            if not refs then return {} end
+            local sliders = {}
+            for idx, sr in ipairs(refs.sliders or {}) do
+                table.insert(sliders, sr.slider)
+            end
+            return sliders
+        end,
+        is_locked           = function(tm) return tm._qs_slider_locked end,
+        swipe_fallback      = nil, --function(tm, ges) handlePanelGesture(tm, ges, false) end,
+        multiswipe_fallback = nil, --function(tm, ges) handlePanelGesture(tm, ges, false) end,
+    })
+
+
 -- Hook onTapCloseAllMenus to intercept taps on panel widgets
 local orig_onTapCloseAllMenus = TouchMenu.onTapCloseAllMenus
 function TouchMenu:onTapCloseAllMenus(arg, ges_ev)
     if self._qs_refs and self.item_table and self.item_table.panel then
-        if handlePanelGesture(self, ges_ev, false) then
-            return true
-        end
+        if self._qs_slider_locked then return true end
+        if handlePanelGesture(self, ges_ev, false) then return true end
     end
     return orig_onTapCloseAllMenus(self, arg, ges_ev)
 end
@@ -250,7 +283,7 @@ end
 -- Hook onHoldCloseAllMenus to intercept holds on panel buttons
 function TouchMenu:onHoldCloseAllMenus(arg, ges_ev)
     if self._qs_refs and self.item_table and self.item_table.panel then
-        handlePanelGesture(self, ges_ev, true)
+        if not self._qs_slider_locked then handlePanelGesture(self, ges_ev, true) end
     end
     -- Holds outside the menu do nothing (don't close it)
     return true
@@ -260,9 +293,7 @@ end
 local orig_onPrevPage = TouchMenu.onPrevPage
 if orig_onPrevPage then
     function TouchMenu:onPrevPage()
-        if self.item_table and self.item_table.panel then
-            return true
-        end
+        if self.item_table and self.item_table.panel then return true end
         return orig_onPrevPage(self)
     end
 end
@@ -270,9 +301,7 @@ end
 local orig_onNextPage = TouchMenu.onNextPage
 if orig_onNextPage then
     function TouchMenu:onNextPage()
-        if self.item_table and self.item_table.panel then
-            return true
-        end
+        if self.item_table and self.item_table.panel then return true end
         return orig_onNextPage(self)
     end
 end
@@ -292,6 +321,8 @@ end
 -- ============================================================
 local FileManagerMenu = require("apps/filemanager/filemanagermenu")
 local FileManagerMenuOrder = require("ui/elements/filemanager_menu_order")
+local ReaderMenu = require("apps/reader/modules/readermenu")
+local ReaderMenuOrder = require("ui/elements/reader_menu_order")
 local BD = require("ui/bidi")
 
 local orig_fm_setUpdateItemTable = FileManagerMenu.setUpdateItemTable
@@ -302,7 +333,7 @@ function FileManagerMenu:setUpdateItemTable()
         table.insert(FileManagerMenuOrder.setting, "----------------------------")
         table.insert(FileManagerMenuOrder.setting, "quick_menu_config")
     end
-    self.menu_items.quick_menu_config = QuickMenu.buildSettingsMenu(config, saveConfig, self)
+    self.menu_items.quick_menu_config = QuickMenu.buildSettingsMenu(config, self)
 
     -- inject ori
     orig_fm_setUpdateItemTable(self)
@@ -338,9 +369,6 @@ end
 -- ============================================================
 -- Inject ReaderMenu
 -- ============================================================
-local ReaderMenu = require("apps/reader/modules/readermenu")
-local ReaderMenuOrder = require("ui/elements/reader_menu_order")
-
 local orig_reader_setUpdateItemTable = ReaderMenu.setUpdateItemTable
 
 function ReaderMenu:setUpdateItemTable()
@@ -348,7 +376,7 @@ function ReaderMenu:setUpdateItemTable()
     if not is_injected(ReaderMenuOrder.setting, "quick_menu_config") then
         table.insert(ReaderMenuOrder.setting, "quick_menu_config")
     end
-    self.menu_items.quick_menu_config = QuickMenu.buildSettingsMenu(config, saveConfig, self)
+    self.menu_items.quick_menu_config = QuickMenu.buildSettingsMenu(config, self)
     -- inject ori
     orig_reader_setUpdateItemTable(self)
 

@@ -15,20 +15,16 @@ function SliderSection.buildTicks(min, max, count)
 end
 
 function SliderSection.build(opts)
-    local touch_menu   = opts.touch_menu
-    local screen       = opts.screen
-    local inner_width  = opts.inner_width
-
-    -- style
-    local btn_width          = opts.btn_width    or screen:scaleBySize(50)
-    local gap                = opts.gap          or screen:scaleBySize(4)
-    local btn_radius         = opts.btn_radius   or 0
+    -- opts import
+    local touch_menu         = opts.touch_menu
+    local screen             = opts.screen
+    local inner_width        = opts.inner_width
+    local btn_width          = opts.btn_width or screen:scaleBySize(50)
+    local h_gap              = opts.h_gap or screen:scaleBySize(4)
+    local btn_radius         = opts.btn_radius or screen:scaleBySize(7)
     local btn_font_size      = opts.btn_font_size or 16
-    local btn_bordersize     = opts.btn_bordersize or 0
-    local slider_ticks_width = opts.slider_ticks_width or 2
-    local slider_width       = inner_width - 2 * btn_width - 2 * gap
-
-    local refs = { buttons = {}, sliders = {}, widgets = {} }
+    local btn_bordersize     = opts.btn_bordersize or screen:scaleBySize(1.5)
+    local slider_ticks_width = opts.slider_ticks_width or screen:scaleBySize(1)
 
     -- logic
     local progress
@@ -63,7 +59,7 @@ function SliderSection.build(opts)
     }
 
     progress = ProgressWidget:new{
-        width              = slider_width,
+        width              = inner_width - 2 * btn_width - 2 * h_gap,
         height             = minus:getSize().h,
         radius             = btn_radius,
         bordersize         = btn_bordersize,
@@ -89,12 +85,14 @@ function SliderSection.build(opts)
     local row = HorizontalGroup:new{
         align = "center",
         minus,
-        HorizontalSpan:new{ width = gap },
+        HorizontalSpan:new{ width = h_gap },
         progress,
-        HorizontalSpan:new{ width = gap },
+        HorizontalSpan:new{ width = h_gap },
         plus,
     }
 
+    -- refs
+    local refs = { buttons = {}, sliders = {}, widgets = {} }
     table.insert(refs.sliders, {
         widget = progress,
         get    = getValue,

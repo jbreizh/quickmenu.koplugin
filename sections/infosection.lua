@@ -12,29 +12,34 @@ local Event           = require("ui/event")
 
 local ClickableGroup  = require("widgets/clickablegroup")
 local Utils           = require("common/utils")
-local Translation     = require("i18n/translation")
-local _               = Translation._
+local _               = require("common/i18n").gettext
 
 local InfoSection = {}
 
-function InfoSection.build(opts)
-    local touch_menu   = opts.touch_menu
-    local reader       = opts.reader
-    local inner_width  = opts.inner_width
-    local screen       = opts.screen
-    local theme        = opts.theme or {}
-
-    -- style
-    local gap            = theme.gap or screen:scaleBySize(4)
-    local vgap           = theme.vgap or screen:scaleBySize(4)
-    local btn_radius     = theme.btn_radius or 0
-    local btn_bordersize = theme.btn_bordersize  or 0
-    local btn_font_size  = theme.btn_font_size  or 16
-    local color_gray     = theme.color_gray or Blitbuffer.COLOR_DARK_GRAY
+function InfoSection.build(ctx)
+    -- ctx import
+    local config             = ctx.config
+    local touch_menu         = ctx.touch_menu
+    local reader             = ctx.reader
+    local filemanager        = ctx.filemanager
+    local device             = ctx.device
+    local powerd             = ctx.powerd
+    local screen             = ctx.screen
+    local datetime           = ctx.datetime
+    local stat               = ctx.stat
+    local panel_width        = ctx.panel_width
+    local inner_width        = ctx.inner_width
+    local h_gap              = screen:scaleBySize(config.style.h_gap or 4)
+    local v_gap              = screen:scaleBySize(config.style.v_gap or 4)
+    local btn_width          = screen:scaleBySize(config.style.btn_width or 50)
+    local btn_radius         = screen:scaleBySize(config.style.btn_radius or 7)
+    local btn_bordersize     = screen:scaleBySize(config.style.btn_bordersize or 1.5)
+    local btn_font_size      = config.style.btn_font_size or 16
+    local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
     if not reader then return nil end
     -- text
-    local txt_w = inner_width - 2 * gap -- WARNING (gap*2) for padding clickable_text_container
+    local txt_w = inner_width - 2 * h_gap -- WARNING (h_gap*2) for padding clickable_text_container
     local info_title = TextWidget:new{
         text = (reader.doc_props or {}).display_title or reader.props.title or _("Unknown title"),
         max_width = txt_w,
@@ -57,9 +62,9 @@ function InfoSection.build(opts)
     local clickable_text_container = ClickableGroup:new{
         col_text,
         radius = btn_radius,
-        padding = gap,
+        padding = h_gap,
         bordersize = btn_bordersize,
-        bordercolor = color_gray,
+        bordercolor = Blitbuffer.COLOR_DARK_GRAY,
         callback = function()
             touch_menu:closeMenu()
             reader.status:onShowBookStatus()

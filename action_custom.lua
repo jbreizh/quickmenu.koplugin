@@ -1,0 +1,423 @@
+local ButtonDialog = require("ui/widget/buttondialog")
+local InputDialog  = require("ui/widget/inputdialog")
+
+local UIManager    = require("ui/uimanager")
+
+local IconsLibrary  = require("iconchooser/icons_library")
+local ActionExec    = require("action_exec")
+local ActionChooser = require("actionchooser/action_chooser")
+local Config        = require("config")
+local _             = require("common/i18n").gettext
+
+local ActionCustom = {}
+
+-- ============================================================
+-- Menu
+-- ============================================================
+function ActionCustom:showActionCustomMenu(config)
+    local dialog
+    local buttons = {}
+
+    -- existing action
+    if config.custom_actions then
+        for i, action in ipairs(config.custom_actions) do
+            buttons[#buttons + 1] = {
+                {
+                text = (action.icon or _("None")) .. " " ..(action.label or _("None")),
+                -- apply action
+                callback = function()
+                    UIManager:close(dialog)
+                    self:applyActionCustomDialog(config, action)
+                end,
+                -- update action
+                hold_callback = function()
+                    UIManager:close(dialog)
+                    self:updateActionCustomDialog(config, action, i)
+                end
+                }
+            }
+        end
+    end
+
+    -- new action
+    buttons[#buttons + 1] = {
+        {
+        text = _("Add"),
+        -- add action
+        callback = function()
+            UIManager:close(dialog)
+            self:addActionCustomDialog(config)
+        end
+        },
+        {
+        text = _("Exit"),
+        callback = function()
+            UIManager:close(dialog)
+        end
+        },
+    }
+
+    dialog = ButtonDialog:new{
+        -- dismissable = false,
+        title = _("Custom actions") .. " :",
+        title_align  = "left",
+        buttons = buttons,
+    }
+    UIManager:show(dialog)
+end
+
+-- ============================================================
+-- Apply
+-- ============================================================
+function ActionCustom:applyActionCustom(callback)
+    ActionExec.dispatch(callback)
+end
+
+function ActionCustom:applyActionCustomDialog(config, action)
+    local dialog
+    local is_callback = not not (action.callback and action.callback.label and action.callback.label ~= "") --force boolean
+    local is_hold_callback = not not (action.hold_callback and action.hold_callback.label and action.hold_callback.label~="") -- force boolean
+
+    local buttons = {
+        {{
+            text = _("Label") .. " : " .. (action.label or _("None")),
+            callback = function()
+            end
+        }},
+        {{
+            text = _("Icon") .. " : " .. (action.icon or _("None")),
+            callback = function()
+            end
+        }},
+        {{
+            text = _("Tap") .. " : " .. (action.callback.label or _("None")),
+            callback = function()
+                if is_callback then
+                    UIManager:close(dialog)
+                    self:applyActionCustom(action.callback)
+                end
+            end
+        }},
+        {{
+            text = _("Hold") .. " : " .. (action.hold_callback.label or _("None")),
+            callback = function()
+                if is_hold_callback then
+                    UIManager:close(dialog)
+                    self:applyActionCustom(action.hold_callback)
+                end
+            end
+        }},
+        {{
+            text = _("Exit"),
+            callback = function()
+                UIManager:close(dialog)
+                self:showActionCustomMenu(config)
+            end
+        }}
+    }
+
+    dialog = ButtonDialog:new{
+        -- dismissable = false,
+        title = _("Apply") .. " :",
+        title_align  = "left",
+        buttons = buttons,
+        tap_close_callback = function()
+            self:showActionCustomMenu(config)
+        end
+    }
+    UIManager:show(dialog)
+end
+
+-- ============================================================
+-- Add
+-- ============================================================
+function ActionCustom:addActionCustom(config, fields)
+    local action = {
+        id         = os.time() .. math.random(100, 999),
+        label      = fields.label or "",
+        icon       = fields.icon or "",
+        callback   = {
+            label       = fields.label,
+            icon        = fields.icon,
+            plugin      = fields.plugin,
+            action      = fields.action,
+            menu_path   = fields.menu_path,
+            menu_toggle = fields.menu_toggle,
+            menu_page   = fields.menu_page
+        },
+        hold_callback = {}
+    }
+
+    for k, v in pairs(action.callback) do
+        if (type(v) ~= "table" and (v == nil or v == "")) then
+            action.callback[k] = nil
+        end
+    end
+
+    config.custom_actions = config.custom_actions or {}
+    table.insert(config.custom_actions, action)
+    Config.save(config)
+end
+
+function ActionCustom:addActionCustomDialog(config)
+    local dialog
+--     local function close(fn)
+--         return function()
+--             UIManager:close(dialog)
+--             if fn then fn() end
+--         end
+--     end
+
+    local no_close = function(fn) return fn end
+
+    local buttons = ActionChooser.actionRows(no_close, function(fields)
+        UIManager:close(dialog)
+        self:addActionCustom(config, fields)
+        self:showActionCustomMenu(config)
+    end)
+
+    buttons[#buttons + 1] = {
+        {
+        text = _("Exit"),
+        callback = function()
+            UIManager:close(dialog)
+            self:showActionCustomMenu(config)
+        end
+        },
+    }
+    dialog = ButtonDialog:new{
+        title        = _("Add new action") .. " :",
+        title_align  = "left",
+        buttons      = buttons,
+        tap_close_callback = function()
+            self:showActionCustomMenu(config)
+        end
+    }
+    UIManager:show(dialog)
+end
+
+-- ============================================================
+-- callback
+-- ============================================================
+function ActionCustom:callbackActionCustom(action, fields, is_hold_callback)
+    local target_key = is_hold_callback and "hold_callback" or "callback"
+    action[target_key] = {
+        label       = fields.label,
+        icon        = fields.icon,
+        plugin      = fields.plugin,
+        action      = fields.action,
+        menu_path   = fields.menu_path,
+        menu_toggle = fields.menu_toggle,
+        menu_page   = fields.menu_page
+    }
+    for k, v in pairs(action[target_key]) do
+        if (type(v) ~= "table" and (v == nil or v == "")) then
+            action[target_key][k] = nil
+        end
+    end
+end
+
+function ActionCustom:callbackActionCustomDialog(config, action, index, is_hold_callback)
+    local dialog
+
+--     local function close(fn)
+--         return function()
+--             UIManager:close(dialog)
+--             if fn then fn() end
+--         end
+--     end
+
+    local no_close = function(fn) return fn end
+
+    local buttons = ActionChooser.actionRows(no_close, function(fields)
+        UIManager:close(dialog)
+        self:callbackActionCustom(action, fields, is_hold_callback)
+        self:updateActionCustomDialog(config, action, index)
+    end)
+
+    buttons[#buttons + 1] = {
+        {
+            text = _("Delete"),
+            callback = function()
+                UIManager:close(dialog)
+                local target_key = is_hold_callback and "hold_callback" or "callback"
+                action[target_key] = {}
+                self:updateActionCustomDialog(config, action, index)
+            end
+        },
+        {
+            text = _("Exit"),
+            callback = function()
+                UIManager:close(dialog)
+                self:updateActionCustomDialog(config, action, index)
+            end
+        }
+    }
+
+    dialog = ButtonDialog:new{
+        title        = ((is_hold_callback and _("Select hold")) or _("Select tap")) .. " :",
+        title_align  = "left",
+        buttons      = buttons,
+        tap_close_callback = function()
+            self:updateActionCustomDialog(config, action, index)
+        end
+    }
+    UIManager:show(dialog)
+end
+
+-- ============================================================
+-- Update
+-- ============================================================
+function ActionCustom:updateActionCustom(config, action, index)
+    if config and config.custom_actions and config.custom_actions[index] then
+        config.custom_actions[index] = action
+        Config.save(config)
+    end
+end
+
+function ActionCustom:deleteActionCustom(config, action)
+    if not config or not config.custom_actions then return end
+    local id_to_remove = action.id
+    -- delete in config.custom_actions
+    for i, act in ipairs(config.custom_actions) do
+        if act.id == id_to_remove then
+            table.remove(config.custom_actions, i)
+            break
+        end
+    end
+    -- delete in all config.sections.items
+    if config.sections then
+        for _k, section_data in pairs(config.sections) do
+            if section_data.items and type(section_data.items) == "table" then
+                for i = #section_data.items, 1, -1 do
+                    if section_data.items[i] == id_to_remove then
+                        table.remove(section_data.items, i)
+                    end
+                end
+            end
+        end
+    end
+
+    Config.save(config)
+end
+
+local function tableCopy(orig)
+    local orig_type = type(orig)
+    local copy
+
+    if orig_type == 'table' then
+        copy = {}
+        for orig_key, orig_value in next, orig, nil do
+            copy[tableCopy(orig_key)] = tableCopy(orig_value)
+        end
+        setmetatable(copy, tableCopy(getmetatable(orig)))
+    else
+        copy = orig
+    end
+    return copy
+end
+
+function ActionCustom:updateActionCustomDialog(config, action, index)
+    local dialog
+    local temp_action = tableCopy(action)
+    local buttons = {
+        {{
+            text = _("Label") .. " : " .. (temp_action.label or _("None")),
+            callback = function()
+                UIManager:close(dialog)
+                local label_dialog
+                label_dialog = InputDialog:new{
+                    title = _("Select label") .. " :",
+                    input = temp_action.label,
+                    buttons = {
+                        {
+                            {
+                                text = _("Save"),
+                                is_enter_default = true,
+                                callback = function()
+                                    temp_action.label = label_dialog:getInputText()
+                                    UIManager:close(label_dialog)
+                                    self:updateActionCustomDialog(config, temp_action, index)
+                                end
+                            },
+                            {
+                                text = _("Exit"),
+                                callback = function()
+                                    UIManager:close(label_dialog)
+                                    self:updateActionCustomDialog(config, temp_action, index)
+                                end
+
+                            }
+                        }
+                    }
+                }
+                UIManager:show(label_dialog)
+            end
+        }},
+        {{
+            text = _("Icon") .. " : " .. (temp_action.icon or _("None")),
+            callback = function()
+                IconsLibrary:show(function(glyph)
+                    if glyph and glyph ~= "" then
+                        temp_action.icon = glyph
+                        UIManager:close(dialog)
+                        self:updateActionCustomDialog(config, temp_action, index)
+                    end
+                end, { dynamic = false, svg = true})
+                --UIManager:close(dialog)
+            end
+        }},
+        {{
+            text = _("Tap") .. " : " .. ((temp_action.callback and temp_action.callback.label) or _("None")),
+            callback = function()
+                UIManager:close(dialog)
+                self:callbackActionCustomDialog(config, temp_action, index, false)
+            end
+        }},
+        {{
+            text = _("Hold") .. " : " .. ((temp_action.hold_callback and temp_action.hold_callback.label) or _("None")),
+            callback = function()
+                UIManager:close(dialog)
+                self:callbackActionCustomDialog(config, temp_action, index, true)
+            end
+        }},
+        {
+            {
+                text = _("Save"),
+                callback = function()
+                    self:updateActionCustom(config, temp_action, index)
+                    UIManager:close(dialog)
+                    self:showActionCustomMenu(config)
+                end
+            },
+            {
+                text = _("Delete"),
+                callback = function()
+                    self:deleteActionCustom(config, action)
+                    UIManager:close(dialog)
+                    self:showActionCustomMenu(config)
+                end,
+            },
+            {
+                text = _("Exit"),
+                callback = function()
+                    UIManager:close(dialog)
+                    self:showActionCustomMenu(config)
+                end
+            }
+        }
+    }
+
+    dialog = ButtonDialog:new{
+        title = _("Update") .. " :",
+        title_align = "left",
+        buttons = buttons,
+        tap_close_callback = function()
+            self:showActionCustomMenu(config)
+        end
+    }
+    UIManager:show(dialog)
+end
+
+return ActionCustom
+

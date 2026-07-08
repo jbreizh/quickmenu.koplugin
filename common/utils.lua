@@ -20,6 +20,9 @@ end
 --- @param defaults table  The section defaults settings.
 function M.resetSectionToDefaults(section, defaults)
     if not section or not defaults then return end
+    for k in pairs(section) do
+        section[k] = nil
+    end
     for k, v in pairs(defaults) do
         if type(v) == "table" then
             section[k] = {}
@@ -156,9 +159,9 @@ function M.systemInfo()
                     if n4 ~= nil and n5 ~= nil and n6 ~= nil and n6 ~= 0 then
                         result.cpu = {
                             used = n4,
-                            usedpercentage = math.floor((n4 * 100) / n6),
+                            usedp = math.floor((n4 * 100) / n6),
                             available = n5,
-                            availablepercentage = math.floor((n5 * 100) / n6),
+                            availablep = math.floor((n5 * 100) / n6),
                             total = n6,
                         }
                         break
@@ -199,7 +202,8 @@ function M.systemInfo()
             if result.memory.total and result.memory.available then
                 result.memory.used = result.memory.total - result.memory.available
                 if result.memory.total > 0 then
-                    result.memory.usedpercentage = math.floor((result.memory.used * 100) / result.memory.total)
+                    result.memory.usedp = math.floor((result.memory.used * 100) / result.memory.total)
+                    result.memory.availablep = math.floor((result.memory.available * 100) / result.memory.total)
                 end
             end
         end
@@ -232,9 +236,9 @@ function M.systemInfo()
                         if n1 ~= nil and n2 ~= nil and n1 ~= 0 then
                         result.storage = {
                             available = n2,
-                            availablepercentage = math.floor((n2 * 100) / n1),
+                            availablep = math.floor((n2 * 100) / n1),
                             used = n1 - n2,
-                            usedpercentage = math.floor(((n1 - n2) * 100) / n1),
+                            usedp = math.floor(((n1 - n2) * 100) / n1),
                             total = n1,
                         }
                         break

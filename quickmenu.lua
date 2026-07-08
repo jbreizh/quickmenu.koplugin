@@ -1,31 +1,39 @@
-local Device        = require("device")
 local VerticalGroup = require("ui/widget/verticalgroup")
 local VerticalSpan  = require("ui/widget/verticalspan")
+
 local ReaderUi      = require("apps/reader/readerui")
 local FileManager   = require("apps/filemanager/filemanager")
+local Device        = require("device")
+local Powerd        = Device:getPowerDevice()
 local Screen        = Device.screen
-local Size          = require("ui/size")
-local UIManager     = require("ui/uimanager")
+local Datetime      = require("datetime")
+
 local ConfirmBox    = require("ui/widget/confirmbox")
+local InputDialog   = require("ui/widget/inputdialog")
+local ButtonDialog  = require("ui/widget/buttondialog")
+
+local UIManager     = require("ui/uimanager")
 local Event         = require("ui/event")
-local Blitbuffer    = require("ffi/blitbuffer")
-local BD            = require("ui/bidi")
 
-local FooterDefs    = require("footer_defs")
-local Config        = require("config")
-local Utils         = require("common/utils")
-local Translation   = require("i18n/translation")
-local _             = Translation._
+local FrontlightPreset = require("frontlight_preset")
+local ActionCustom     = require("action_custom")
+local Config           = require("config")
+local Utils            = require("common/utils")
+local _                = require("common/i18n").gettext
 
-local QuickMenu = {}
 
-local ORDER = { "actions", "frontlight", "shortcuts", "info" }
+local QuickMenu = {
+    footer = nil
+}
+
+local ORDER = { "actions", "frontlight", "shortcuts", "info", "footer" }
 
 local SECTIONS = {
     actions    = require("sections/actions"),
     frontlight = require("sections/frontlight"),
     shortcuts  = require("sections/shortcuts"),
     info       = require("sections/info"),
+    footer     = require("sections/footer")
 }
 
 local SECTION_LABELS = {
@@ -33,35 +41,35 @@ local SECTION_LABELS = {
     frontlight = _("Frontlight"),
     shortcuts  = _("Shortcuts"),
     info       = _("Informations"),
+    footer     = _("Footer")
 }
 
+-- ============================================================
+-- Shared Context Builder
+-- ============================================================
+local function buildContext(config, touch_menu)
+    local panel_width = touch_menu and touch_menu.item_width or 0
+    local padding = Screen:scaleBySize(config.style.padding or 10)
+    local inner_width = panel_width - padding * 2
 
-function QuickMenu.get_footer_text(config)
-    local footer_cfg = config.footer or Config.DEFAULTS.footer
-    local sep = footer_cfg.separator or ""
-    local footer_defs = FooterDefs.get()
-    local parts = {}
-
-    for index = 1, #footer_cfg.items do
-        local id = footer_cfg.items[index]
-        local item_def = footer_defs[id]
-
-        if item_def and (not item_def.visible_func or item_def.visible_func()) then
-            local icon = item_def.unicode_func and item_def.unicode_func() or (item_def.unicode or "")
-            local val = item_def.render and item_def.render() or ""
-            local entry = BD.wrap(icon) .. " " .. BD.wrap(val)
-            table.insert(parts, entry)
-        end
-    end
-
-    return table.concat(parts, sep)
+    return {
+        config      = config,
+        touch_menu  = touch_menu,
+        reader      = ReaderUi.instance,
+        filemanager = FileManager.instance,
+        device      = Device,
+        powerd      = Powerd,
+        screen      = Screen,
+        datetime    = Datetime,
+        stat        = Utils.systemInfo(),
+        panel_width = panel_width,
+        inner_width = inner_width,
+    }
 end
 
-
 -- ============================================================
--- Helpers
+-- Panel Builder
 -- ============================================================
-
 local function mergeRefs(dst, src)
     if type(src) ~= "table" then return end
     for category, items in pairs(src) do
@@ -74,49 +82,13 @@ local function mergeRefs(dst, src)
     end
 end
 
--- ============================================================
--- Shared Context Builder
--- ============================================================
-local function buildContext(config, touch_menu)
-    local panel_width = touch_menu and touch_menu.item_width or 0
-    local padding = Screen:scaleBySize(10)
-    local inner_width = panel_width - padding * 2
-
-    return {
-        config = config,
-        touch_menu = touch_menu,
-        reader = ReaderUi.instance,
-        filemanager = FileManager.instance,
-        powerd = Device:getPowerDevice(),
-        screen = Screen,
-        panel_width = panel_width,
-        inner_width = inner_width,
-        theme = {
-            gap = Screen:scaleBySize(4),
-            vgap = Screen:scaleBySize(4),
-            btn_width = Screen:scaleBySize(50),
-            btn_radius = Size.radius.button,
-            btn_bordersize = Size.border.button,
-            btn_font_size = 16,
-            slider_ticks_width = Size.line.medium,
-            color_white = Blitbuffer.COLOR_WHITE,
-            color_black = Blitbuffer.COLOR_BLACK,
-            color_gray = Blitbuffer.COLOR_LIGHT_GRAY,
-        }
-    }
-end
-
--- ============================================================
--- Panel Builder
--- ============================================================
-
 function QuickMenu.createPanel(config, touch_menu)
     local refs = { buttons = {}, sliders = {}, widgets = {} }
     local ctx = buildContext(config, touch_menu)
 
     local panel = VerticalGroup:new{
         align = "center",
-       VerticalSpan:new{ width = Screen:scaleBySize(12) }
+       VerticalSpan:new{ width = Screen:scaleBySize(config.style.padding + 2 or 12) }
     }
 
     local added_count = 0
@@ -127,12 +99,14 @@ function QuickMenu.createPanel(config, touch_menu)
             local ok, result = pcall(section_mod.build, ctx)
             if ok and result and result.widget then
                 if added_count > 0 then
-                    table.insert(panel, VerticalSpan:new{ width = Screen:scaleBySize(4) })
+                    table.insert(panel, VerticalSpan:new{ width = Screen:scaleBySize(config.style.v_gap or 4) })
                 end
 
                 table.insert(panel, result.widget)
                 mergeRefs(refs, result.refs)
                 added_count = added_count + 1
+            elseif id == "footer" and result then
+                QuickMenu.footer = result
             end
         end
     end
@@ -227,163 +201,100 @@ function QuickMenu.updateTab(config, menu_instance)
 
 end
 
--- Fonction locale pour remplacer Utils.contains
-local function table_contains(tbl, val)
-    for _, v in ipairs(tbl) do
-        if v == val then return true end
+function QuickMenu.buildStyleSubMenu(config, menu_instance)
+    local style_items = {}
+
+    -- style
+    local style_keys = {}
+    for key in pairs(Config.DEFAULTS.style) do
+        table.insert(style_keys, key)
     end
-    return false
-end
+    table.sort(style_keys)
 
--- Fonction locale pour remplacer Utils.removeElement
-local function table_remove(tbl, val)
-    for i, v in ipairs(tbl) do
-        if v == val then
-            table.remove(tbl, i)
-            return true
-        end
-    end
-    return false
-end
-
-function QuickMenu.getFooterSettings(config, saveConfig)
-    local footer_defs = FooterDefs.get()
-    config.footer = config.footer or {}
-    config.footer.items = config.footer.items or {}
-    local SortWidget = require("ui/widget/sortwidget")
-
--- 1. Créer une liste des IDs pour pouvoir les trier
-    local sorted_ids = {}
-    for id in pairs(footer_defs) do
-        table.insert(sorted_ids, id)
-    end
-
-    -- Trier les IDs par le label correspondant dans footer_defs
-    table.sort(sorted_ids, function(a, b)
-        return footer_defs[a].label < footer_defs[b].label
-    end)
-
-    -- 2. Construire select_items en suivant l'ordre des IDs triés
-    local select_items = {}
-    for _, id in ipairs(sorted_ids) do
-        local def = footer_defs[id]
-        local is_currently_visible = (not def.visible_func or def.visible_func())
-        local label = (def.unicode or "") .. " " .. def.label
-        if not is_currently_visible then
-            label = label .. " (n/a)"
-        end
-
-        table.insert(select_items, {
-            text = label,
-            -- sensitive = is_currently_visible,
-            checked_func = function()
-                return table_contains(config.footer.items, id)
-            end,
-            callback = function()
-                if table_contains(config.footer.items, id) then
-                    table_remove(config.footer.items, id)
-                else
-                    table.insert(config.footer.items, id)
-                end
-                saveConfig()
-                return true
-            end
-        })
-    end
-
-    -- 2. Configuration du séparateur
-    local sep_options = {" • ", " | ", " - ", " "}
-    local sep_items = {}
-    for _, s in ipairs(sep_options) do
-        table.insert(sep_items, {
-            text = "'" .. s .. "'",
-            checked_func = function() return (config.footer.separator or " • ") == s end,
-            callback = function() config.footer.separator = s; saveConfig(); return true end
-        })
-    end
-
-    return {
-        {
-            text = _("Enabled"),
-            checked_func = function() return config.footer.enabled end,
-            callback = function() config.footer.enabled = not config.footer.enabled; saveConfig() end,
-            separator = true
-        },
-        {
-            text_func = function()
-                local sep = config.footer.separator or ""
-                return _("Separator") .. " (" .. sep .. ")"
-            end,
-            sub_item_table = sep_items,
-            separator = true
-        },
-        {
-            text_func = function()
-                local count = #(config.footer.items or {})
-                return _("Select controls") .. " (" .. count .. ")"
-            end,
-            sub_item_table = select_items
-        },
-        {
-            text = _("Arrange controls"),
+    for i, key in ipairs(style_keys) do
+        table.insert(style_items, {
+            text_func = function() return key .. " (" .. tostring(config.style[key]) .. ")"  end,
             keep_menu_open = true,
-            callback = function()
-                local sort_items = {}
-                for _, id in ipairs(config.footer.items) do
-                    local def = footer_defs[id]
-                    local label = (def.unicode or "") .. " " .. def.label
-                    local is_currently_visible = (not def.visible_func or def.visible_func())
-                    if not is_currently_visible then
-                        label = label .. " (n/a)"
-                    end
-                    if def then
-                        table.insert(sort_items, { text = label, orig_item = id })
-                    end
+            callback = function(touch_menu)
+                local original = config.style[key]
+                local function getValue() return config.style[key] end
+                local function setValue(v) config.style[key] = math.max(0, math.min(150, v)); Config.save(config) end
+                local function rebuild() if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end end
+
+                local dialog
+                local function nudge(delta)
+                    local newVal = getValue() + delta
+                    newVal = math.floor(newVal * 10 + 0.5) / 10
+                    setValue(newVal)
+                    rebuild()
+                    dialog:reinit()
                 end
-                UIManager:show(SortWidget:new{
-                    title = _("Arrange controls"),
-                    item_table = sort_items,
-                    callback = function()
-                        config.footer.items = {}
-                        for _, item in ipairs(sort_items) do
-                            table.insert(config.footer.items, item.orig_item)
-                        end
-                        saveConfig()
-                    end
-                })
+
+                local function close() UIManager:close(dialog) end
+                local function revert() setValue(original); rebuild() end
+
+                dialog = ButtonDialog:new{
+                    dismissable = false,
+                    title = key,
+                    buttons = {
+                        {
+                            { text = "-10",  callback = function() nudge(-10) end },
+                            { text = "-1",   callback = function() nudge(-1)  end },
+                            { text = "-0.1", callback = function() nudge(-0.1) end },
+                            { text_func = function() return tostring(getValue()) end, enabled = false },
+                            { text = "+0.1", callback = function() nudge(0.1)   end },
+                            { text = "+1",   callback = function() nudge(1)   end },
+                            { text = "+10",  callback = function() nudge(10)  end },
+                        },
+                        {
+                            { text = _("Cancel"), callback = function() revert(); close() end },
+                            { text = _("Default"),callback = function() setValue(Config.DEFAULTS.style[key]); rebuild(); dialog:reinit() end },
+                            { text = _("Apply"), is_enter_default = true, callback = close },
+                        },
+                    },
+                    tap_close_callback = revert
+                }
+                UIManager:show(dialog)
             end,
-            separator = true
-        },
-        {
-            text = _("Reset to defaults"),
-            callback = function()
-                UIManager:show(ConfirmBox:new{
-                    text = _("Are you sure you want to reset to defaults ?"),
-                    ok_text = _("Reset"),
-                    ok_callback = function()
-                        -- On écrase avec les valeurs par défaut
-                        config.footer = {
-                            items = Config.DEFAULTS.footer.items,
-                            separator = Config.DEFAULTS.footer.separator
-                        }
-                        saveConfig()
+            separator = (i == #style_keys),
+        })
+    end
+
+    -- reset
+    table.insert(style_items, {
+        text = _("Reset to defaults"),
+        keep_menu_open = true,
+        callback = function(touch_menu)
+            UIManager:show(ConfirmBox:new{
+                text = _("Are you sure you want to reset to defaults ?"),
+                ok_text = _("Reset"),
+                ok_callback = function()
+                    config.style = {}
+                    for key, value in pairs(Config.DEFAULTS.style) do
+                        config.style[key] = value
                     end
-                })
-            end
-        }
-    }
+                    Config.save(config)
+                    if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end
+                end
+            })
+        end,
+    })
+
+
+    return style_items
 end
 
-function QuickMenu.buildSettingsMenu(config, saveConfig, menu_instance)
+function QuickMenu.buildSettingsMenu(config, menu_instance)
     local menu_items = {}
     local ctx = buildContext(config, nil)
 
+    -- global
     table.insert(menu_items, {
         text = _("Add exit tab"),
         checked_func = function() return config.add_exit_tab end,
         callback = function(touch_menu)
             config.add_exit_tab = not config.add_exit_tab
-            saveConfig()
+            Config.save(config)
             QuickMenu.updateTab(config, menu_instance)
             touch_menu:closeMenu()
         end
@@ -394,7 +305,7 @@ function QuickMenu.buildSettingsMenu(config, saveConfig, menu_instance)
         checked_func = function() return config.add_quickmenu_tab end,
         callback = function(touch_menu)
             config.add_quickmenu_tab = not config.add_quickmenu_tab
-            saveConfig()
+            Config.save(config)
             QuickMenu.updateTab(config, menu_instance)
             touch_menu:closeMenu()
         end
@@ -405,32 +316,57 @@ function QuickMenu.buildSettingsMenu(config, saveConfig, menu_instance)
         checked_func = function() return config.open_on_start end,
         callback = function()
             config.open_on_start = not config.open_on_start
-            saveConfig()
+            Config.save(config)
         end,
         separator = true
     })
 
+    -- custom actions
+    table.insert(menu_items, {
+        text = _("Custom actions"),
+        --keep_menu_open = true,
+        --help_text = _("Author : peterboda236\nProjet : koreader-user-patches\nhttps://github.com/peterboda236/koreader-user-patches"),
+        callback = function(touch_menu)
+            ActionCustom:showActionCustomMenu(config)
+        end
+    })
+
+    -- preset
+    table.insert(menu_items, {
+        text = _("Frontlight presets"),
+        --keep_menu_open = true,
+        help_text = _("Author : peterboda236\nProjet : koreader-user-patches\nhttps://github.com/peterboda236/koreader-user-patches"),
+        callback = function(touch_menu)
+            FrontlightPreset:showFrontlightPresetMenu(config)
+        end
+    })
+
+    -- style
+    table.insert(menu_items, {
+        text = _("Style"),
+        sub_item_table = QuickMenu.buildStyleSubMenu(config, menu_instance),
+        separator = true,
+    })
+
+    --sections
     for idx, id in ipairs(ORDER) do
         local section_mod = SECTIONS[id]
         if section_mod and section_mod.getSettings then
 
-            local items = section_mod.getSettings(config, saveConfig, ctx)
+            local items = section_mod.getSettings(ctx)
 
             if items and #items > 0 then
+                local is_last = (idx == #ORDER)
                 table.insert(menu_items, {
                     text = SECTION_LABELS[id] or id,
                     sub_item_table = items,
+                    separator = is_last,
                 })
             end
         end
     end
 
-    table.insert(menu_items, {
-        text = _("Footer"),
-        sub_item_table = QuickMenu.getFooterSettings(config, saveConfig),
-        separator = true
-    })
-
+    -- reset
     table.insert(menu_items, {
     text = _("Reset to defaults"),
     callback = function()
@@ -438,10 +374,11 @@ function QuickMenu.buildSettingsMenu(config, saveConfig, menu_instance)
             text = _("Are you sure you want to reset to defaults ?"),
             ok_text = _("Reset"),
             ok_callback = function()
+                -- global
                 config.add_exit_tab = Config.DEFAULTS.add_exit_tab
                 config.add_quickmenu_tab = Config.DEFAULTS.add_quickmenu_tab
                 config.open_on_start = Config.DEFAULTS.open_on_start
-
+                -- sections
                 for index, section_id in ipairs(ORDER) do
                     if Config.DEFAULTS.sections[section_id] then
                         Utils.resetSectionToDefaults(
@@ -450,9 +387,15 @@ function QuickMenu.buildSettingsMenu(config, saveConfig, menu_instance)
                         )
                     end
                 end
-
+                -- style
+                config.style = {}
+                for key, value in pairs(Config.DEFAULTS.style) do
+                    config.style[key] = value
+                end
+                -- style
+                config.frontlight_presets = {}
+                Config.save(config)
                 QuickMenu.updateTab(config, menu_instance)
-                saveConfig()
             end
         })
     end

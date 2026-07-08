@@ -13,9 +13,9 @@ local UIManager = require("ui/uimanager")
 
 local CircleButton = InputContainer:extend{
     icon = nil,
-    unicode = nil,
     size = 64,
     icon_size = 26,
+    radius = 32,
     is_active = false,
     bordersize = 0,
     callback = nil,
@@ -26,16 +26,22 @@ local CircleButton = InputContainer:extend{
 
 function CircleButton:init()
     local content_widget
-    if self.icon then
+    local icon_val = self.icon or ""
+
+    -- On cherche si la chaîne correspond au format [icon=nom_icone]
+    local extracted_icon = icon_val:match("^%[icon=(.+)%]$")
+
+    if extracted_icon then
         content_widget = IconWidget:new{
-            icon = self.icon,
-            width = self.icon_size,
-            height = self.icon_size,
+            icon  = extracted_icon,
+            width = self.size * 0.4, -- TODO Hack
+            height = self.size * 0.4,
             alpha = true,
         }
     else
+        -- Sinon, on traite le contenu comme un caractère Unicode
         content_widget = TextWidget:new{
-            text = self.unicode,
+            text = self.icon or "",
             face = Font:getFace("cfont", self.icon_size),
             color = Blitbuffer.COLOR_BLACK,
         }
@@ -45,7 +51,7 @@ function CircleButton:init()
     self.circle = FrameContainer:new{
         width = self.size,
         height = self.size,
-        radius = math.floor(self.size / 2),
+        radius = self.radius,
         bordersize = self.bordersize,
         background = self.is_active and self.bg_active or self.bg_inactive,
         padding = 0,
