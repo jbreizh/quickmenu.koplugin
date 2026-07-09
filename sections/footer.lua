@@ -44,13 +44,14 @@ function Footer.build(ctx)
 
     section.items = section.items or {}
 
+    -- actions system and custom
+    local action_defs = ActionDefs.getMerged(config.custom_actions)
     local sep = section.separator or ""
-    local footer_defs = ActionDefs.get()
-    local parts = {}
 
+    local parts = {}
     for index = 1, #section.items do
         local id = section.items[index]
-        local item_def = footer_defs[id]
+        local item_def = action_defs[id]
 
         if item_def and (not item_def.visible_func or item_def.visible_func(ctx)) then
             local icon = item_def.icon_func and item_def.icon_func(ctx) or (item_def.icon or "")
@@ -101,12 +102,15 @@ function Footer.getSettings(ctx)
                 return _("Separator") .. " (" .. sep .. ")"
             end,
             sub_item_table = sep_items,
-            separator = true
         },
         {
-            text = _("Manage actions"),
-            --keep_menu_open = true,
+            text_func = function()
+                local count = #(section.items or {})
+                return _("Manage actions") .. " (" .. count .. ")\xE2\x80\xA6"
+            end,
+            keep_menu_open = true,
             callback = function(touch_menu)
+                ctx.touch_menu = touch_menu
                 ActionManage:showActionManageMenu(ctx, SECTION)
             end,
             separator = true

@@ -11,14 +11,24 @@ local _             = require("common/i18n").gettext
 
 local ActionCustom = {}
 
+local function saveAndRefresh(ctx)
+    -- save
+    local config = ctx.config
+    if config then Config.save(config) end
+    -- refresh
+    local touch_menu = ctx.touch_menu
+    if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end
+end
+
 -- ============================================================
 -- Menu
 -- ============================================================
-function ActionCustom:showActionCustomMenu(config)
+function ActionCustom:showActionCustomMenu(ctx)
     local dialog
     local buttons = {}
 
     -- existing action
+    local config = ctx.config
     if config.custom_actions then
         for i, action in ipairs(config.custom_actions) do
             buttons[#buttons + 1] = {
@@ -27,12 +37,12 @@ function ActionCustom:showActionCustomMenu(config)
                 -- apply action
                 callback = function()
                     UIManager:close(dialog)
-                    self:applyActionCustomDialog(config, action)
+                    self:applyActionCustomDialog(ctx, action)
                 end,
                 -- update action
                 hold_callback = function()
                     UIManager:close(dialog)
-                    self:updateActionCustomDialog(config, action, i)
+                    self:updateActionCustomDialog(ctx, action, i)
                 end
                 }
             }
@@ -46,7 +56,7 @@ function ActionCustom:showActionCustomMenu(config)
         -- add action
         callback = function()
             UIManager:close(dialog)
-            self:addActionCustomDialog(config)
+            self:addActionCustomDialog(ctx)
         end
         },
         {
@@ -73,7 +83,7 @@ function ActionCustom:applyActionCustom(callback)
     ActionExec.dispatch(callback)
 end
 
-function ActionCustom:applyActionCustomDialog(config, action)
+function ActionCustom:applyActionCustomDialog(ctx, action)
     local dialog
     local is_callback = not not (action.callback and action.callback.label and action.callback.label ~= "") --force boolean
     local is_hold_callback = not not (action.hold_callback and action.hold_callback.label and action.hold_callback.label~="") -- force boolean
@@ -111,7 +121,7 @@ function ActionCustom:applyActionCustomDialog(config, action)
             text = _("Exit"),
             callback = function()
                 UIManager:close(dialog)
-                self:showActionCustomMenu(config)
+                self:showActionCustomMenu(ctx)
             end
         }}
     }
@@ -122,7 +132,7 @@ function ActionCustom:applyActionCustomDialog(config, action)
         title_align  = "left",
         buttons = buttons,
         tap_close_callback = function()
-            self:showActionCustomMenu(config)
+            self:showActionCustomMenu(ctx)
         end
     }
     UIManager:show(dialog)
@@ -131,7 +141,7 @@ end
 -- ============================================================
 -- Add
 -- ============================================================
-function ActionCustom:addActionCustom(config, fields)
+function ActionCustom:addActionCustom(ctx, fields)
     local action = {
         id         = os.time() .. math.random(100, 999),
         label      = fields.label or "",
@@ -154,12 +164,13 @@ function ActionCustom:addActionCustom(config, fields)
         end
     end
 
+    local config = ctx.config
     config.custom_actions = config.custom_actions or {}
     table.insert(config.custom_actions, action)
-    Config.save(config)
+    saveAndRefresh(ctx)
 end
 
-function ActionCustom:addActionCustomDialog(config)
+function ActionCustom:addActionCustomDialog(ctx)
     local dialog
 --     local function close(fn)
 --         return function()
@@ -172,8 +183,8 @@ function ActionCustom:addActionCustomDialog(config)
 
     local buttons = ActionChooser.actionRows(no_close, function(fields)
         UIManager:close(dialog)
-        self:addActionCustom(config, fields)
-        self:showActionCustomMenu(config)
+        self:addActionCustom(ctx, fields)
+        self:showActionCustomMenu(ctx)
     end)
 
     buttons[#buttons + 1] = {
@@ -181,7 +192,7 @@ function ActionCustom:addActionCustomDialog(config)
         text = _("Exit"),
         callback = function()
             UIManager:close(dialog)
-            self:showActionCustomMenu(config)
+            self:showActionCustomMenu(ctx)
         end
         },
     }
@@ -190,7 +201,7 @@ function ActionCustom:addActionCustomDialog(config)
         title_align  = "left",
         buttons      = buttons,
         tap_close_callback = function()
-            self:showActionCustomMenu(config)
+            self:showActionCustomMenu(ctx)
         end
     }
     UIManager:show(dialog)
@@ -217,7 +228,7 @@ function ActionCustom:callbackActionCustom(action, fields, is_hold_callback)
     end
 end
 
-function ActionCustom:callbackActionCustomDialog(config, action, index, is_hold_callback)
+function ActionCustom:callbackActionCustomDialog(ctx, action, index, is_hold_callback)
     local dialog
 
 --     local function close(fn)
@@ -232,7 +243,7 @@ function ActionCustom:callbackActionCustomDialog(config, action, index, is_hold_
     local buttons = ActionChooser.actionRows(no_close, function(fields)
         UIManager:close(dialog)
         self:callbackActionCustom(action, fields, is_hold_callback)
-        self:updateActionCustomDialog(config, action, index)
+        self:updateActionCustomDialog(ctx, action, index)
     end)
 
     buttons[#buttons + 1] = {
@@ -242,14 +253,14 @@ function ActionCustom:callbackActionCustomDialog(config, action, index, is_hold_
                 UIManager:close(dialog)
                 local target_key = is_hold_callback and "hold_callback" or "callback"
                 action[target_key] = {}
-                self:updateActionCustomDialog(config, action, index)
+                self:updateActionCustomDialog(ctx, action, index)
             end
         },
         {
             text = _("Exit"),
             callback = function()
                 UIManager:close(dialog)
-                self:updateActionCustomDialog(config, action, index)
+                self:updateActionCustomDialog(ctx, action, index)
             end
         }
     }
@@ -259,7 +270,7 @@ function ActionCustom:callbackActionCustomDialog(config, action, index, is_hold_
         title_align  = "left",
         buttons      = buttons,
         tap_close_callback = function()
-            self:updateActionCustomDialog(config, action, index)
+            self:updateActionCustomDialog(ctx, action, index)
         end
     }
     UIManager:show(dialog)
@@ -268,14 +279,16 @@ end
 -- ============================================================
 -- Update
 -- ============================================================
-function ActionCustom:updateActionCustom(config, action, index)
+function ActionCustom:updateActionCustom(ctx, action, index)
+    local config = ctx.config
     if config and config.custom_actions and config.custom_actions[index] then
         config.custom_actions[index] = action
-        Config.save(config)
+        saveAndRefresh(ctx)
     end
 end
 
-function ActionCustom:deleteActionCustom(config, action)
+function ActionCustom:deleteActionCustom(ctx, action)
+    local config = ctx.config
     if not config or not config.custom_actions then return end
     local id_to_remove = action.id
     -- delete in config.custom_actions
@@ -298,7 +311,7 @@ function ActionCustom:deleteActionCustom(config, action)
         end
     end
 
-    Config.save(config)
+    saveAndRefresh(ctx)
 end
 
 local function tableCopy(orig)
@@ -317,7 +330,7 @@ local function tableCopy(orig)
     return copy
 end
 
-function ActionCustom:updateActionCustomDialog(config, action, index)
+function ActionCustom:updateActionCustomDialog(ctx, action, index)
     local dialog
     local temp_action = tableCopy(action)
     local buttons = {
@@ -337,14 +350,14 @@ function ActionCustom:updateActionCustomDialog(config, action, index)
                                 callback = function()
                                     temp_action.label = label_dialog:getInputText()
                                     UIManager:close(label_dialog)
-                                    self:updateActionCustomDialog(config, temp_action, index)
+                                    self:updateActionCustomDialog(ctx, temp_action, index)
                                 end
                             },
                             {
                                 text = _("Exit"),
                                 callback = function()
                                     UIManager:close(label_dialog)
-                                    self:updateActionCustomDialog(config, temp_action, index)
+                                    self:updateActionCustomDialog(ctx, temp_action, index)
                                 end
 
                             }
@@ -361,7 +374,7 @@ function ActionCustom:updateActionCustomDialog(config, action, index)
                     if glyph and glyph ~= "" then
                         temp_action.icon = glyph
                         UIManager:close(dialog)
-                        self:updateActionCustomDialog(config, temp_action, index)
+                        self:updateActionCustomDialog(ctx, temp_action, index)
                     end
                 end, { dynamic = false, svg = true})
                 --UIManager:close(dialog)
@@ -371,38 +384,38 @@ function ActionCustom:updateActionCustomDialog(config, action, index)
             text = _("Tap") .. " : " .. ((temp_action.callback and temp_action.callback.label) or _("None")),
             callback = function()
                 UIManager:close(dialog)
-                self:callbackActionCustomDialog(config, temp_action, index, false)
+                self:callbackActionCustomDialog(ctx, temp_action, index, false)
             end
         }},
         {{
             text = _("Hold") .. " : " .. ((temp_action.hold_callback and temp_action.hold_callback.label) or _("None")),
             callback = function()
                 UIManager:close(dialog)
-                self:callbackActionCustomDialog(config, temp_action, index, true)
+                self:callbackActionCustomDialog(ctx, temp_action, index, true)
             end
         }},
         {
             {
                 text = _("Save"),
                 callback = function()
-                    self:updateActionCustom(config, temp_action, index)
+                    self:updateActionCustom(ctx, temp_action, index)
                     UIManager:close(dialog)
-                    self:showActionCustomMenu(config)
+                    self:showActionCustomMenu(ctx)
                 end
             },
             {
                 text = _("Delete"),
                 callback = function()
-                    self:deleteActionCustom(config, action)
+                    self:deleteActionCustom(ctx, action)
                     UIManager:close(dialog)
-                    self:showActionCustomMenu(config)
+                    self:showActionCustomMenu(ctx)
                 end,
             },
             {
                 text = _("Exit"),
                 callback = function()
                     UIManager:close(dialog)
-                    self:showActionCustomMenu(config)
+                    self:showActionCustomMenu(ctx)
                 end
             }
         }
@@ -413,7 +426,7 @@ function ActionCustom:updateActionCustomDialog(config, action, index)
         title_align = "left",
         buttons = buttons,
         tap_close_callback = function()
-            self:showActionCustomMenu(config)
+            self:showActionCustomMenu(ctx)
         end
     }
     UIManager:show(dialog)

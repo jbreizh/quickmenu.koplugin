@@ -22,9 +22,13 @@ local UIManager       = require("ui/uimanager")
 local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
 local ZenSlider       = require("widgets/zen_slider")
+local Config           = require("config")
+local Utils            = require("common/utils")
 local _               = require("common/i18n").gettext
 
 local IntensityZenUI = {}
+
+local SECTION = "frontlight"
 
 function IntensityZenUI.build(ctx)
     local config             = ctx.config
@@ -51,6 +55,11 @@ function IntensityZenUI.build(ctx)
     local show_parent        = touch_menu.show_parent
     local medium_font        = Font:getFace("cfont", btn_font_size)
     local slider_width       = inner_width - 2 * btn_width - 2 * h_gap
+
+    --
+    local group = VerticalGroup:new{ align = "center" }
+    local refs = { buttons = {}, sliders = {}, widgets = {} }
+    local update_touch_menu = function() if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end end
 
     local fl = {
         min = powerd.fl_min,
@@ -80,13 +89,48 @@ function IntensityZenUI.build(ctx)
         fl_drag_num,
     }
 
+    -- collapse_btn
+    local section = Utils.getSection(config, SECTION)
+    local collapse_btn = Button:new{
+        text           = section.collapse and "\u{F078}" or "\u{F077}", -- down up
+        width          = btn_width,
+        radius         = btn_radius,
+        bordersize     = 0,
+        text_font_size = btn_font_size,
+        show_parent    = show_parent,
+        callback       = function()
+            section.collapse = not section.collapse
+            Config.save(config)
+            update_touch_menu()
+        end,
+        -- hold_callback
+    }
 
     local fl_label_group = HorizontalGroup:new{
         fl_drag_prefix,
         fl_num_box,
-        fl_drag_suffix -- add suffix
+        fl_drag_suffix, -- add suffix
+        HorizontalSpan:new{ width = inner_width - fl_drag_ref_w - btn_width},
+        collapse_btn   -- add collapse_btn
     }
 
+    local fl_cap_row
+    if label_center then
+        fl_cap_row = CenterContainer:new{
+            dimen = Geom:new{ w = inner_width, h = fl_label_h },
+            fl_label_group,
+        }
+    else
+        fl_cap_row = LeftContainer:new{
+            dimen = Geom:new{ w = inner_width, h = fl_label_h },
+            fl_label_group,
+        }
+    end
+
+    table.insert(group, fl_cap_row)
+    if section.collapse then return { widget = group , refs = refs} end
+
+    -- progress bar
     local fl_progress = ZenSlider:new{
         width     = slider_width,
         value     = fl.cur,
@@ -115,9 +159,6 @@ function IntensityZenUI.build(ctx)
     -- GL16 from other widgets can cause flicker.  A2 completes in ~60ms
     -- and renders the pure B/W slider content without ghosting.
     -- On release / tap: full menu GL16 refresh to update label + slider.
-
-    local update_touch_menu = function() if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end end
-
     fl_progress.on_change = function(v)
         powerd:setIntensity(v)
         fl.cur = v
@@ -181,18 +222,6 @@ function IntensityZenUI.build(ctx)
         hold_callback  = function() setBrightness(fl.max); update_touch_menu() end,
     }
 
-    local fl_cap_row
-    if label_center then
-        fl_cap_row = CenterContainer:new{
-            dimen = Geom:new{ w = inner_width, h = fl_label_h },
-            fl_label_group,
-        }
-    else
-        fl_cap_row = LeftContainer:new{ -- CenterContainer:new{
-            dimen = Geom:new{ w = inner_width, h = fl_label_h },
-            fl_label_group,
-        }
-    end
 
     fl_row = HorizontalGroup:new{
         align = "center",
@@ -202,14 +231,13 @@ function IntensityZenUI.build(ctx)
         HorizontalSpan:new{ width = h_gap },
         fl_plus,
     }
-    local refs = { buttons = {}, sliders = {}, widgets = {} }
+
     refs.fl_progress   = fl_progress
     refs.fl_state      = fl
     refs.setBrightness = setBrightness
     table.insert(refs.sliders, { slider = fl_progress })
 
-    local group = VerticalGroup:new{ align = "center" }
-    table.insert(group, fl_cap_row)
+
     table.insert(group, VerticalSpan:new{ width = v_gap })
     table.insert(group, fl_row)
     return { widget = group, refs = refs }

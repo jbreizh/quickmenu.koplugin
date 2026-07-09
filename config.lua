@@ -6,7 +6,7 @@ Config.DEFAULTS = {
             enabled_f = true,
             enabled_r = true,
             collapse = false,
-            show_title = false,
+            show_title = true,
             show_label = true,
             fit_ctrl = true,
             justified_ctrl = true,
@@ -16,7 +16,7 @@ Config.DEFAULTS = {
             enabled_f = true,
             enabled_r = true,
             collapse = false,
-            show_title = false,
+            show_title = true,
             use_zenslider = false,
         },
         shortcuts = {

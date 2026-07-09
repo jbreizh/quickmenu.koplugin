@@ -12,14 +12,14 @@ local UIManager    = require("ui/uimanager")
 local _            = require("common/i18n").gettext
 
 local PLUGIN_DEFAULT_ICON = "\xEE\xAC\xB0" -- U+EB30 mdi-puzzle (start-menu default)
-local MENU_DEFAULT_ICON   = "\xEE\xA9\x9E" -- U+EA5E (default for menu shortcuts)
-local ACTION_DEFAULT_ICON   = "\xEE\xA9\x9E" -- U+EA5E (default for menu shortcuts)
+local MENU_DEFAULT_ICON   = "\xEE\xB5\x84" -- U+ED44 (default for menu shortcuts)
+local ACTION_DEFAULT_ICON   = "\xEE\xAD\xA2" -- U+EB62 (default for menu shortcuts)
 
 local Chooser = {}
 
 function Chooser.actionRows(close, on_pick)
     return {
-        { { text = _("Plugin\xE2\x80\xA6"), callback = close(function()
+        { { text = _("Plugin") .."\xE2\x80\xA6", callback = close(function()
             local PluginScan = require("actionchooser/plugin_scan")
             local found = PluginScan.scan()
             if #found == 0 then
@@ -44,7 +44,7 @@ function Chooser.actionRows(close, on_pick)
             host = MenuHost.show{ title = _("Choose a plugin"),
                 item_table = picker_items }
         end) } },
-        { { text = _("System action\xE2\x80\xA6"), callback = close(function()
+        { { text = _("System action") .. "\xE2\x80\xA6", callback = close(function()
             local ActionPicker = require("actionchooser/action_picker")
             ActionPicker.show{
                 on_pick = function(action, name)
@@ -52,7 +52,7 @@ function Chooser.actionRows(close, on_pick)
                 end,
             }
         end) } },
-        { { text = _("Menu action\xE2\x80\xA6"), callback = close(function()
+        { { text = _("Menu action") .. "\xE2\x80\xA6", callback = close(function()
             local MenuShortcut = require("actionchooser/menu_shortcut")
             MenuShortcut.openCapture(function(picked)
                 -- Toggle items get a live checkbox icon at render time

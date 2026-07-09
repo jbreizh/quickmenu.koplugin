@@ -97,46 +97,46 @@ function Info.build(ctx)
     --
     local row = HorizontalGroup:new{ align = "center" }
 
-    if section.show_thumbnail then
+    if section.show_thumbnail then -- TODO
         local cover_h = info_col:getSize().h
         local cover_w = math.floor(2 * cover_h / 3 + 0.5)
         local ok, thumbnail = pcall(function() return reader.bookinfo:getCoverImage(reader.document) end)
-
         if ok then
-            thumbnail = RenderImage:scaleBlitBuffer(thumbnail, cover_w, cover_h, true)
-            info_thumbnail = CoverButton:new{
-                image = thumbnail,
-                width = cover_w,
-                height = cover_h,
-                radius = btn_radius,
-                bordersize = btn_bordersize,
-                padding = 0, --h_gap,
-                callback = function()
-                    touch_menu:closeMenu()
-                    reader.bookinfo:onShowBookCover(reader.document.file)
-                end,
-                hold_callback = function()
-                    touch_menu:closeMenu()
-                    reader.bookinfo:onShowBookDescription(false, reader.document.file)
+            ok, thumbnail = pcall(function() return RenderImage:scaleBlitBuffer(thumbnail, cover_w, cover_h, true) end)
+            if ok then
+                info_thumbnail = CoverButton:new{
+                    image = thumbnail,
+                    width = cover_w,
+                    height = cover_h,
+                    radius = btn_radius,
+                    bordersize = btn_bordersize,
+                    padding = 0, --h_gap,
+                    callback = function()
+                        touch_menu:closeMenu()
+                        reader.bookinfo:onShowBookCover(reader.document.file)
+                    end,
+                    hold_callback = function()
+                        touch_menu:closeMenu()
+                        reader.bookinfo:onShowBookDescription(false, reader.document.file)
+                    end
+                }
+                table.insert(row, info_thumbnail)
+                table.insert(row, HorizontalSpan:new{ width = h_gap })
+
+                local opts = {}
+                for k, v in pairs(ctx) do opts[k] = v end
+                opts.inner_width = inner_width - cover_w - 2 * h_gap
+
+                info_col = VerticalGroup:new{ align = "left" }
+                local infoSection = InfoSection.build(opts)
+                table.insert(info_col, infoSection.widget)
+
+                if section.show_skim then
+                    local skimSection = SkimSection.build(opts)
+                    table.insert(info_col, VerticalSpan:new{ width = v_gap })
+                    table.insert(info_col, skimSection.widget)
+                    table.insert(refs.sliders, skimSection.refs.sliders[1])
                 end
-            }
-
-            table.insert(row, info_thumbnail)
-            table.insert(row, HorizontalSpan:new{ width = h_gap })
-
-            local opts = {}
-            for k, v in pairs(ctx) do opts[k] = v end
-            opts.inner_width = inner_width - cover_w - 2 * h_gap
-
-            info_col = VerticalGroup:new{ align = "left" }
-            local infoSection = InfoSection.build(opts)
-            table.insert(info_col, infoSection.widget)
-
-            if section.show_skim then
-                local skimSection = SkimSection.build(opts)
-                table.insert(info_col, VerticalSpan:new{ width = v_gap })
-                table.insert(info_col, skimSection.widget)
-                table.insert(refs.sliders, skimSection.refs.sliders[1])
             end
         end
     end

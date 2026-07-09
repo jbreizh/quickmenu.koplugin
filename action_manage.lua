@@ -10,6 +10,15 @@ local ActionDefs = require("action_defs")
 
 local ActionManage = {}
 
+local function saveAndRefresh(ctx)
+    -- save
+    local config = ctx.config
+    if config then Config.save(config) end
+    -- refresh
+    local touch_menu = ctx.touch_menu
+    if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end
+end
+
 -- ============================================================
 -- Menu
 -- ============================================================
@@ -30,6 +39,16 @@ local function resetSectionToDefaults(section, defaults)
     end
 end
 
+local function resetSectionItemsToDefaults(section, defaults)
+    if not section or not defaults then return end
+    section.items = {}
+    if defaults.items then
+        for i, v in ipairs(defaults.items) do
+            section.items[i] = v
+        end
+    end
+end
+
 function ActionManage:showActionManageMenu(ctx, section_name)
     local config = ctx.config
     if not config.sections or not config.sections[section_name] then return end
@@ -43,7 +62,7 @@ function ActionManage:showActionManageMenu(ctx, section_name)
     local buttons = {
         -- select action
         {{
-        text = _("Select actions") .. " (" .. count .. ")",
+        text = _("Select actions") .. " (" .. count .. ")\xE2\x80\xA6",
         callback = function()
             UIManager:close(dialog)
             self:selectActionManageDialog(ctx, section_name)
@@ -52,7 +71,7 @@ function ActionManage:showActionManageMenu(ctx, section_name)
         }},
         -- sort
         {{
-        text = _("Sort actions"),
+        text = _("Sort actions") .. "\xE2\x80\xA6",
         callback = function()
             --UIManager:close(dialog)
             self:sortActionManageDialog(ctx, section_name)
@@ -60,7 +79,7 @@ function ActionManage:showActionManageMenu(ctx, section_name)
         }},
         -- reset
         {{
-            text = _("Reset actions"),
+            text = _("Reset actions") .. "\xE2\x80\xA6",
             callback = function()
                 UIManager:close(dialog)
                 UIManager:show(ConfirmBox:new{
@@ -68,8 +87,8 @@ function ActionManage:showActionManageMenu(ctx, section_name)
                     ok_text = _("Reset"),
                     ok_callback = function()
                         local defaults = Config.DEFAULTS.sections[section_name]
-                        resetSectionToDefaults(section, defaults)
-                        Config.save(config)
+                        resetSectionItemsToDefaults(section, defaults)
+                        saveAndRefresh(ctx)
                         self:showActionManageMenu(ctx, section_name)
                     end,
                     cancel_callback = function()
@@ -116,21 +135,8 @@ local function table_remove(tbl, val)
     return false
 end
 
-function getMerged(custom_actions)
-    local all = ActionDefs.get()
-    if custom_actions then
-        for i, custom in ipairs(custom_actions) do
-            if custom.id then all[custom.id] = custom end
-        end
-    end
-    return all
-end
-
 function getSortedActionList(config)
-    -- 1. Récupération des définitions fusionnées
-    local action_defs = getMerged(config.custom_actions)
-
-    -- 2. Création de la liste triée
+    local action_defs = ActionDefs.getMerged(config.custom_actions)
     local sorted_list = {}
     for id, def in pairs(action_defs) do
         table.insert(sorted_list, {
@@ -141,7 +147,7 @@ function getSortedActionList(config)
         })
     end
 
-    -- 3. Tri alphabétique par label
+    -- sort label alphabetical
     table.sort(sorted_list, function(a, b)
         return a.label:lower() < b.label:lower()
     end)
@@ -177,7 +183,7 @@ function ActionManage:selectActionManageDialog(ctx, section_name)
                 else
                     table.insert(section.items, action.id)
                 end
-                Config.save(config)
+                saveAndRefresh(ctx)
                 return true
             end
         }})
@@ -211,7 +217,7 @@ function ActionManage:sortActionManageDialog(ctx, section_name)
     local section = config.sections[section_name]
     if not section or not section.items then return end
 
-    local action_defs = getMerged(config.custom_actions)
+    local action_defs = ActionDefs.getMerged(config.custom_actions)
 
     local sort_items = {}
     for _, id in ipairs(section.items) do
@@ -232,7 +238,7 @@ function ActionManage:sortActionManageDialog(ctx, section_name)
             for _, item in ipairs(sort_items) do
                 table.insert(section.items, item.orig_item)
             end
-            Config.save(config)
+            saveAndRefresh(ctx)
         end
     })
 end

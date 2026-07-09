@@ -318,28 +318,31 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
             config.open_on_start = not config.open_on_start
             Config.save(config)
         end,
-        separator = true
+        --separator = true
     })
 
     -- custom actions
     table.insert(menu_items, {
-        text = _("Custom actions"),
-        --keep_menu_open = true,
-        --help_text = _("Author : peterboda236\nProjet : koreader-user-patches\nhttps://github.com/peterboda236/koreader-user-patches"),
+        text_func = function()
+            local count = #(config.custom_actions or {})
+            return _("Custom actions") .. " (" .. count .. ")\xE2\x80\xA6"
+        end,
+        keep_menu_open = true,
         callback = function(touch_menu)
-            ActionCustom:showActionCustomMenu(config)
+            ctx.touch_menu = touch_menu
+            ActionCustom:showActionCustomMenu(ctx)
         end
     })
 
     -- preset
-    table.insert(menu_items, {
-        text = _("Frontlight presets"),
-        --keep_menu_open = true,
-        help_text = _("Author : peterboda236\nProjet : koreader-user-patches\nhttps://github.com/peterboda236/koreader-user-patches"),
-        callback = function(touch_menu)
-            FrontlightPreset:showFrontlightPresetMenu(config)
-        end
-    })
+--     table.insert(menu_items, {
+--         text = _("Frontlight presets"),
+--         --keep_menu_open = true,
+--         help_text = _("Author : peterboda236\nProjet : koreader-user-patches\nhttps://github.com/peterboda236/koreader-user-patches"),
+--         callback = function(touch_menu)
+--             FrontlightPreset:showFrontlightPresetMenu(config)
+--         end
+--     })
 
     -- style
     table.insert(menu_items, {
@@ -392,8 +395,10 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
                 for key, value in pairs(Config.DEFAULTS.style) do
                     config.style[key] = value
                 end
-                -- style
-                config.frontlight_presets = {}
+                -- frontlight_preset
+                --config.frontlight_presets = {} --TODO
+                -- custom_actions
+                --config.custom_actions = {} --TODO
                 Config.save(config)
                 QuickMenu.updateTab(config, menu_instance)
             end

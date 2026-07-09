@@ -61,78 +61,73 @@ function Frontlight.build(ctx)
 
     local group = VerticalGroup:new{ align = "center" }
 
-    if section.show_title and not section.use_zenslider then
-        local label = _("Frontlight") .. " : " .. powerd:frontlightIntensity() .. "%"
-        if  device:hasNaturalLight() and section.collapse then
-            label = label .. " - " .._("Warmth") .. " : " .. powerd:frontlightWarmth() .. "%"
+
+    if section.use_zenslider then
+        local intensityZenUI= IntensityZenUI.build(ctx)
+        table.insert(group, intensityZenUI.widget)
+        table.insert(refs.sliders, intensityZenUI.refs.sliders[1])
+        if section.collapse then return { widget = group , refs = refs} end
+    else
+        if section.show_title then
+            local label = _("Frontlight") .. " : " .. powerd:frontlightIntensity() .. "%"
+            local label_title = TextWidget:new{
+                text = label,
+                face =  Font:getFace("cfont", btn_font_size), bold = true,
+                max_width = inner_width - btn_width,
+            }
+            local collapse_btn = Button:new{
+                text           = section.collapse and "\u{F078}" or "\u{F077}", -- down up
+                width          = btn_width,
+                radius         = btn_radius,
+                bordersize     = 0,
+                text_font_size = btn_font_size,
+                show_parent    = touch_menu.show_parent,
+                callback       = function()
+                    section.collapse = not section.collapse
+                    Config.save(config)
+                    touch_menu:updateItems(1)
+                end,
+                -- hold_callback
+            }
+            local row_title = HorizontalGroup:new{
+                align = "center",
+                label_title,
+                HorizontalSpan:new{ width = inner_width - label_title:getSize().w - btn_width},
+                collapse_btn
+            }
+            table.insert(group, row_title)
+            if section.collapse then  return { widget = group , refs = refs} end
         end
-
-        local label_title = TextWidget:new{
-            text = label,
-            face =  Font:getFace("cfont", btn_font_size), bold = true,
-            max_width = inner_width - btn_width,
-        }
-
-        local collapse_btn = Button:new{
-            text           = section.collapse and "\u{F078}" or "\u{F077}", -- down up
-            width          = btn_width,
-            radius         = btn_radius,
-            bordersize     = 0,
-            text_font_size = btn_font_size,
-            show_parent    = touch_menu.show_parent,
-            callback       = function()
-                section.collapse = not section.collapse
-                Config.save(config)
-                touch_menu:updateItems(1)
-            end,
-            -- hold_callback
-        }
-
-        local row_title = HorizontalGroup:new{
-            align = "center",
-            label_title,
-            HorizontalSpan:new{ width = inner_width - label_title:getSize().w - btn_width},
-            collapse_btn
-        }
-        table.insert(group, row_title)
-        if section.collapse then  return { widget = group , refs = refs} end
-    end
-
-    if device:hasFrontlight() then
-        local intensitySection
-        if not section.use_zenslider then
-            intensitySection = IntensitySection.build(ctx)
-        else
-            intensitySection = IntensityZenUI.build(ctx)
-        end
+        local intensitySection = IntensitySection.build(ctx)
         table.insert(group, intensitySection.widget)
         table.insert(refs.sliders, intensitySection.refs.sliders[1])
     end
 
     if device:hasNaturalLight() then
-        if section.show_title and not section.use_zenslider then
-            local label_title = TextWidget:new{
-                text = _("Warmth") .. " : " .. powerd:frontlightWarmth() .. "%",
-                face =  Font:getFace("cfont", btn_font_size), bold = true,
-                max_width = inner_width,
+        if section.use_zenslider then
+            local warmthZenUI = WarmthZenUI.build(ctx)
+            table.insert(group, warmthZenUI.widget)
+            table.insert(refs.sliders, warmthZenUI.refs.sliders[1])
+        else
+           if section.show_title then
+                local label_title = TextWidget:new{
+                    text = _("Warmth") .. " : " .. powerd:frontlightWarmth() .. "%",
+                    face =  Font:getFace("cfont", btn_font_size), bold = true,
+                    max_width = inner_width,
+                }
+                local row_title = HorizontalGroup:new{
+                align = "center",
+                label_title,
+                HorizontalSpan:new{ width = inner_width - label_title:getSize().w}
             }
-            local row_title = HorizontalGroup:new{
-            align = "center",
-            label_title,
-            HorizontalSpan:new{ width = inner_width - label_title:getSize().w}
-        }
-            table.insert(group, row_title)
-        else
-            table.insert(group, VerticalSpan:new{ width = v_gap })
+                table.insert(group, row_title)
+            else
+                table.insert(group, VerticalSpan:new{ width = v_gap })
+            end
+            local warmthSection = WarmthSection.build(ctx)
+            table.insert(group, warmthSection.widget)
+            table.insert(refs.sliders, warmthSection.refs.sliders[1])
         end
-        local warmthSection
-        if not section.use_zenslider then
-            warmthSection = WarmthSection.build(ctx)
-        else
-            warmthSection = WarmthZenUI.build(ctx)
-        end
-        table.insert(group, warmthSection.widget)
-        table.insert(refs.sliders, warmthSection.refs.sliders[1])
     end
 
     return { widget = group , refs = refs }
@@ -147,7 +142,7 @@ function Frontlight.getSettings(ctx)
     local config  = ctx.config
     local section = Utils.getSection(config, SECTION)
 
-    if not device:hasFrontlight() then return nil end
+    --if not device:hasFrontlight() then return nil end
     if not section then return {} end
 
     return {
@@ -163,6 +158,7 @@ function Frontlight.getSettings(ctx)
         },
         {
             text = _("Show title"),
+            enabled_func = function() return not section.use_zenslider end, --do nothing on ZenSlider
             checked_func = function() return section.show_title end,
             callback = function() section.show_title = not section.show_title; Config.save(config) end
         },

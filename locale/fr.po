@@ -1,9 +1,6 @@
 msgid "Actions"
 msgstr "Actions"
 
-msgid "Actions"
-msgstr "Actions"
-
 msgid "Add"
 msgstr "Ajouter"
 
@@ -12,9 +9,6 @@ msgstr "Ajouter onglet de sortie"
 
 msgid "Add new preset"
 msgstr "Ajouter nouveau préréglage"
-
-msgid "Add preset '%s'"
-msgstr "Ajouter préréglage '%s'"
 
 msgid "Add quick menu tab"
 msgstr "Ajouter onglet menu rapide"
@@ -39,9 +33,6 @@ msgstr "Êtes-vous sûr de vouloir réinitialiser aux valeurs par défaut ?"
 
 msgid "Are you sure you want to restart KOReader ?"
 msgstr "Êtes-vous sûr de vouloir redémarrer KOReader ?"
-
-msgid "Arrange controls"
-msgstr "Organiser les contrôles"
 
 msgid "Author : Anthony Gress\nProjet : Zen UI\nhttps://github.com/AnthonyGress/zen_ui.koplugin"
 msgstr "Auteur : Anthony Gress\nProjet : Zen UI\nhttps://github.com/AnthonyGress/zen_ui.koplugin"
@@ -226,9 +217,6 @@ msgstr "SSH"
 msgid "Search"
 msgstr "Rechercher"
 
-msgid "Select controls"
-msgstr "Sélectionner les contrôles"
-
 msgid "Separator"
 msgstr "Séparateur"
 
@@ -260,100 +248,85 @@ msgid "Style"
 msgstr "Style"
 
 msgid "Tap : Ask for exit KOreader\nHold : Ask for restart KOreader"
-msgstr "Tap : Demander à quitter KOReader\nMaintien : Demander à relancer KOReader"
+msgstr "Appui : Quitter KOReader\nMaintien : Relancer KOReader"
 
 msgid "Tap : Ask for power off system\nHold : Ask for reboot system"
-msgstr "Tap : Demander à éteindre le système\nMaintien : Demander à redémarrer le système"
+msgstr "Appui : Éteindre le système\nMaintien : Redémarrer le système"
 
 msgid "Tap : Ask for reboot system\nHold : Ask for power off system"
-msgstr "Tap : Demander à redémarrer le système\nMaintien : Demander à éteindre le système"
+msgstr "Appui : Redémarrer le système\nMaintien : Éteindre le système"
 
 msgid "Tap : Ask for restart KOreader\nHold : Ask for exit KOreader"
-msgstr "Tap : Demander à relancer KOReader\nMaintien : Demander à quitter KOReader"
+msgstr "Appui : Relancer KOReader\nMaintien : Quitter KOReader"
 
 msgid "Tap : Nothing\nHold : Nothing"
-msgstr "Tap : Rien\nMaintien : Rien"
+msgstr "Appui : Rien\nMaintien : Rien"
 
 msgid "Tap : Open last book\nHold : Show history"
-msgstr "Tap : Ouvrir le dernier livre\nMaintien : Afficher l'historique"
+msgstr "Appui : Ouvrir le dernier livre\nMaintien : Afficher l'historique"
 
 msgid "Tap : Push progress to KOSync\nHold : Pull progress from KOSync"
-msgstr "Tap : Envoyer la progression vers KOSync\nMaintien : Récupérer la progression depuis KOSync"
+msgstr "Appui : Envoyer la progression vers KOSync\nMaintien : Récupérer la progression depuis KOSync"
 
 msgid "Tap : Request UBS mass storage\nHold : Nothing"
-msgstr "Tap : Demander le stockage de masse USB\nMaintien : Rien"
+msgstr "Appui : Demander le stockage de masse USB\nMaintien : Rien"
 
 msgid "Tap : Show Calibre search\nHold : Show file search"
-msgstr "Tap : Afficher la recherche Calibre\nMaintien : Afficher la recherche de fichiers"
+msgstr "Appui : Afficher la recherche Calibre\nMaintien : Afficher la recherche de fichiers"
 
 msgid "Tap : Show OPDS catalog\nHold : Show cloud storage"
-msgstr "Tap : Afficher le catalogue OPDS\nMaintien : Afficher le stockage cloud"
+msgstr "Appui : Afficher le catalogue OPDS\nMaintien : Afficher le stockage cloud"
 
 msgid "Tap : Show Z-lib search\nHold : Nothing"
-msgstr "Tap : Afficher la recherche Z-lib\nMaintien : Rien"
+msgstr "Appui : Afficher la recherche Z-lib\nMaintien : Rien"
 
 msgid "Tap : Show battery statistics\nHold : Nothing"
-msgstr "Tap : Afficher les statistiques de la batterie\nMaintien : Rien"
+msgstr "Appui : Afficher les statistiques de la batterie\nMaintien : Rien"
 
 msgid "Tap : Show calendar statistics\nHold : Show reader statistics"
-msgstr "Tap : Afficher les statistiques du calendrier\nMaintien : Afficher les statistiques du lecteur"
+msgstr "Appui : Afficher les statistiques du calendrier\nMaintien : Afficher les statistiques du lecteur"
 
 msgid "Tap : Show cloud storage\nHold : Show OPDS catalog"
-msgstr "Tap : Afficher le stockage cloud\nMaintien : Afficher le catalogue OPDS"
+msgstr "Appui : Afficher le stockage cloud\nMaintien : Afficher le catalogue OPDS"
 
 msgid "Tap : Show collections\nHold : Show favorites"
-msgstr "Tap : Afficher les collections\nMaintien : Afficher les favoris"
+msgstr "Appui : Afficher les collections\nMaintien : Afficher les favoris"
 
 msgid "Tap : Show dictionary search\nHold : Show wikipedia search"
-msgstr "Tap : Afficher la recherche dans le dictionnaire\nMaintien : Afficher la recherche Wikipédia"
+msgstr "Appui : Afficher la recherche dans le dictionnaire\nMaintien : Afficher la recherche Wikipédia"
 
 msgid "Tap : Show favorites\nHold : Show collections"
-msgstr "Tap : Afficher les favoris\nMaintien : Afficher les collections"
+msgstr "Appui : Afficher les favoris\nMaintien : Afficher les collections"
 
 msgid "Tap : Show file search\nHold : Show Calibre search"
-msgstr "Tap : Afficher la recherche de fichiers\nMaintien : Afficher la recherche Calibre"
+msgstr "Appui : Afficher la recherche de fichiers\nMaintien : Afficher la recherche Calibre"
 
 msgid "Tap : Show frontlight preset dialog\nHold : Show frontlight dialog"
-msgstr "Tap : Afficher la boîte de dialogue des préréglages d'éclairage\nMaintien : Afficher la boîte de dialogue d'éclairage"
+msgstr "Appui : Afficher la boîte de dialogue des préréglages d'éclairage\nMaintien : Afficher la boîte de dialogue d'éclairage"
 
 msgid "Tap : Show history\nHold : Open last book"
-msgstr "Tap : Afficher l'historique\nMaintien : Ouvrir le dernier livre"
+msgstr "Appui : Afficher l'historique\nMaintien : Ouvrir le dernier livre"
 
 msgid "Tap : Show power dialog\nHold : Nothing"
-msgstr "Tap : Afficher la boîte de dialogue d'alimentation\nMaintien : Rien"
+msgstr "Appui : Afficher la boîte de dialogue d'alimentation\nMaintien : Rien"
 
 msgid "Tap : Show reader statistics\nHold : Show calendar statistics"
-msgstr "Tap : Afficher les statistiques du lecteur\nMaintien : Afficher les statistiques du calendrier"
+msgstr "Appui : Afficher les statistiques du lecteur\nMaintien : Afficher les statistiques du calendrier"
 
 msgid "Tap : Show system statistics\nHold : Nothing"
-msgstr "Tap : Afficher les statistiques du système\nMaintien : Rien"
+msgstr "Appui : Afficher les statistiques du système\nMaintien : Rien"
 
 msgid "Tap : Show wikipedia search\nHold : Show dictionary search"
-msgstr "Tap : Afficher la recherche Wikipédia\nMaintien : Afficher la recherche dans le dictionnaire"
+msgstr "Appui : Afficher la recherche Wikipédia\nMaintien : Afficher la recherche dans le dictionnaire"
 
 msgid "Tap : Suspend system\nHold : Nothing"
-msgstr "Tap : Suspendre le système\nMaintien : Rien"
+msgstr "Appui : Suspendre le système\nMaintien : Rien"
 
 msgid "Tap : Swap rotation\nHold : Invert rotation"
-msgstr "Tap : Inverser la rotation\nMaintien : Inverser le sens de rotation"
+msgstr "Appui : Inverser la rotation\nMaintien : Inverser le sens de rotation"
 
 msgid "Tap : Toggle SSH server\nHold : Nothing"
-msgstr "Tap : Basculer le serveur SSH\nMaintien : Rien"
-
-msgid "Tap : Toogle Calibre connection\nHold : Nothing"
-msgstr "Tap : Basculer la connexion Calibre\nMaintien : Rien"
-
-msgid "Tap : Toogle frontlight\nHold : Show frontlight dialog"
-msgstr "Tap : Basculer l'éclairage frontal\nMaintien : Afficher la boîte de dialogue d'éclairage"
-
-msgid "Tap : Toogle lock gsensor\nHold : Toogle ignore gsensor"
-msgstr "Tap : Basculer le verrouillage du capteur gyroscopique\nMaintien : Basculer l'ignorance du capteur gyroscopique"
-
-msgid "Tap : Toogle night mode\nHold : Show frontlight preset dialog"
-msgstr "Tap : Basculer le mode nuit\nMaintien : Afficher la boîte de dialogue des préréglages d'éclairage"
-
-msgid "Tap : Toogle wifi\nHold : Show wifi picker"
-msgstr "Tap : Basculer le wifi\nMaintien : Afficher la sélection wifi"
+msgstr "Appui : Basculer le serveur SSH\nMaintien : Rien"
 
 msgid "Time"
 msgstr "Heure"
@@ -414,9 +387,6 @@ msgstr "total"
 
 msgid "used"
 msgstr "utilisé"
-
-msgid "Action: "
-msgstr "Action : "
 
 msgid "Add as shortcut"
 msgstr "Ajouter en raccourci"
@@ -553,9 +523,6 @@ msgstr "Actions personnalisées"
 msgid "Dagger"
 msgstr "Obèle"
 
-msgid "Defined"
-msgstr "Défini"
-
 msgid "Device"
 msgstr "Appareil"
 
@@ -637,17 +604,11 @@ msgstr "Points de suspension horizontaux"
 msgid "Hot springs / warmth"
 msgstr "Sources chaudes / chaleur"
 
-msgid "Icon: "
-msgstr "Icône : "
-
 msgid "Icons library"
 msgstr "Bibliothèque d'icônes"
 
 msgid "Infinity"
 msgstr "Infini"
-
-msgid "Label: "
-msgstr "Étiquette : "
 
 msgid "Left 1/8 block"
 msgstr "Bloc gauche 1/8"
@@ -703,9 +664,6 @@ msgstr "Bloc inférieur 7/8"
 msgid "Menu"
 msgstr "Menu"
 
-msgid "Menu action…"
-msgstr "Action du menu…"
-
 msgid "Menu unavailable"
 msgstr "Menu indisponible"
 
@@ -724,17 +682,11 @@ msgstr "Aucun"
 msgid "Numero"
 msgstr "Numéro"
 
-msgid "OK"
-msgstr "OK"
-
 msgid "Page %1 of %2"
 msgstr "Page %1 sur %2"
 
 msgid "Pilcrow / paragraph"
 msgstr "Pied-de-mouche / paragraphe"
-
-msgid "Plugin…"
-msgstr "Plugin…"
 
 msgid "Reading"
 msgstr "Lecture"
@@ -765,9 +717,6 @@ msgstr "Rechercher…"
 
 msgid "Section sign"
 msgstr "Signe de section"
-
-msgid "Select action"
-msgstr "Sélectionner une action"
 
 msgid "Select label"
 msgstr "Sélectionner une étiquette"
@@ -811,9 +760,6 @@ msgstr "Soleil (contour)"
 msgid "Symbols"
 msgstr "Symboles"
 
-msgid "System action…"
-msgstr "Action système…"
-
 msgid "That menu item isn't available"
 msgstr "Cet élément de menu n'est pas disponible"
 
@@ -844,15 +790,6 @@ msgstr "Points de suspension verticaux"
 msgid "Wi-Fi"
 msgstr "Wi-Fi"
 
-msgid "Menu action\\\\\\\\xE2\\\\\\\\x80\\\\\\\\xA6"
-msgstr "Action de menu…"
-
-msgid "Plugin\\\\\\\\xE2\\\\\\\\x80\\\\\\\\xA6"
-msgstr "Plugin…"
-
-msgid "System action\\\\\\\\xE2\\\\\\\\x80\\\\\\\\xA6"
-msgstr "Action système…"
-
 msgid "Icon"
 msgstr "Icône"
 
@@ -861,9 +798,6 @@ msgstr "Étiquette"
 
 msgid "Manage actions"
 msgstr "Gérer les actions"
-
-msgid "Reset actions"
-msgstr "Réinitialiser les actions"
 
 msgid "Reset actions to defaults?"
 msgstr "Réinitialiser les actions par défaut ?"
@@ -880,11 +814,35 @@ msgstr "Sélectionner action appui"
 msgid "Sort actions"
 msgstr "Trier les actions"
 
-msgid "Tap"
-msgstr "Appui"
+msgid "Menu action"
+msgstr "Action de menu"
 
-msgid "Test"
-msgstr "Test"
+msgid "Plugin"
+msgstr "Plugin"
+
+msgid "Reset actions"
+msgstr "Réinitialiser les actions"
+
+msgid "System action"
+msgstr "Action système"
 
 msgid "Hold"
 msgstr "Maintien"
+
+msgid "Tap"
+msgstr "Appui"
+
+msgid "Tap : Toggle Calibre connection\nHold : Nothing"
+msgstr "Appui : Basculer la connexion Calibre\nMaintien : Rien"
+
+msgid "Tap : Toggle frontlight\nHold : Show frontlight dialog"
+msgstr "Appui : Basculer l'éclairage frontal\nMaintien : Afficher la boîte de dialogue d'éclairage"
+
+msgid "Tap : Toggle lock gsensor\nHold : Toggle ignore gsensor"
+msgstr "Appui : Basculer le verrouillage du capteur gyroscopique\nMaintien : Basculer l'ignorance du capteur gyroscopique"
+
+msgid "Tap : Toggle night mode\nHold : Show frontlight preset dialog"
+msgstr "Appui : Basculer le mode nuit\nMaintien : Afficher la boîte de dialogue des préréglages d'éclairage"
+
+msgid "Tap : Toggle wifi\nHold : Show wifi picker"
+msgstr "Appui : Basculer le wifi\nMaintien : Afficher la sélection wifi"

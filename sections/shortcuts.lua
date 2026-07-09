@@ -78,7 +78,19 @@ function Shortcuts.build(ctx)
         local label_title = TextWidget:new{
             text = _("Shortcuts") .. " :",
             face =  Font:getFace("cfont", btn_font_size), bold = true,
-            max_width = inner_width - btn_width,
+            max_width = inner_width - btn_width*2,
+        }
+        local settings_btn = Button:new{
+            text           = "\u{F462}", -- down up \u{EB92}"
+            width          = btn_width,
+            radius         = btn_radius,
+            bordersize     = 0,
+            text_font_size = btn_font_size,
+            show_parent    = touch_menu.show_parent,
+            callback       = function()
+                ActionManage:showActionManageMenu(ctx, SECTION)
+            end,
+            --hold_callback = function() end,
         }
         local collapse_btn = Button:new{
             text           = section.collapse and "\u{F078}" or "\u{F077}", -- down up
@@ -92,12 +104,13 @@ function Shortcuts.build(ctx)
                 Config.save(config)
                 touch_menu:updateItems(1)
             end,
-            -- hold_callback
+            --hold_callback = function() end,
         }
         local row_title = HorizontalGroup:new{
             align = "center",
             label_title,
-            HorizontalSpan:new{ width = inner_width - label_title:getSize().w - btn_width},
+            HorizontalSpan:new{ width = inner_width - label_title:getSize().w - btn_width*2 },
+            settings_btn,
             collapse_btn
         }
         table.insert(group, row_title)
@@ -187,10 +200,9 @@ function Shortcuts.getSettings(ctx)
             text = _("Show labels"),
             checked_func = function() return section.show_label end,
             callback = function() section.show_label = not section.show_label; Config.save(config) end,
-            separator = true
         },
         {
-            text_func = function() return _("Columns") .. " (" .. section.max_cols .. ")" end,
+            text_func = function() return _("Columns") .. " (" .. section.max_cols .. ")\xE2\x80\xA6" end,
             keep_menu_open = true,
             callback = function(touch_menu)
                 local original = section.max_cols
@@ -227,12 +239,15 @@ function Shortcuts.getSettings(ctx)
                 }
                 UIManager:show(dialog)
             end,
-            separator = true,
         },
         {
-            text = _("Manage actions"),
-            --keep_menu_open = true,
+            text_func = function()
+                local count = #(section.items or {})
+                return _("Manage actions") .. " (" .. count .. ")\xE2\x80\xA6"
+            end,
+            keep_menu_open = true,
             callback = function(touch_menu)
+                ctx.touch_menu = touch_menu
                 ActionManage:showActionManageMenu(ctx, SECTION)
             end,
             separator = true

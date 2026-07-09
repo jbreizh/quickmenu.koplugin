@@ -32,19 +32,6 @@ end
 
 function ActionDefs.get()
     return {
-        test = {
-            icon = "[icon=quick_calibre]", --"\u{EC0D}", -- theme-light-dark
-            label = _("Test"),
-            callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-                local ActionManage = require("action_manage")
-                ActionManage:showActionManageMenu(ctx, "actions")
-            end,
-            hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-
-            end
-        },
         wifi = {
             icon = "\u{ECA8}", --"\u{F1EB}"
             icon_func =  function(ctx)
@@ -61,7 +48,7 @@ function ActionDefs.get()
             end,
             active_func = function(ctx) return NetworkMgr:isWifiOn() end,
             -- visible_func
-            help_text = _("Tap : Toogle wifi\nHold : Show wifi picker"),
+            help_text = _("Tap : Toggle wifi\nHold : Show wifi picker"),
             callback = function(ctx)
                 if NetworkMgr:isWifiOn() then NetworkMgr:toggleWifiOff()
                 else NetworkMgr:toggleWifiOn() end
@@ -90,7 +77,7 @@ function ActionDefs.get()
             end,
             active_func = function(ctx) return G_reader_settings:isTrue("night_mode") end,
             -- visible_func
-            help_text = _("Tap : Toogle night mode\nHold : Show frontlight preset dialog"),
+            help_text = _("Tap : Toggle night mode\nHold : Show frontlight preset dialog"),
             callback = function(ctx)
                 UIManager:broadcastEvent(Event:new("ToggleNightMode"))
                 ctx.touch_menu:updateItems(1)
@@ -113,7 +100,7 @@ function ActionDefs.get()
             end,
             active_func = function(ctx) return ctx.powerd:isFrontlightOn() end,
             visible_func = function(ctx) return ctx.device:hasFrontlight() end,
-            help_text = _("Tap : Toogle frontlight\nHold : Show frontlight dialog"),
+            help_text = _("Tap : Toggle frontlight\nHold : Show frontlight dialog"),
             callback = function(ctx)
                 UIManager:broadcastEvent(Event:new("ToggleFrontlight"))
                 ctx.touch_menu:updateItems(1)
@@ -177,7 +164,7 @@ function ActionDefs.get()
             end,
             visible_func = function(ctx) return ctx.device:hasGSensor() end,
             active_func = function(ctx) return G_reader_settings:isTrue("input_lock_gsensor") or G_reader_settings:isTrue("input_ignore_gsensor") end,
-            help_text = _("Tap : Toogle lock gsensor\nHold : Toogle ignore gsensor"),
+            help_text = _("Tap : Toggle lock gsensor\nHold : Toggle ignore gsensor"),
             callback = function(ctx)
                 if G_reader_settings:isTrue("input_ignore_gsensor") then
                     UIManager:broadcastEvent(Event:new("ToggleGSensor"))
@@ -578,7 +565,7 @@ function ActionDefs.get()
                 return CW ~= nil and CW.calibre_socket ~= nil
             end,
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("calibre") end,
-            help_text = _("Tap : Toogle Calibre connection\nHold : Nothing"),
+            help_text = _("Tap : Toggle Calibre connection\nHold : Nothing"),
             callback = function(ctx)
                 if Utils.hasPlugin and Utils.hasPlugin("calibre") then
                     local CW = package.loaded["wireless"]
