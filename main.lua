@@ -143,7 +143,7 @@ function TouchMenu:updateItems(target_page, target_item_id)
     self.page = 1
 
     -- Update footer
-    self.time_info:setText(QuickMenu.footer)
+    --self.time_info:setText(QuickMenu.footer)
 
     -- Recalculate dimen
     local old_dimen = self.dimen:copy()

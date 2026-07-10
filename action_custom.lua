@@ -6,19 +6,13 @@ local UIManager    = require("ui/uimanager")
 local IconsLibrary  = require("iconchooser/icons_library")
 local ActionExec    = require("action_exec")
 local ActionChooser = require("actionchooser/action_chooser")
+local Utils         = require("common/utils")
 local Config        = require("config")
 local _             = require("common/i18n").gettext
 
 local ActionCustom = {}
 
-local function saveAndRefresh(ctx)
-    -- save
-    local config = ctx.config
-    if config then Config.save(config) end
-    -- refresh
-    local touch_menu = ctx.touch_menu
-    if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end
-end
+local WIDTHFACTOR = 0.8
 
 -- ============================================================
 -- Menu
@@ -33,17 +27,17 @@ function ActionCustom:showActionCustomMenu(ctx)
         for i, action in ipairs(config.custom_actions) do
             buttons[#buttons + 1] = {
                 {
-                text = (action.icon or _("None")) .. " " ..(action.label or _("None")),
-                -- apply action
+                text = (Utils.get_safe_icon(action.icon) or _("None")) .. " " ..(action.label or _("None")), -- btn doesnt't support svg
+                -- update action
                 callback = function()
+                    UIManager:close(dialog)
+                    self:updateActionCustomDialog(ctx, action, i)
+                end,
+                -- apply action
+                hold_callback = function()
                     UIManager:close(dialog)
                     self:applyActionCustomDialog(ctx, action)
                 end,
-                -- update action
-                hold_callback = function()
-                    UIManager:close(dialog)
-                    self:updateActionCustomDialog(ctx, action, i)
-                end
                 }
             }
         end
@@ -71,6 +65,7 @@ function ActionCustom:showActionCustomMenu(ctx)
         -- dismissable = false,
         title = _("Custom actions") .. " :",
         title_align  = "left",
+        width_factor = WIDTHFACTOR,
         buttons = buttons,
     }
     UIManager:show(dialog)
@@ -79,8 +74,12 @@ end
 -- ============================================================
 -- Apply
 -- ============================================================
-function ActionCustom:applyActionCustom(callback)
-    ActionExec.dispatch(callback)
+function ActionCustom:applyActionCustom(ctx, callback)
+    -- need to close touch_menu first -> see action_exec.lua
+    local touch_menu = ctx.touch_menu
+    if touch_menu and touch_menu.updateItems then touch_menu:closeMenu() end
+    -- apply
+    UIManager:nextTick(function() ActionExec.dispatch(callback) end)
 end
 
 function ActionCustom:applyActionCustomDialog(ctx, action)
@@ -95,7 +94,7 @@ function ActionCustom:applyActionCustomDialog(ctx, action)
             end
         }},
         {{
-            text = _("Icon") .. " : " .. (action.icon or _("None")),
+            text = _("Icon") .. " : " .. (Utils.get_safe_icon(action.icon) or _("None")), -- btn doesnt't support svg
             callback = function()
             end
         }},
@@ -104,7 +103,7 @@ function ActionCustom:applyActionCustomDialog(ctx, action)
             callback = function()
                 if is_callback then
                     UIManager:close(dialog)
-                    self:applyActionCustom(action.callback)
+                    self:applyActionCustom(ctx, action.callback)
                 end
             end
         }},
@@ -113,7 +112,7 @@ function ActionCustom:applyActionCustomDialog(ctx, action)
             callback = function()
                 if is_hold_callback then
                     UIManager:close(dialog)
-                    self:applyActionCustom(action.hold_callback)
+                    self:applyActionCustom(ctx, action.hold_callback)
                 end
             end
         }},
@@ -130,6 +129,7 @@ function ActionCustom:applyActionCustomDialog(ctx, action)
         -- dismissable = false,
         title = _("Apply") .. " :",
         title_align  = "left",
+        width_factor = WIDTHFACTOR,
         buttons = buttons,
         tap_close_callback = function()
             self:showActionCustomMenu(ctx)
@@ -167,7 +167,7 @@ function ActionCustom:addActionCustom(ctx, fields)
     local config = ctx.config
     config.custom_actions = config.custom_actions or {}
     table.insert(config.custom_actions, action)
-    saveAndRefresh(ctx)
+    Config.saveAndRefresh(ctx)
 end
 
 function ActionCustom:addActionCustomDialog(ctx)
@@ -199,6 +199,7 @@ function ActionCustom:addActionCustomDialog(ctx)
     dialog = ButtonDialog:new{
         title        = _("Add new action") .. " :",
         title_align  = "left",
+        width_factor = WIDTHFACTOR,
         buttons      = buttons,
         tap_close_callback = function()
             self:showActionCustomMenu(ctx)
@@ -268,6 +269,7 @@ function ActionCustom:callbackActionCustomDialog(ctx, action, index, is_hold_cal
     dialog = ButtonDialog:new{
         title        = ((is_hold_callback and _("Select hold")) or _("Select tap")) .. " :",
         title_align  = "left",
+        width_factor = WIDTHFACTOR,
         buttons      = buttons,
         tap_close_callback = function()
             self:updateActionCustomDialog(ctx, action, index)
@@ -283,7 +285,7 @@ function ActionCustom:updateActionCustom(ctx, action, index)
     local config = ctx.config
     if config and config.custom_actions and config.custom_actions[index] then
         config.custom_actions[index] = action
-        saveAndRefresh(ctx)
+        Config.saveAndRefresh(ctx)
     end
 end
 
@@ -311,7 +313,7 @@ function ActionCustom:deleteActionCustom(ctx, action)
         end
     end
 
-    saveAndRefresh(ctx)
+    Config.saveAndRefresh(ctx)
 end
 
 local function tableCopy(orig)
@@ -368,7 +370,7 @@ function ActionCustom:updateActionCustomDialog(ctx, action, index)
             end
         }},
         {{
-            text = _("Icon") .. " : " .. (temp_action.icon or _("None")),
+            text = _("Icon") .. " : " .. (Utils.get_safe_icon(temp_action.icon) or _("None")), -- btn doesnt't support svg
             callback = function()
                 IconsLibrary:show(function(glyph)
                     if glyph and glyph ~= "" then
@@ -422,8 +424,9 @@ function ActionCustom:updateActionCustomDialog(ctx, action, index)
     }
 
     dialog = ButtonDialog:new{
-        title = _("Update") .. " :",
+        title = _("Edit") .. " :",
         title_align = "left",
+        width_factor = WIDTHFACTOR,
         buttons = buttons,
         tap_close_callback = function()
             self:showActionCustomMenu(ctx)

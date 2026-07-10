@@ -5,6 +5,7 @@ local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
 local TextWidget      = require("ui/widget/textwidget")
 local ConfirmBox       = require("ui/widget/confirmbox")
+local ButtonDialog    = require("ui/widget/buttondialog")
 
 local Font            = require("ui/font")
 local RenderImage     = require("ui/renderimage")
@@ -54,11 +55,22 @@ function Info.build(ctx)
 
     if section.show_title then
         local label_title = TextWidget:new{
-            text = _("Informations") .. " :",
+            text = ("Information"),
             face =  Font:getFace("cfont", btn_font_size), bold = true,
-            max_width = inner_width - btn_width,
+            max_width = inner_width - btn_width*2,
         }
-
+        local settings_btn = Button:new{
+            text           = "\u{F462}", -- down up \u{EB92}"
+            width          = btn_width,
+            radius         = btn_radius,
+            bordersize     = 0,
+            text_font_size = btn_font_size,
+            show_parent    = touch_menu.show_parent,
+            callback       = function()
+                Info.showSettings(ctx)
+            end,
+            --hold_callback = function() end,
+        }
         local collapse_btn = Button:new{
             text           = section.collapse and "\u{F078}" or "\u{F077}", -- down up
             width          = btn_width,
@@ -68,15 +80,15 @@ function Info.build(ctx)
             show_parent    = touch_menu.show_parent,
             callback       = function()
                 section.collapse = not section.collapse
-                Config.save(config)
-                touch_menu:updateItems(1)
+                Config.saveAndRefresh(ctx)
             end,
             -- hold_callback
         }
         local row_title = HorizontalGroup:new{
             align = "center",
             label_title,
-            HorizontalSpan:new{ width = inner_width - label_title:getSize().w - btn_width},
+            HorizontalSpan:new{ width = inner_width - label_title:getSize().w - btn_width*2 },
+            settings_btn,
             collapse_btn
         }
         table.insert(group, row_title)
@@ -150,7 +162,7 @@ end
 -- ============================================================
 -- Settings Menu Builder
 -- ============================================================
-function Info.getSettings(ctx)
+function Info.getSettings(ctx, close, refresh)
     -- ctx import
     local config  = ctx.config
     local section = Utils.getSection(config, SECTION)
@@ -161,41 +173,69 @@ function Info.getSettings(ctx)
         {
             text = _("Enabled in reader"),
             checked_func = function() return section.enabled_r end,
-            callback = function() section.enabled_r = not section.enabled_r; Config.save(config) end
+            callback = function() section.enabled_r = not section.enabled_r; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Show title"),
             checked_func = function() return section.show_title end,
-            callback = function() section.show_title = not section.show_title; Config.save(config) end
+            callback = function() section.show_title = not section.show_title; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Show thumbnail"),
             checked_func = function() return section.show_thumbnail end,
-            callback = function() section.show_thumbnail = not section.show_thumbnail; Config.save(config) end
+            callback = function() section.show_thumbnail = not section.show_thumbnail; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Show skim"),
             checked_func = function() return section.show_skim end,
-            callback = function() section.show_skim = not section.show_skim; Config.save(config) end,
+            callback = function() section.show_skim = not section.show_skim; Config.saveAndRefresh(ctx) end,
             separator = true
         },
         {
-            text = _("Reset to defaults"),
-            keep_menu_open = true,
-            callback = function(touch_menu)
-                UIManager:show(ConfirmBox:new{
-                    text = _("Are you sure you want to reset to defaults ?"),
-                    ok_text = _("Reset"),
-                    ok_callback = function()
-                        local defaults = Config.DEFAULTS.sections[SECTION]
-                        Utils.resetSectionToDefaults(section, defaults)
-                        Config.save(config)
-                        if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end
-                    end
-                })
-            end
+        text = _("Reset to defaults"),
+        keep_menu_open = true,
+        callback = close(function(touch_menu)
+            if touch_menu then ctx.touch_menu = touch_menu end
+            UIManager:show(ConfirmBox:new{
+                text = _("Are you sure you want to reset to defaults ?"),
+                ok_text = _("Reset"),
+                ok_callback = function()
+                    local defaults = Config.DEFAULTS.sections[SECTION]
+                    Utils.resetSectionToDefaults(section, defaults)
+                    Config.saveAndRefresh(ctx)
+                    if refresh then refresh() end
+                end
+            })
+        end)
         }
     }
+end
+
+function Info.showSettings(ctx)
+    local dialog
+
+    local function close(fn)
+        return function()
+            if dialog then UIManager:close(dialog) end
+            if fn then fn() end
+        end
+    end
+
+    local function refresh()
+        Info.showSettings(ctx)
+    end
+
+    local buttons = Utils.wrap_items(Info.getSettings(ctx, close, refresh))
+    if not buttons or #buttons==0 then return end
+    dialog = ButtonDialog:new{
+        -- dismissable = false,
+        title = _("Settings") .. " : " .. SECTION,
+        title_align  = "left",
+        width_factor = 0.9,
+        buttons = buttons,
+    }
+    UIManager:show(dialog)
+
 end
 
 return Info

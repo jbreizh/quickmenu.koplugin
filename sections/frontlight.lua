@@ -6,6 +6,7 @@ local VerticalSpan     = require("ui/widget/verticalspan")
 local HorizontalGroup  = require("ui/widget/horizontalgroup")
 local HorizontalSpan   = require("ui/widget/horizontalspan")
 local ConfirmBox       = require("ui/widget/confirmbox")
+local ButtonDialog    = require("ui/widget/buttondialog")
 
 local Math             = require("optmath")
 
@@ -55,55 +56,72 @@ function Frontlight.build(ctx)
 
     if reader and not section.enabled_r then return nil end
 
-    if not device:hasFrontlight() then return nil end
+    --if not device:hasFrontlight() then return nil end
 
     local refs = { buttons = {}, sliders = {}, widgets = {} }
 
     local group = VerticalGroup:new{ align = "center" }
 
-
-    if section.use_zenslider then
-        local intensityZenUI= IntensityZenUI.build(ctx)
-        table.insert(group, intensityZenUI.widget)
-        table.insert(refs.sliders, intensityZenUI.refs.sliders[1])
-        if section.collapse then return { widget = group , refs = refs} end
-    else
-        if section.show_title then
+    if section.show_title then
+        local row_title = HorizontalGroup:new{ align = "center" }
+        if section.use_zenslider then
+            table.insert(row_title, HorizontalSpan:new{ width = inner_width - btn_width*2 })
+        else
             local label = _("Frontlight") .. " : " .. powerd:frontlightIntensity() .. "%"
             local label_title = TextWidget:new{
                 text = label,
                 face =  Font:getFace("cfont", btn_font_size), bold = true,
-                max_width = inner_width - btn_width,
+                max_width = inner_width - btn_width*2,
             }
-            local collapse_btn = Button:new{
-                text           = section.collapse and "\u{F078}" or "\u{F077}", -- down up
-                width          = btn_width,
-                radius         = btn_radius,
-                bordersize     = 0,
-                text_font_size = btn_font_size,
-                show_parent    = touch_menu.show_parent,
-                callback       = function()
-                    section.collapse = not section.collapse
-                    Config.save(config)
-                    touch_menu:updateItems(1)
-                end,
-                -- hold_callback
-            }
-            local row_title = HorizontalGroup:new{
-                align = "center",
-                label_title,
-                HorizontalSpan:new{ width = inner_width - label_title:getSize().w - btn_width},
-                collapse_btn
-            }
-            table.insert(group, row_title)
-            if section.collapse then  return { widget = group , refs = refs} end
+            table.insert(row_title, label_title)
+            table.insert(row_title, HorizontalSpan:new{ width = inner_width - label_title:getSize().w - btn_width*2 })
         end
-        local intensitySection = IntensitySection.build(ctx)
-        table.insert(group, intensitySection.widget)
-        table.insert(refs.sliders, intensitySection.refs.sliders[1])
+
+        local settings_btn = Button:new{
+            text           = "\u{F462}", -- down up \u{EB92}"
+            width          = btn_width,
+            radius         = btn_radius,
+            bordersize     = 0,
+            text_font_size = btn_font_size,
+            show_parent    = touch_menu.show_parent,
+            callback       = function()
+                Frontlight.showSettings(ctx)
+            end,
+            --hold_callback = function() end,
+        }
+        table.insert(row_title, settings_btn)
+        local collapse_btn = Button:new{
+            text           = section.collapse and "\u{F078}" or "\u{F077}", -- down up
+            width          = btn_width,
+            radius         = btn_radius,
+            bordersize     = 0,
+            text_font_size = btn_font_size,
+            show_parent    = touch_menu.show_parent,
+            callback       = function()
+                section.collapse = not section.collapse
+                Config.saveAndRefresh(ctx)
+            end,
+            -- hold_callback
+        }
+        table.insert(row_title, collapse_btn)
+        table.insert(group, row_title)
+        if section.collapse then  return { widget = group , refs = refs} end
     end
 
-    if device:hasNaturalLight() then
+    --if device:hasFrontlight() then
+        if section.use_zenslider then
+            local intensityZenUI = IntensityZenUI.build(ctx)
+            table.insert(group, intensityZenUI.widget)
+            table.insert(refs.sliders, intensityZenUI.refs.sliders[1])
+        else
+            local intensitySection = IntensitySection.build(ctx)
+            table.insert(group, intensitySection.widget)
+            table.insert(refs.sliders, intensitySection.refs.sliders[1])
+        end
+    --end
+
+
+    --if device:hasNaturalLight() then
         if section.use_zenslider then
             local warmthZenUI = WarmthZenUI.build(ctx)
             table.insert(group, warmthZenUI.widget)
@@ -128,7 +146,7 @@ function Frontlight.build(ctx)
             table.insert(group, warmthSection.widget)
             table.insert(refs.sliders, warmthSection.refs.sliders[1])
         end
-    end
+    --end
 
     return { widget = group , refs = refs }
 end
@@ -136,56 +154,83 @@ end
 -- ============================================================
 -- Settings Menu Builder
 -- ============================================================
-function Frontlight.getSettings(ctx)
+function Frontlight.getSettings(ctx, close, refresh)
     -- ctx import
     local device  = ctx.device
     local config  = ctx.config
     local section = Utils.getSection(config, SECTION)
 
-    --if not device:hasFrontlight() then return nil end
+    --if not device:hasFrontlight() then return {} end
     if not section then return {} end
 
     return {
         {
             text = _("Enabled in filemanager"),
             checked_func = function() return section.enabled_f end,
-            callback = function() section.enabled_f = not section.enabled_f; Config.save(config) end
+            callback = function() section.enabled_f = not section.enabled_f; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Enabled in reader"),
             checked_func = function() return section.enabled_r end,
-            callback = function() section.enabled_r = not section.enabled_r; Config.save(config) end
+            callback = function() section.enabled_r = not section.enabled_r; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Show title"),
-            enabled_func = function() return not section.use_zenslider end, --do nothing on ZenSlider
             checked_func = function() return section.show_title end,
-            callback = function() section.show_title = not section.show_title; Config.save(config) end
+            callback = function() section.show_title = not section.show_title; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Use ZenSlider"),
             checked_func = function() return section.use_zenslider end,
-            callback = function() section.use_zenslider = not section.use_zenslider; Config.save(config) end,
+            callback = function() section.use_zenslider = not section.use_zenslider; Config.saveAndRefresh(ctx) end,
             help_text = _("Author : Anthony Gress\nProjet : Zen UI\nhttps://github.com/AnthonyGress/zen_ui.koplugin"),
             separator = true
         },
         {
-            text = _("Reset to defaults"),
-            keep_menu_open = true,
-            callback = function(touch_menu)
-                UIManager:show(ConfirmBox:new{
-                    text = _("Are you sure you want to reset to defaults ?"),
-                    ok_text = _("Reset"),
-                    ok_callback = function()
-                        local defaults = Config.DEFAULTS.sections[SECTION]
-                        Utils.resetSectionToDefaults(section, defaults)
-                        Config.save(config)
-                        if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end
-                    end
-                })
-            end
+        text = _("Reset to defaults"),
+        keep_menu_open = true,
+        callback = close(function(touch_menu)
+            if touch_menu then ctx.touch_menu = touch_menu end
+            UIManager:show(ConfirmBox:new{
+                text = _("Are you sure you want to reset to defaults ?"),
+                ok_text = _("Reset"),
+                ok_callback = function()
+                    local defaults = Config.DEFAULTS.sections[SECTION]
+                    Utils.resetSectionToDefaults(section, defaults)
+                    Config.saveAndRefresh(ctx)
+                    if refresh then refresh() end
+                end
+            })
+        end)
         }
     }
+end
+
+function Frontlight.showSettings(ctx)
+    local dialog
+
+    local function close(fn)
+        return function()
+            if dialog then UIManager:close(dialog) end
+            if fn then fn() end
+        end
+    end
+
+    local function refresh()
+        Frontlight.showSettings(ctx)
+    end
+
+    local buttons = Utils.wrap_items(Frontlight.getSettings(ctx, close, refresh))
+    if not buttons or #buttons==0 then return end
+    dialog = ButtonDialog:new{
+        -- dismissable = false,
+        title = _("Settings") .. " : " .. SECTION,
+        title_align  = "left",
+        width_factor = 0.9,
+        buttons = buttons,
+    }
+    UIManager:show(dialog)
+
 end
 
 return Frontlight

@@ -38,7 +38,6 @@ Config.DEFAULTS = {
         footer = {
             enabled_f = true,
             enabled_r = true,
-            separator = " • ",
             items = {"memusedp", "storageusedp", "time", "battery", "auxbattery"}
         },
     },
@@ -150,6 +149,15 @@ end
 
 function Config.save(cfg)
     G_reader_settings:saveSetting("quick_menu_panel", cfg)
+end
+
+function Config.saveAndRefresh(ctx)
+    -- save
+    local config = ctx.config
+    if config then Config.save(config) end
+    -- refresh
+    local touch_menu = ctx.touch_menu
+    if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end
 end
 
 return Config

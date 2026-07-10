@@ -708,216 +708,188 @@ function ActionDefs.get()
             icon = "\u{ED19}",
             --icon_func
             label = _("CPU") .. " (%)",
-            label_func = function(ctx)
-                return ctx.stat and ctx.stat.cpu and ctx.stat.cpu.usedp and string.format("%d%%", ctx.stat.cpu.usedp) or ""
-            end,
+            label_func = function(ctx) return ctx.stat and ctx.stat.cpu and ctx.stat.cpu.usedp and string.format("%d%%", ctx.stat.cpu.usedp) or "" end,
             -- active_func
-            visible_func = function(ctx)
-                return ctx.stat and ctx.stat.cpu and ctx.stat.cpu.usedp
-            end,
-            help_text = _("Tap : Show system statistics\nHold : Nothing"),
+            visible_func = function(ctx) return ctx.stat and ctx.stat.cpu and ctx.stat.cpu.usedp end,
+            help_text = _("Tap : Show value\nHold : Show system statistics"),
             callback = function(ctx)
+                UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.cpu and ctx.stat.cpu.usedp and string.format(_("CPU used %d%%"), ctx.stat.cpu.usedp) or "" })
+            end,
+            hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
-            -- hold_callback
         },
         memusedp = {
             icon = "\u{EA5A}",
-            -- icon_func
+            --icon_func
             label = _("Memory") .. " " .. _("used") .. " (%)",
-            label_func = function(ctx)
-                return ctx.stat and ctx.stat.memory and ctx.stat.memory.usedp and string.format("%d%%", ctx.stat.memory.usedp) or ""
-            end,
+            label_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.usedp and string.format("%d%%", ctx.stat.memory.usedp) or "" end,
             -- active_func
-            visible_func = function(ctx)
-                return ctx.stat and ctx.stat.memory and ctx.stat.memory.usedp
-            end,
-            help_text = _("Tap : Show system statistics\nHold : Nothing"),
+            visible_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.usedp end,
+            help_text = _("Tap : Show value\nHold : Show system statistics"),
             callback = function(ctx)
+                UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.memory and ctx.stat.memory.usedp and string.format(_("Memory used %d%%"), ctx.stat.memory.usedp) or "" })
+            end,
+            hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
-            end,
-            -- hold_callback
-            render_func = function(ctx, width)
-                return VerticalGroup:new{
-                    align = "left",
-                    TextWidget:new{ text = "test", face = Font:getFace("cfont", 16), max_width = width },
-                    TextWidget:new{ text = "test", face = Font:getFace("cfont", 16), max_width = width },
-                }
             end,
         },
         memavailablep = {
             icon = "\u{EA5A}",
-            -- icon_func
+            --icon_func
             label = _("Memory") .. " " .. _("available") .. " (%)",
-            label_func = function(ctx)
-                return ctx.stat and ctx.stat.memory and ctx.stat.memory.availablep and string.format("%d%%", ctx.stat.memory.availablep) or ""
-            end,
+            label_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.availablep and string.format("%d%%", ctx.stat.memory.availablep) or "" end,
             -- active_func
-            visible_func = function(ctx)
-                return ctx.stat and ctx.stat.memory and ctx.stat.memory.availablep
-            end,
-            help_text = _("Tap : Show system statistics\nHold : Nothing"),
+            visible_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.availablep end,
+            help_text = _("Tap : Show value\nHold : Show system statistics"),
             callback = function(ctx)
+                UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.memory and ctx.stat.memory.availablep and string.format(_("Memory available %d%%"), ctx.stat.memory.availablep) or "" })
+            end,
+            hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
-            -- hold_callback
         },
         memused = {
             icon = "\u{EA5A}",
-            -- icon_func
+            --icon_func
             label = _("Memory") .. " " .. _("used") .. " (" .. _("MB") .. ")",
-            label_func = function(ctx)
-                return ctx.stat and ctx.stat.memory and ctx.stat.memory.used and string.format("%d", math.floor((ctx.stat.memory.used) / 1024)) .. _("MB") or "" -- convert to MB
-            end,
+            label_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.used and string.format("%d", math.floor((ctx.stat.memory.used) / 1024)) .. _("MB") or "" end,
             -- active_func
-            visible_func = function(ctx)
-                return ctx.stat and ctx.stat.memory and ctx.stat.memory.used
-            end,
-            help_text = _("Tap : Show system statistics\nHold : Nothing"),
+            visible_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.used end,
+            help_text = _("Tap : Show value\nHold : Show system statistics"),
             callback = function(ctx)
+                UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.memory and ctx.stat.memory.used and string.format(_("Memory used %d MB"), math.floor(ctx.stat.memory.used / 1024)) or "" })
+            end,
+            hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
-            -- hold_callback
         },
         memavailable = {
             icon = "\u{EA5A}",
-            -- icon_func
+            --icon_func
             label = _("Memory") .. " " .. _("available") .. " (" .. _("MB") .. ")",
-            label_func = function(ctx)
-                return ctx.stat and ctx.stat.memory and ctx.stat.memory.available and string.format("%d", math.floor((ctx.stat.memory.available) / 1024)) .. _("MB") or "" -- convert to MB
-            end,
+            label_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.available and string.format("%d", math.floor((ctx.stat.memory.available) / 1024)) .. _("MB") or "" end,
             -- active_func
-            visible_func = function(ctx)
-                return ctx.stat and ctx.stat.memory and ctx.stat.memory.available
-            end,
-            help_text = _("Tap : Show system statistics\nHold : Nothing"),
+            visible_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.available end,
+            help_text = _("Tap : Show value\nHold : Show system statistics"),
             callback = function(ctx)
+                UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.memory and ctx.stat.memory.available and string.format(_("Memory available %d MB"), math.floor(ctx.stat.memory.available / 1024)) or "" })
+            end,
+            hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
-            -- hold_callback
         },
         memtotal = {
             icon = "\u{EA5A}",
-            -- icon_func
+            --icon_func
             label = _("Memory") .. " " .. _("total") .. " (" .. _("MB") .. ")",
-            label_func = function(ctx)
-                return ctx.stat and ctx.stat.memory and ctx.stat.memory.total and string.format("%d", math.floor(ctx.stat.memory.total / 1024)) .. _("MB") or "" -- convert to MB
-            end,
-            visible_func = function(ctx)
-                return ctx.stat and ctx.stat.memory and ctx.stat.memory.total
-            end,
-            help_text = _("Tap : Show system statistics\nHold : Nothing"),
+            label_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.total and string.format("%d", math.floor(ctx.stat.memory.total / 1024)) .. _("MB") or "" end,
+            -- active_func
+            visible_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.total end,
+            help_text = _("Tap : Show value\nHold : Show system statistics"),
             callback = function(ctx)
+                UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.memory and ctx.stat.memory.total and string.format(_("Memory total %d MB"), math.floor(ctx.stat.memory.total / 1024)) or "" })
+            end,
+            hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
-            -- hold_callback
         },
         storageusedp = {
             icon = "\u{F0C7}",
-            -- icon_func
+            --icon_func
             label = _("Storage") .. " " .. _("used") .. " (%)",
-            label_func = function(ctx)
-                return ctx.stat and ctx.stat.storage and ctx.stat.storage.usedp and string.format("%d%%", ctx.stat.storage.usedp) or ""
-            end,
+            label_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.usedp and string.format("%d%%", ctx.stat.storage.usedp) or "" end,
             -- active_func
-            visible_func = function(ctx)
-                return ctx.stat and ctx.stat.storage and ctx.stat.storage.usedp
-            end,
-            help_text = _("Tap : Show system statistics\nHold : Nothing"),
+            visible_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.usedp end,
+            help_text = _("Tap : Show value\nHold : Show system statistics"),
             callback = function(ctx)
+                UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.storage and ctx.stat.storage.usedp and string.format(_("Storage used %d%%"), ctx.stat.storage.usedp) or "" })
+            end,
+            hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
-            -- hold_callback
         },
         storageavailablep = {
             icon = "\u{F0C7}",
-            -- icon_func
+            --icon_func
             label = _("Storage") .. " " .. _("available") .. " (%)",
-            label_func = function(ctx)
-                return ctx.stat and ctx.stat.storage and ctx.stat.storage.availablep and string.format("%d%%", ctx.stat.storage.availablep) or ""
-            end,
+            label_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.availablep and string.format("%d%%", ctx.stat.storage.availablep) or "" end,
             -- active_func
-            visible_func = function(ctx)
-                return ctx.stat and ctx.stat.storage and ctx.stat.storage.availablep
-            end,
-            help_text = _("Tap : Show system statistics\nHold : Nothing"),
+            visible_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.availablep end,
+            help_text = _("Tap : Show value\nHold : Show system statistics"),
             callback = function(ctx)
+                UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.storage and ctx.stat.storage.availablep and string.format(_("Storage available %d%%"), ctx.stat.storage.availablep) or "" })
+            end,
+            hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
-            -- hold_callback
         },
         storageused = {
             icon = "\u{F0C7}",
-            -- icon_func
+            --icon_func
             label = _("Storage") .. " " .. _("used") .. " (" .. _("GB") .. ")",
-            label_func = function(ctx)
-                return ctx.stat and ctx.stat.storage and ctx.stat.storage.used and string.format("%d", math.floor((ctx.stat.storage.used) / 1024 / 1024)) .. _("GB") or "" -- convert to GB
-            end,
+            label_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.used and string.format("%d", math.floor((ctx.stat.storage.used) / 1024 / 1024)) .. _("GB") or "" end,
             -- active_func
-            visible_func = function(ctx)
-                return ctx.stat and ctx.stat.storage and ctx.stat.storage.used
-            end,
-            help_text = _("Tap : Show system statistics\nHold : Nothing"),
+            visible_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.used end,
+            help_text = _("Tap : Show value\nHold : Show system statistics"),
             callback = function(ctx)
+                UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.storage and ctx.stat.storage.used and string.format(_("Storage used %d GB"), math.floor(ctx.stat.storage.used / 1024 / 1024)) or "" })
+            end,
+            hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
-            -- hold_callback
         },
         storageavailable = {
             icon = "\u{F0C7}",
-            -- icon_func
+            --icon_func
             label = _("Storage") .. " " .. _("available") .. " (" .. _("GB") .. ")",
-            label_func = function(ctx)
-                return ctx.stat and ctx.stat.storage and ctx.stat.storage.available and string.format("%d", math.floor((ctx.stat.storage.available) / 1024 / 1024)) .. _("GB") or "" -- convert to GB
-            end,
+            label_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.available and string.format("%d", math.floor((ctx.stat.storage.available) / 1024 / 1024)) .. _("GB") or "" end,
             -- active_func
-            visible_func = function(ctx)
-                return ctx.stat and ctx.stat.storage and ctx.stat.storage.available
-            end,
-            help_text = _("Tap : Show system statistics\nHold : Nothing"),
+            visible_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.available end,
+            help_text = _("Tap : Show value\nHold : Show system statistics"),
             callback = function(ctx)
+                UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.storage and ctx.stat.storage.available and string.format(_("Storage available %d GB"), math.floor(ctx.stat.storage.available / 1024 / 1024)) or "" })
+            end,
+            hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
-            -- hold_callback
         },
         storagetotal = {
             icon = "\u{F0C7}",
-            -- icon_func
+            --icon_func
             label = _("Storage") .. " " .. _("total") .. " (" .. _("GB") .. ")",
-            label_func = function(ctx)
-                return ctx.stat and ctx.stat.storage and ctx.stat.storage.total and string.format("%d", math.floor(ctx.stat.storage.total / 1024 / 1024)) .. _("GB") or "" -- convert to GB
-            end,
+            label_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.total and string.format("%d", math.floor(ctx.stat.storage.total / 1024 / 1024)) .. _("GB") or "" end,
             -- active_func
-            visible_func = function(ctx)
-                return ctx.stat and ctx.stat.storage and ctx.stat.storage.total
-            end,
-            help_text = _("Tap : Show system statistics\nHold : Nothing"),
+            visible_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.total end,
+            help_text = _("Tap : Show value\nHold : Show system statistics"),
             callback = function(ctx)
+                UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.storage and ctx.stat.storage.total and string.format(_("Storage total %d GB"), math.floor(ctx.stat.storage.total / 1024 / 1024)) or "" })
+            end,
+            hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
-            -- hold_callback
         },
         time = {
             icon = "\u{F017}",
@@ -928,8 +900,12 @@ function ActionDefs.get()
             end,
             -- active_func
             -- visible_func
-            help_text = _("Tap : Nothing\nHold : Nothing"),
-            -- callback
+            help_text = _("Tap : Show time\nHold : Nothing"),
+            callback = function(ctx)
+                UIManager:show(InfoMessage:new{
+                    text = ctx.datetime.secondsToDateTime(nil, nil, true),
+                })
+            end,
             -- hold_callback
         },
         battery = {

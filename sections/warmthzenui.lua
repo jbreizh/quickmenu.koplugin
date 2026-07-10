@@ -92,6 +92,7 @@ function WarmthZenUI.build(ctx)
         value_min = nl.min,
         value_max = nl.max,
         show_parent = show_parent,
+        knob_radius = screen:scaleBySize(13),
     }
 
     local nl_row  -- forward-declare for on_change closure
@@ -124,7 +125,7 @@ function WarmthZenUI.build(ctx)
         if nl_progress._dragging then
             nl_progress:paintTo(screen.bb, nl_progress.dimen.x, nl_progress.dimen.y)
             -- Only repaint the number — prefix is static in the framebuffer.
-            local row_gap_h = v_gap
+            local row_gap_h = 0 -- v_gap
             local lh = nl_drag_prefix:getSize().h
             local row_h = nl_row and nl_row:getSize().h or nl_progress.dimen.h
             local row_top = nl_progress.dimen.y - math.floor((row_h - nl_progress.dimen.h) / 2)
@@ -209,7 +210,7 @@ function WarmthZenUI.build(ctx)
 
     local group = VerticalGroup:new{ align = "center" }
     table.insert(group, nl_cap_row)
-    table.insert(group, VerticalSpan:new{ width = v_gap })
+    -- table.insert(group, VerticalSpan:new{ width = v_gap })
     table.insert(group, nl_row)
     return { widget = group, refs = refs }
 end

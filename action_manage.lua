@@ -1,23 +1,17 @@
 local ButtonDialog = require("ui/widget/buttondialog")
-local SortWidget      = require("ui/widget/sortwidget")
-local ConfirmBox      = require("ui/widget/confirmbox")
+local SortWidget   = require("ui/widget/sortwidget")
+local ConfirmBox   = require("ui/widget/confirmbox")
 
 local UIManager    = require("ui/uimanager")
 
-local Config        = require("config")
-local _             = require("common/i18n").gettext
-local ActionDefs = require("action_defs")
+local ActionDefs   = require("action_defs")
+local Utils        = require("common/utils")
+local Config       = require("config")
+local _            = require("common/i18n").gettext
 
 local ActionManage = {}
 
-local function saveAndRefresh(ctx)
-    -- save
-    local config = ctx.config
-    if config then Config.save(config) end
-    -- refresh
-    local touch_menu = ctx.touch_menu
-    if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end
-end
+local WIDTHFACTOR = 0.8
 
 -- ============================================================
 -- Menu
@@ -49,67 +43,79 @@ local function resetSectionItemsToDefaults(section, defaults)
     end
 end
 
-function ActionManage:showActionManageMenu(ctx, section_name)
+-- Dans votre fichier ActionManage
+function ActionManage:btnActionManageMenu(ctx, section_name, close, on_refresh)
     local config = ctx.config
-    if not config.sections or not config.sections[section_name] then return end
+    if not config.sections or not config.sections[section_name] then return {} end
     local section = config.sections[section_name]
     local count = #(section.items or {})
 
-    local dialog
-    local buttons = {}
-
-    -- new action
-    local buttons = {
-        -- select action
+    return {
         {{
-        text = _("Select actions") .. " (" .. count .. ")\xE2\x80\xA6",
-        callback = function()
-            UIManager:close(dialog)
-            self:selectActionManageDialog(ctx, section_name)
-
-        end
+            text_func = function()
+                return _("Select actions") .. " (" .. #(section.items or {}) .. ")\xE2\x80\xA6"
+            end,
+            callback = close(function()
+                self:selectActionManageDialog(ctx, section_name, on_refresh)
+            end)
         }},
-        -- sort
         {{
-        text = _("Sort actions") .. "\xE2\x80\xA6",
-        callback = function()
-            --UIManager:close(dialog)
-            self:sortActionManageDialog(ctx, section_name)
-        end
+            text = _("Sort actions") .. "\xE2\x80\xA6",
+            -- don t close : sortWidget don't have a cancel_callback
+            -- stay background : no problem sortwidget is fullscreen and there is nothing to refresh
+            callback = function()
+                self:sortActionManageDialog(ctx, section_name)
+            end,
+--             callback = close(function()
+--                 self:sortActionManageDialog(ctx, section_name)
+--             end)
         }},
-        -- reset
         {{
             text = _("Reset actions") .. "\xE2\x80\xA6",
-            callback = function()
-                UIManager:close(dialog)
+            callback = close(function()
                 UIManager:show(ConfirmBox:new{
                     text = _("Reset actions to defaults?"),
-                    ok_text = _("Reset"),
                     ok_callback = function()
                         local defaults = Config.DEFAULTS.sections[section_name]
                         resetSectionItemsToDefaults(section, defaults)
-                        saveAndRefresh(ctx)
-                        self:showActionManageMenu(ctx, section_name)
+                        Config.saveAndRefresh(ctx)
+                        if on_refresh then on_refresh() end
                     end,
                     cancel_callback = function()
-                        self:showActionManageMenu(ctx, section_name)
+                        if on_refresh then on_refresh() end
                     end,
                 })
-            end
-        }},
-        -- exit
-        {{
-        text = _("Exit"),
-        callback = function()
-            UIManager:close(dialog)
-        end
-        }},
+            end)
+        }}
     }
+end
+
+function ActionManage:showActionManageMenu(ctx, section_name)
+    local dialog
+
+    local function close(fn)
+        return function()
+            if dialog then UIManager:close(dialog) end
+            if fn then fn() end
+        end
+    end
+
+    local function refresh()
+        self:showActionManageMenu(ctx, section_name)
+    end
+
+    local buttons = self:btnActionManageMenu(ctx, section_name, close, refresh)
+
+    table.insert(buttons, {{
+        text = _("Exit"),
+        callback = close()
+    }})
 
     dialog = ButtonDialog:new{
         -- dismissable = false,
         title = _("Manage actions") .. " :",
         title_align  = "left",
+        width_factor = WIDTHFACTOR,
         buttons = buttons,
     }
     UIManager:show(dialog)
@@ -155,7 +161,7 @@ function getSortedActionList(config)
     return sorted_list
 end
 
-function ActionManage:selectActionManageDialog(ctx, section_name)
+function ActionManage:selectActionManageDialog(ctx, section_name, on_close)
     local config = ctx.config
     local section = config.sections[section_name]
     if not section or not section.items then return end
@@ -168,7 +174,9 @@ function ActionManage:selectActionManageDialog(ctx, section_name)
     for i, action in ipairs(all_actions) do
         local def = action.def
         local is_currently_visible = (not def.visible_func or def.visible_func(ctx))
-        local label = (def.icon or "") .. " " .. (def.label or _("None")) .. (not is_currently_visible and " (n/a)" or "")
+
+        -- btn doesnt't support svg
+        local label = (Utils.get_safe_icon(def.icon) or "") .. " " .. (def.label or _("None")) .. (not is_currently_visible and " (n/a)" or "")
 
         table.insert(buttons, {{
             text = label,
@@ -183,7 +191,7 @@ function ActionManage:selectActionManageDialog(ctx, section_name)
                 else
                     table.insert(section.items, action.id)
                 end
-                saveAndRefresh(ctx)
+                Config.saveAndRefresh(ctx)
                 return true
             end
         }})
@@ -194,16 +202,17 @@ function ActionManage:selectActionManageDialog(ctx, section_name)
         callback = function()
             UIManager:close(dialog)
             --return false
-            self:showActionManageMenu(ctx, section_name)
+            if on_close then on_close() end
         end
     }})
 
     dialog = ButtonDialog:new{
         title = _("Select actions") .. " :",
         title_align  = "left",
+        width_factor = WIDTHFACTOR,
         buttons = buttons,
         tap_close_callback = function()
-            self:showActionManageMenu(ctx, section_name)
+            if on_close then on_close() end
         end,
     }
     UIManager:show(dialog)
@@ -224,7 +233,8 @@ function ActionManage:sortActionManageDialog(ctx, section_name)
         local def = action_defs[id]
         if def then
             local is_currently_visible = (not def.visible_func or def.visible_func(ctx))
-            local label = (def.icon or "") .. " " .. (def.label or _("None")) .. (not is_currently_visible and " (n/a)" or "")
+            -- btn doesnt't support svg
+            local label = (Utils.get_safe_icon(def.icon) or "") .. " " .. (def.label or _("None")) .. (not is_currently_visible and " (n/a)" or "")
             table.insert(sort_items, { text = label, orig_item = id })
         end
     end
@@ -238,7 +248,7 @@ function ActionManage:sortActionManageDialog(ctx, section_name)
             for _, item in ipairs(sort_items) do
                 table.insert(section.items, item.orig_item)
             end
-            saveAndRefresh(ctx)
+            Config.saveAndRefresh(ctx)
         end
     })
 end

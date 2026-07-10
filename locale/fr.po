@@ -1,6 +1,9 @@
 msgid "Actions"
 msgstr "Actions"
 
+msgid "Actions"
+msgstr "Actions"
+
 msgid "Add"
 msgstr "Ajouter"
 
@@ -217,9 +220,6 @@ msgstr "SSH"
 msgid "Search"
 msgstr "Rechercher"
 
-msgid "Separator"
-msgstr "Séparateur"
-
 msgid "Shortcuts"
 msgstr "Raccourcis"
 
@@ -313,9 +313,6 @@ msgstr "Appui : Afficher la boîte de dialogue d'alimentation\nMaintien : Rien"
 msgid "Tap : Show reader statistics\nHold : Show calendar statistics"
 msgstr "Appui : Afficher les statistiques du lecteur\nMaintien : Afficher les statistiques du calendrier"
 
-msgid "Tap : Show system statistics\nHold : Nothing"
-msgstr "Appui : Afficher les statistiques du système\nMaintien : Rien"
-
 msgid "Tap : Show wikipedia search\nHold : Show dictionary search"
 msgstr "Appui : Afficher la recherche Wikipédia\nMaintien : Afficher la recherche dans le dictionnaire"
 
@@ -345,9 +342,6 @@ msgstr "Titre inconnu"
 
 msgid "Unlock"
 msgstr "Déverrouiller"
-
-msgid "Update"
-msgstr "Mettre à jour"
 
 msgid "Update preset '%s'"
 msgstr "Mettre à jour le préréglage '%s'"
@@ -846,3 +840,48 @@ msgstr "Appui : Basculer le mode nuit\nMaintien : Afficher la boîte de dialogue
 
 msgid "Tap : Toggle wifi\nHold : Show wifi picker"
 msgstr "Appui : Basculer le wifi\nMaintien : Afficher la sélection wifi"
+
+msgid "Edit"
+msgstr "Éditer"
+
+msgid "Settings"
+msgstr "Paramètres"
+
+msgid "Tap : Show time\nHold : Nothing"
+msgstr "Tap : Afficher l'heure\nMaintien : Rien"
+
+msgid "Tap : Show value\nHold : Show system statistics"
+msgstr "Tap : Afficher la valeur\nMaintien : Statistiques système"
+
+msgid "CPU used %d%%"
+msgstr "CPU utilisé : %d%%"
+
+msgid "Memory available %d%%"
+msgstr "Mémoire disponible : %d%%"
+
+msgid "Memory available %d MB"
+msgstr "Mémoire disponible : %d Mo"
+
+msgid "Memory total %d MB"
+msgstr "Mémoire totale : %d Mo"
+
+msgid "Memory used %d MB"
+msgstr "Mémoire utilisée : %d Mo"
+
+msgid "Memory used %d%%"
+msgstr "Mémoire utilisée : %d%%"
+
+msgid "Storage available %d GB"
+msgstr "Stockage disponible : %d Go"
+
+msgid "Storage available %d%%"
+msgstr "Stockage disponible : %d%%"
+
+msgid "Storage total %d GB"
+msgstr "Stockage total : %d Go"
+
+msgid "Storage used %d GB"
+msgstr "Stockage utilisé : %d Go"
+
+msgid "Storage used %d%%"
+msgstr "Stockage utilisé : %d%%"

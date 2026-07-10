@@ -22,9 +22,7 @@ local Utils            = require("common/utils")
 local _                = require("common/i18n").gettext
 
 
-local QuickMenu = {
-    footer = nil
-}
+local QuickMenu = {}
 
 local ORDER = { "actions", "frontlight", "shortcuts", "info", "footer" }
 
@@ -88,7 +86,7 @@ function QuickMenu.createPanel(config, touch_menu)
 
     local panel = VerticalGroup:new{
         align = "center",
-       VerticalSpan:new{ width = Screen:scaleBySize(config.style.padding + 2 or 12) }
+        VerticalSpan:new{ width = Screen:scaleBySize( 2 ) } -- to not cover tab menu underline
     }
 
     local added_count = 0
@@ -105,8 +103,6 @@ function QuickMenu.createPanel(config, touch_menu)
                 table.insert(panel, result.widget)
                 mergeRefs(refs, result.refs)
                 added_count = added_count + 1
-            elseif id == "footer" and result then
-                QuickMenu.footer = result
             end
         end
     end
@@ -356,7 +352,11 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
         local section_mod = SECTIONS[id]
         if section_mod and section_mod.getSettings then
 
-            local items = section_mod.getSettings(ctx)
+            local items = section_mod.getSettings(ctx,
+                function(fn) return fn end, -- noop_close
+                function() end,             -- noop_refresh
+                id
+            )
 
             if items and #items > 0 then
                 local is_last = (idx == #ORDER)

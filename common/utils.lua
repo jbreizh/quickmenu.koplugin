@@ -1,5 +1,38 @@
 local M = {}
 
+--- Wraps each item in a flat list into an individual table.
+--- This transformation converts a flat array of items into a nested structure
+--- (e.g., { {item1}, {item2}, ... }), which is often required for specific
+--- UI containers or menu layouts in KOReader.
+---
+--- @param items table  The original flat array of tables.
+--- @return table       A new array where each original item is encapsulated
+---                     within its own table.
+function M.wrap_items(items)
+    local wrapped = {}
+    for i = 1, #items do
+        wrapped[i] = { items[i] }
+    end
+    return wrapped
+end
+
+--- Unwraps a nested list of items into a flat array.
+--- This transformation converts a nested structure (e.g., { {item1}, {item2}, ... })
+--- back into a flat array of items.
+---
+--- @param wrapped_items table  The original nested array of tables.
+--- @return table               A new flat array where each item is extracted
+---                             from its encapsulating table.
+function M.unwrap_items(wrapped_items)
+    local unwrapped = {}
+    for i = 1, #wrapped_items do
+        -- On extrait l'élément contenu dans la sous-table
+        unwrapped[i] = wrapped_items[i][1]
+    end
+    return unwrapped
+end
+
+
 --- Find a section by its ID within the config table.
 --- @param config table  The configuration table containing sections.
 --- @param id     string  The section ID to look for.
@@ -137,8 +170,14 @@ function M.registerPluginIcons(icons_dir, icons, copy_to_user_dir)
     end)
 end
 
---- Fetch system information.
---- @return          table
+--- Fetches current system resource metrics (CPU, RAM, and Storage).
+--- Reads data from system files (/proc/stat, /proc/meminfo) and executes
+--- shell commands (df) to determine usage statistics.
+---
+--- @return table  A table containing the following fields:
+---                 - cpu: {used, usedp, available, availablep, total}
+---                 - memory: {total, free, available, used, usedp, availablep}
+---                 - storage: {available, availablep, used, usedp, total}
 function M.systemInfo()
     local util = require("util")
     local Device = require("device")
