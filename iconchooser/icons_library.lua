@@ -300,7 +300,7 @@ end
 function IconsLibrary._renderCell(item, dimen)
     local Font = require("ui/font")
     local TextWidget = require("ui/widget/textwidget")
-    --local BFont = require("iconchooser/fonts")
+    --local BFont = require("iconchooser/fonts") HACK
     local glyph_size = math.max(36, math.floor(dimen.w * 0.16))
     local glyph_w
     if item.is_image then
@@ -319,7 +319,7 @@ function IconsLibrary._renderCell(item, dimen)
         }
     end
 
-    local label_face = (Font:getFace("cfont", 11)) --local label_face = (BFont:getFace("cfont", 11))
+    local label_face = (Font:getFace("cfont", 11)) --local label_face = (BFont:getFace("cfont", 11)) HACK
     local label_w = TextWidget:new{
         text = item.label or "",
         face = label_face,

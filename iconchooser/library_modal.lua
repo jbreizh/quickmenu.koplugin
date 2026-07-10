@@ -20,7 +20,7 @@ local Size = require("ui/size")
 local UIManager = require("ui/uimanager")
 local VerticalGroup = require("ui/widget/verticalgroup")
 local VerticalSpan = require("ui/widget/verticalspan")
-local BFont = require("iconchooser/fonts")
+-- local BFont = require("iconchooser/fonts") HACK
 local _ = require("common/i18n").gettext
 
 -- Uniform gap applied everywhere below the title bar separator.
@@ -373,7 +373,7 @@ function LibraryModal:_renderTitleBar(content_width, modal_w)
     -- Equal top/bottom padding so the title text reads as vertically centred.
     local bar_pad = Screen:scaleBySize(8)
 
-    local title_face, title_bold = BFont:getFace("cfont", 22, { bold = true })
+    local title_face, title_bold = Font:getFace("cfont", 22), true --BFont:getFace("cfont", 22, { bold = true })  HACK
     local title_w = TextWidget:new{
         text = self.config.title,
         face = title_face,
@@ -440,7 +440,7 @@ function LibraryModal:_renderTabSegments(title_bar_h)
     local function seg(label, is_active, on_tap)
         local fg = is_active and Blitbuffer.COLOR_WHITE or Blitbuffer.COLOR_BLACK
         local bg = is_active and Blitbuffer.COLOR_BLACK or Blitbuffer.COLOR_WHITE
-        local seg_face, seg_bold = BFont:getFace("cfont", 14, { bold = is_active })
+        local seg_face, seg_bold = Font:getFace("cfont", 14), is_active -- BFont:getFace("cfont", 14, { bold = is_active })  HACK
         local tw = TextWidget:new{
             text = label, face = seg_face, bold = seg_bold, fgcolor = fg,
         }
@@ -518,8 +518,8 @@ function LibraryModal:_renderSearchInput(content_width)
 
     -- Button labels match the tab pill font (cfont/14) so the row reads as
     -- one family. The input itself stays at cfont/16 for typing legibility.
-    local btn_face = (BFont:getFace("cfont", 14))
-    local input_face = (BFont:getFace("cfont", 16))
+    local btn_face = (Font:getFace("cfont", 14)) -- (BFont:getFace("cfont", 14))  HACK
+    local input_face = (Font:getFace("cfont", 16)) -- (BFont:getFace("cfont", 16))  HACK
     local btn_pad_h = Screen:scaleBySize(12)
     local gap = Screen:scaleBySize(6)
     -- InputText wraps its TextWidget in a FrameContainer with bordersize +
@@ -699,7 +699,7 @@ function LibraryModal:_renderChipStrip(content_width)
         end
         local fg = is_active and Blitbuffer.COLOR_WHITE or Blitbuffer.COLOR_BLACK
         local bg = is_active and Blitbuffer.COLOR_BLACK or Blitbuffer.COLOR_WHITE
-        local chip_face, chip_bold = BFont:getFace("cfont", 13, { bold = is_active })
+        local chip_face, chip_bold = Font:getFace("cfont", 13), is_active --BFont:getFace("cfont", 13, { bold = is_active })  HACK
         local tw = TextWidget:new{
             text = chip.label, face = chip_face, bold = chip_bold, fgcolor = fg,
         }
@@ -785,7 +785,7 @@ function LibraryModal:_renderChipStrip(content_width)
         local status_max = content_width - row1_w - status_gap
         if status_max > 0 then
             table.insert(row1, HorizontalSpan:new{ width = status_gap })
-            local status_face, status_bold = BFont:getFace("cfont", 13)
+            local status_face, status_bold = Font:getFace("cfont", 13) -- BFont:getFace("cfont", 13)  HACK
             table.insert(row1, TextWidget:new{
                 text = status_text,
                 face = status_face,
@@ -1100,7 +1100,7 @@ function LibraryModal:_renderFooter(content_width)
             -- Dynamic label needed for Apply/Install switching in preset modal;
             -- label_func() takes precedence over the static label fallback.
             local btn_text = action.label_func and action.label_func() or action.label
-            local act_face, act_bold = BFont:getFace("cfont", 16, { bold = action.primary == true })
+            local act_face, act_bold = Font:getFace("cfont", 16), action.primary == true -- BFont:getFace("cfont", 16, { bold = action.primary == true })  HACK
             table.insert(btns, Button:new{
                 text = btn_text,
                 face = act_face,
