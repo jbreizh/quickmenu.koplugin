@@ -16,6 +16,22 @@ function M.wrap_items(items)
     return wrapped
 end
 
+
+--- Transforms an icon string into a safe, displayable format.
+--- If the provided icon string matches the internal SVG reference format
+--- (e.g., "[icon=name]"), it is replaced with a default Unicode character.
+--- Otherwise, the original icon string is returned.
+---
+--- @param icon_str string The original icon string or SVG path reference.
+--- @return string         A safe Unicode icon or the original string if valid.
+function M.get_safe_icon(icon_str)
+    if not icon_str or icon_str == "" then  return "\u{F059}"  end
+    local extracted_icon = icon_str:match("^%[icon=(.+)%]$")
+    if extracted_icon then return "\u{F059}" end
+    return icon_str
+end
+
+
 --- Unwraps a nested list of items into a flat array.
 --- This transformation converts a nested structure (e.g., { {item1}, {item2}, ... })
 --- back into a flat array of items.

@@ -71,10 +71,11 @@ function ActionManage:btnActionManageMenu(ctx, section_name, close, on_refresh)
 --             end)
         }},
         {{
-            text = _("Reset actions") .. "\xE2\x80\xA6",
+            text = _("Reset actions to defaults") .. "\xE2\x80\xA6",
             callback = close(function()
                 UIManager:show(ConfirmBox:new{
-                    text = _("Reset actions to defaults?"),
+                    text = _("Reset actions to defaults") .. " ?",
+                    ok_text = _("Reset"),
                     ok_callback = function()
                         local defaults = Config.DEFAULTS.sections[section_name]
                         resetSectionItemsToDefaults(section, defaults)
@@ -106,6 +107,8 @@ function ActionManage:showActionManageMenu(ctx, section_name)
 
     local buttons = self:btnActionManageMenu(ctx, section_name, close, refresh)
 
+    table.insert(buttons, {}) -- separator
+
     table.insert(buttons, {{
         text = _("Exit"),
         callback = close()
@@ -117,6 +120,7 @@ function ActionManage:showActionManageMenu(ctx, section_name)
         title_align  = "left",
         width_factor = WIDTHFACTOR,
         buttons = buttons,
+        tap_close_callback = close()
     }
     UIManager:show(dialog)
 end
@@ -197,8 +201,10 @@ function ActionManage:selectActionManageDialog(ctx, section_name, on_close)
         }})
     end
 
+    table.insert(buttons, {}) -- separator
+
     table.insert(buttons, {{
-        text = _("Close"),
+        text = _("Exit"),
         callback = function()
             UIManager:close(dialog)
             --return false

@@ -9,7 +9,7 @@ local ButtonDialog    = require("ui/widget/buttondialog")
 
 local Font            = require("ui/font")
 local RenderImage     = require("ui/renderimage")
-
+local Math            = require("optmath")
 local UIManager       = require("ui/uimanager")
 
 local Config          = require("config")
@@ -54,13 +54,31 @@ function Info.build(ctx)
     local group = VerticalGroup:new{ align = "center" }
 
     if section.show_title then
+        -- add info near section name when collapse
+        local label_info = ""
+        if section.collapse then
+            local percent_read = ""
+            local title = ""
+            if reader then
+                local current_page = reader:getCurrentPage()
+                if reader.document then
+                    local total_page = reader.document:getPageCount()
+                    if type(total_page) == "number" and total_page > 0 then  percent_read = Math.round(100 * (current_page or 0) / total_page) .. "%"  end
+                end
+                title = (reader.doc_props and reader.doc_props.display_title) or (reader.props and reader.props.title) or ""
+            end
+            if percent_read ~= "" and title ~= "" then  label_info = string.format("%s of %s", percent_read, title)
+            elseif title ~= "" then  label_info = title
+            else label_info = "" end
+        end
+        -- section name
         local label_title = TextWidget:new{
-            text = ("Information"),
+            text = ("Reading") .. " : " .. label_info,
             face =  Font:getFace("cfont", btn_font_size), bold = true,
             max_width = inner_width - btn_width*2,
         }
         local settings_btn = Button:new{
-            text           = "\u{F462}", -- down up \u{EB92}"
+            text           = "\u{F462}", -- \u{EB92}"
             width          = btn_width,
             radius         = btn_radius,
             bordersize     = 0,
@@ -92,6 +110,7 @@ function Info.build(ctx)
             collapse_btn
         }
         table.insert(group, row_title)
+        -- stop render if section is collapse
         if section.collapse then  return { widget = group , refs = refs} end
     end
 
@@ -109,7 +128,7 @@ function Info.build(ctx)
     --
     local row = HorizontalGroup:new{ align = "center" }
 
-    if section.show_thumbnail then -- TODO
+    if section.show_thumbnail then -- TODO more test
         local cover_h = info_col:getSize().h
         local cover_w = math.floor(2 * cover_h / 3 + 0.5)
         local ok, thumbnail = pcall(function() return reader.bookinfo:getCoverImage(reader.document) end)
@@ -192,19 +211,22 @@ function Info.getSettings(ctx, close, refresh)
             separator = true
         },
         {
-        text = _("Reset to defaults"),
+        text = _("Reset section to defaults") .. "\xE2\x80\xA6",
         keep_menu_open = true,
         callback = close(function(touch_menu)
             if touch_menu then ctx.touch_menu = touch_menu end
             UIManager:show(ConfirmBox:new{
-                text = _("Are you sure you want to reset to defaults ?"),
+                text = _("Reset section to defaults") .. " ?",
                 ok_text = _("Reset"),
                 ok_callback = function()
                     local defaults = Config.DEFAULTS.sections[SECTION]
                     Utils.resetSectionToDefaults(section, defaults)
                     Config.saveAndRefresh(ctx)
                     if refresh then refresh() end
-                end
+                end,
+                cancel_callback = function()
+                    if refresh then refresh() end
+                end,
             })
         end)
         }
@@ -227,6 +249,14 @@ function Info.showSettings(ctx)
 
     local buttons = Utils.wrap_items(Info.getSettings(ctx, close, refresh))
     if not buttons or #buttons==0 then return end
+
+    table.insert(buttons, {}) -- separator
+
+    table.insert(buttons, {{
+        text = _("Exit"),
+        callback = close()
+    }})
+
     dialog = ButtonDialog:new{
         -- dismissable = false,
         title = _("Settings") .. " : " .. SECTION,

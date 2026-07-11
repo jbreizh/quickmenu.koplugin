@@ -74,9 +74,20 @@ function Actions.build(ctx)
 
     local group = VerticalGroup:new{ align = "center" }
 
+    -- title
     if section.show_title then
+        -- add icon near section name when collapse
+        local label_icon = ""
+        if section.collapse then
+            for _, entry in ipairs(visible_actions) do
+                local def = entry.def
+                local icon = def.icon_func and def.icon_func(ctx) or (def.icon or "")
+                label_icon = label_icon .. " " .. Utils.get_safe_icon(icon)
+            end
+        end
+        -- section name
         local label_title = TextWidget:new{
-            text = _("Actions") .. " :",
+            text = _("Actions") .. " : " .. label_icon,
             face =  Font:getFace("cfont", btn_font_size), bold = true,
             max_width = inner_width - btn_width*2,
         }
@@ -113,17 +124,17 @@ function Actions.build(ctx)
             collapse_btn
         }
         table.insert(group, row_title)
-
+        -- stop render if section is collapse
         if section.collapse then  return { widget = group } end
     else
         table.insert(group, VerticalSpan:new{ width = screen:scaleBySize( 10 ) }) -- better for visual
     end
 
-    --
+    -- utils to exec actions
     local function exec_action(ctx, action_data)
-        if type(action_data) == "function" then
+        if type(action_data) == "function" then -- native
             action_data(ctx)
-        elseif type(action_data) == "table" then
+        elseif type(action_data) == "table" then -- custom
             ctx.touch_menu:closeMenu()
             UIManager:nextTick(function() ActionExec.dispatch(action_data) end)
         end
@@ -269,19 +280,22 @@ function Actions.getSettings(ctx, close, refresh)
 
     -- reset
     table.insert(menu_items, {
-        text = _("Reset to defaults"),
+        text = _("Reset section to defaults") .. "\xE2\x80\xA6",
         keep_menu_open = true,
         callback = close(function(touch_menu)
             if touch_menu then ctx.touch_menu = touch_menu end
             UIManager:show(ConfirmBox:new{
-                text = _("Are you sure you want to reset to defaults ?"),
+                text = _("Reset section to defaults") .. " ?",
                 ok_text = _("Reset"),
                 ok_callback = function()
                     local defaults = Config.DEFAULTS.sections[SECTION]
                     Utils.resetSectionToDefaults(section, defaults)
                     Config.saveAndRefresh(ctx)
                     if refresh then refresh() end
-                end
+                end,
+                cancel_callback = function()
+                    if refresh then refresh() end
+                end,
             })
         end)
     })
@@ -305,12 +319,21 @@ function Actions.showSettings(ctx)
 
     local buttons = Utils.wrap_items(Actions.getSettings(ctx, close, refresh))
     if not buttons or #buttons==0 then return end
+
+    table.insert(buttons, {}) -- separator
+
+    table.insert(buttons, {{
+        text = _("Exit"),
+        callback = close()
+    }})
+
     dialog = ButtonDialog:new{
         -- dismissable = false,
         title = _("Settings") .. " : " .. SECTION,
         title_align  = "left",
         width_factor = 0.9,
         buttons = buttons,
+        tap_close_callback = close()
     }
     UIManager:show(dialog)
 

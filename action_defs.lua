@@ -15,7 +15,6 @@ local UIManager    = require("ui/uimanager")
 local Util         = require("util")
 
 local Utils            = require("common/utils")
-local FrontlightPreset = require("frontlight_preset")
 local _                = require("common/i18n").gettext
 
 local ActionDefs = {}
@@ -77,15 +76,12 @@ function ActionDefs.get()
             end,
             active_func = function(ctx) return G_reader_settings:isTrue("night_mode") end,
             -- visible_func
-            help_text = _("Tap : Toggle night mode\nHold : Show frontlight preset dialog"),
+            help_text = _("Tap : Toggle night mode\nHold : Nothing"),
             callback = function(ctx)
                 UIManager:broadcastEvent(Event:new("ToggleNightMode"))
                 ctx.touch_menu:updateItems(1)
             end,
-            hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-                FrontlightPreset:showFrontlightPresetMenu(ctx.config)
-            end
+            hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
         },
         light = {
             icon = "\u{EA2B}", -- led-on
@@ -123,11 +119,8 @@ function ActionDefs.get()
             end,
             active_func = function(ctx) return ctx.powerd:isFrontlightOn() and ctx.powerd:frontlightWarmth() ~= 0 end,
             visible_func = function(ctx) return ctx.device:hasFrontlight() and ctx.device:hasNaturalLight() end,
-            help_text = _("Tap : Show frontlight preset dialog\nHold : Show frontlight dialog"),
-            callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-                FrontlightPreset:showFrontlightPresetMenu(ctx.config)
-            end,
+            help_text = _("Tap : Nothing\nHold : Show frontlight dialog"),
+            callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end,
             hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
                 UIManager:broadcastEvent(Event:new("ShowFlDialog"))
@@ -539,7 +532,10 @@ function ActionDefs.get()
                 return "\u{EA18}" -- lan-disconnect
             end,
             label = _("SSH"),
-            -- label_func TODO
+            label_func = function(ctx)
+                if Util.pathExists("/tmp/dropbear_koreader.pid") then return _("On") end -- lan-connect
+                return _("Off") -- lan-disconnect
+            end,
             active_func = function(ctx) return Util.pathExists("/tmp/dropbear_koreader.pid") end,
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("SSH") end,
             help_text = _("Tap : Toggle SSH server\nHold : Nothing"),
@@ -559,7 +555,11 @@ function ActionDefs.get()
                 return "\u{EB8D}" -- server-network-off
             end,
             label = "Calibre",
-            -- label_func TODO
+            label_func = function(ctx)
+                local CW = package.loaded["wireless"]
+                if CW ~= nil and CW.calibre_socket ~= nil then return _("On") end -- server-network
+                return _("Off") -- server-network-off
+            end,
             active_func = function(ctx)
                 local CW = package.loaded["wireless"]
                 return CW ~= nil and CW.calibre_socket ~= nil
@@ -672,20 +672,6 @@ function ActionDefs.get()
             end,
         },
         -- other plugin
-        zlibrary = {
-            icon = "\u{005A}",
-            -- icon_func
-            label = _("Z-Lib"),
-            -- label_func
-            -- active_func
-            visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("zlibrary") end,
-            help_text = _("Tap : Show Z-lib search\nHold : Nothing"),
-            callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-                UIManager:broadcastEvent(Event:new("ZlibrarySearch"))
-            end,
-            hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
-        },
         process = {
             icon = "\u{E8F9}", -- engine
             --icon_func
@@ -700,9 +686,21 @@ function ActionDefs.get()
             end,
             -- active_func
             -- visible_func
-            help_text = _("Tap : Nothing\nHold : Nothing"),
-            -- callback
-            -- hold_callback
+            help_text = _("Tap : Show value\nHold : Show system statistics"),
+            callback = function(ctx)
+                local statm = io.open("/proc/self/statm", "r")
+                if not statm then return "" end
+                local ignore, rss = statm:read("*number", "*number")
+                statm:close()
+                -- we got the nb of 4Kb-pages used, that we convert to MiB
+                local process_memory_p = ("%d"):format(math.floor(rss * (4096 / 1024 / 1024))) .. _("MB")
+                UIManager:show(InfoMessage:new{ text = string.format(_("Process memory %s MB"),process_memory_p) })
+            end,
+            hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
+                else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
+            end
         },
         cpuusedp = {
             icon = "\u{ED19}",
@@ -920,13 +918,17 @@ function ActionDefs.get()
             end,
             -- active_func
             visible_func = function(ctx) return ctx.device:hasBattery() end,
-            help_text = _("Tap : Show battery statistics\nHold : Nothing"),
+            help_text = _("Tap : Show value\nHold : Show battery statistics"),
             callback = function(ctx)
+                UIManager:show(InfoMessage:new{
+                    text = ("Main battery %d%%"):format(ctx.powerd:getCapacity())
+                })
+            end,
+            hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("batterystat") then UIManager:broadcastEvent(Event:new("ShowBatteryStatistics"))
                 else UIManager:show(InfoMessage:new{ text = _("batterystat)") .. " : " .. _("Plugin not activated.") }) end
             end
-            -- hold_callback
         },
         auxbattery = {
             icon = "\u{E78E}",
@@ -942,13 +944,17 @@ function ActionDefs.get()
             visible_func = function(ctx)
                 return ctx.device:hasAuxBattery() and ctx.powerd:isAuxBatteryConnected()
             end,
-            help_text = _("Tap : Show battery statistics\nHold : Nothing"),
+            help_text = _("Tap : Show value\nHold : Show battery statistics"),
             callback = function(ctx)
+                UIManager:show(InfoMessage:new{
+                    text = ("Aux battery %d%%"):format(ctx.powerd:getAuxCapacity())
+                })
+            end,
+            hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("batterystat") then UIManager:broadcastEvent(Event:new("ShowBatteryStatistics"))
                 else UIManager:show(InfoMessage:new{ text = _("batterystat)") .. " : " .. _("Plugin not activated.") }) end
             end
-            -- hold_callback
         }
     }
 end

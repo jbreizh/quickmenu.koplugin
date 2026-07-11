@@ -10,9 +10,6 @@ msgstr "Ajouter"
 msgid "Add exit tab"
 msgstr "Ajouter onglet de sortie"
 
-msgid "Add new preset"
-msgstr "Ajouter nouveau préréglage"
-
 msgid "Add quick menu tab"
 msgstr "Ajouter onglet menu rapide"
 
@@ -21,9 +18,6 @@ msgstr "Toujours démarrer sur l'onglet menu rapide"
 
 msgid "Apply"
 msgstr "Appliquer"
-
-msgid "Apply preset '%s'"
-msgstr "Appliquer préréglage '%s'"
 
 msgid "Are you sure you want to exit KOReader ?"
 msgstr "Êtes-vous sûr de vouloir quitter KOReader ?"
@@ -39,9 +33,6 @@ msgstr "Êtes-vous sûr de vouloir redémarrer KOReader ?"
 
 msgid "Author : Anthony Gress\nProjet : Zen UI\nhttps://github.com/AnthonyGress/zen_ui.koplugin"
 msgstr "Auteur : Anthony Gress\nProjet : Zen UI\nhttps://github.com/AnthonyGress/zen_ui.koplugin"
-
-msgid "Author : peterboda236\nProjet : koreader-user-patches\nhttps://github.com/peterboda236/koreader-user-patches"
-msgstr "Auteur : peterboda236\nProjet : koreader-user-patches\nhttps://github.com/peterboda236/koreader-user-patches"
 
 msgid "Battery"
 msgstr "Batterie"
@@ -73,9 +64,6 @@ msgstr "Par défaut"
 msgid "Delete"
 msgstr "Supprimer"
 
-msgid "Delete preset '%s'"
-msgstr "Supprimer préréglage '%s'"
-
 msgid "Dictionary"
 msgstr "Dictionnaire"
 
@@ -100,9 +88,6 @@ msgstr "Pied de page"
 msgid "Frontlight"
 msgstr "Éclairage frontal"
 
-msgid "Frontlight preset"
-msgstr "Préréglage éclairage frontal"
-
 msgid "GB"
 msgstr "Go"
 
@@ -111,12 +96,6 @@ msgstr "Historique"
 
 msgid "Informations"
 msgstr "Informations"
-
-msgid "Intensity : %d%%"
-msgstr "Intensité : %d%%"
-
-msgid "Intensity : %d%% -> %d%%"
-msgstr "Intensité : %d%% -> %d%%"
 
 msgid "Justify controls"
 msgstr "Justifier les contrôles"
@@ -136,23 +115,8 @@ msgstr "Mo"
 msgid "Memory"
 msgstr "Mémoire"
 
-msgid "Name :"
-msgstr "Nom :"
-
-msgid "New"
-msgstr "Nouveau"
-
 msgid "Night"
 msgstr "Nuit"
-
-msgid "Night mode : %s"
-msgstr "Mode nuit : %s"
-
-msgid "Night mode : %s -> %s"
-msgstr "Mode nuit : %s -> %s"
-
-msgid "No"
-msgstr "Non"
 
 msgid "Not possible"
 msgstr "Impossible"
@@ -192,12 +156,6 @@ msgstr "Menu rapide"
 
 msgid "Reboot"
 msgstr "Redémarrer"
-
-msgid "Rename"
-msgstr "Renommer"
-
-msgid "Rename preset '%s' to '%s'"
-msgstr "Renommer le préréglage '%s' en '%s'"
 
 msgid "Reset"
 msgstr "Réinitialiser"
@@ -259,9 +217,6 @@ msgstr "Appui : Redémarrer le système\nMaintien : Éteindre le système"
 msgid "Tap : Ask for restart KOreader\nHold : Ask for exit KOreader"
 msgstr "Appui : Relancer KOReader\nMaintien : Quitter KOReader"
 
-msgid "Tap : Nothing\nHold : Nothing"
-msgstr "Appui : Rien\nMaintien : Rien"
-
 msgid "Tap : Open last book\nHold : Show history"
 msgstr "Appui : Ouvrir le dernier livre\nMaintien : Afficher l'historique"
 
@@ -276,12 +231,6 @@ msgstr "Appui : Afficher la recherche Calibre\nMaintien : Afficher la recherche 
 
 msgid "Tap : Show OPDS catalog\nHold : Show cloud storage"
 msgstr "Appui : Afficher le catalogue OPDS\nMaintien : Afficher le stockage cloud"
-
-msgid "Tap : Show Z-lib search\nHold : Nothing"
-msgstr "Appui : Afficher la recherche Z-lib\nMaintien : Rien"
-
-msgid "Tap : Show battery statistics\nHold : Nothing"
-msgstr "Appui : Afficher les statistiques de la batterie\nMaintien : Rien"
 
 msgid "Tap : Show calendar statistics\nHold : Show reader statistics"
 msgstr "Appui : Afficher les statistiques du calendrier\nMaintien : Afficher les statistiques du lecteur"
@@ -300,9 +249,6 @@ msgstr "Appui : Afficher les favoris\nMaintien : Afficher les collections"
 
 msgid "Tap : Show file search\nHold : Show Calibre search"
 msgstr "Appui : Afficher la recherche de fichiers\nMaintien : Afficher la recherche Calibre"
-
-msgid "Tap : Show frontlight preset dialog\nHold : Show frontlight dialog"
-msgstr "Appui : Afficher la boîte de dialogue des préréglages d'éclairage\nMaintien : Afficher la boîte de dialogue d'éclairage"
 
 msgid "Tap : Show history\nHold : Open last book"
 msgstr "Appui : Afficher l'historique\nMaintien : Ouvrir le dernier livre"
@@ -343,32 +289,17 @@ msgstr "Titre inconnu"
 msgid "Unlock"
 msgstr "Déverrouiller"
 
-msgid "Update preset '%s'"
-msgstr "Mettre à jour le préréglage '%s'"
-
 msgid "Use ZenSlider"
 msgstr "Utiliser ZenSlider"
 
 msgid "Warmth"
 msgstr "Chaleur"
 
-msgid "Warmth : %d%%"
-msgstr "Chaleur : %d%%"
-
-msgid "Warmth : %d%% -> %d%%"
-msgstr "Chaleur : %d%% -> %d%%"
-
 msgid "WiFi"
 msgstr "WiFi"
 
 msgid "Wikipedia"
 msgstr "Wikipédia"
-
-msgid "Yes"
-msgstr "Oui"
-
-msgid "Z-Lib"
-msgstr "Z-Lib"
 
 msgid "available"
 msgstr "disponible"
@@ -574,9 +505,6 @@ msgstr "Tiret demi-cadratin"
 msgid "Fraction slash"
 msgstr "Barre de fraction"
 
-msgid "Frontlight presets"
-msgstr "Préréglages éclairage frontal"
-
 msgid "Heart"
 msgstr "Cœur"
 
@@ -700,9 +628,6 @@ msgstr "Dossier d'icônes SVG"
 msgid "Save"
 msgstr "Enregistrer"
 
-msgid "Save preset '%s'"
-msgstr "Enregistrer le préréglage '%s'"
-
 msgid "Search %1 icons by name…"
 msgstr "Rechercher %1 icônes par nom…"
 
@@ -793,9 +718,6 @@ msgstr "Étiquette"
 msgid "Manage actions"
 msgstr "Gérer les actions"
 
-msgid "Reset actions to defaults?"
-msgstr "Réinitialiser les actions par défaut ?"
-
 msgid "Select actions"
 msgstr "Sélectionner les actions"
 
@@ -813,9 +735,6 @@ msgstr "Action de menu"
 
 msgid "Plugin"
 msgstr "Plugin"
-
-msgid "Reset actions"
-msgstr "Réinitialiser les actions"
 
 msgid "System action"
 msgstr "Action système"
@@ -835,9 +754,6 @@ msgstr "Appui : Basculer l'éclairage frontal\nMaintien : Afficher la boîte de 
 msgid "Tap : Toggle lock gsensor\nHold : Toggle ignore gsensor"
 msgstr "Appui : Basculer le verrouillage du capteur gyroscopique\nMaintien : Basculer l'ignorance du capteur gyroscopique"
 
-msgid "Tap : Toggle night mode\nHold : Show frontlight preset dialog"
-msgstr "Appui : Basculer le mode nuit\nMaintien : Afficher la boîte de dialogue des préréglages d'éclairage"
-
 msgid "Tap : Toggle wifi\nHold : Show wifi picker"
 msgstr "Appui : Basculer le wifi\nMaintien : Afficher la sélection wifi"
 
@@ -848,10 +764,10 @@ msgid "Settings"
 msgstr "Paramètres"
 
 msgid "Tap : Show time\nHold : Nothing"
-msgstr "Tap : Afficher l'heure\nMaintien : Rien"
+msgstr "Appui : Afficher l'heure\nMaintien : Rien"
 
 msgid "Tap : Show value\nHold : Show system statistics"
-msgstr "Tap : Afficher la valeur\nMaintien : Statistiques système"
+msgstr "Appui : Afficher la valeur\nMaintien : Statistiques système"
 
 msgid "CPU used %d%%"
 msgstr "CPU utilisé : %d%%"
@@ -885,3 +801,30 @@ msgstr "Stockage utilisé : %d Go"
 
 msgid "Storage used %d%%"
 msgstr "Stockage utilisé : %d%%"
+
+msgid "Footer overflow !!!!\nHidden actions :\n"
+msgstr "Débordement du pied de page !!!!\nActions masquées :\n"
+
+msgid "Process memory %s MB"
+msgstr "Mémoire du processus : %s Mo"
+
+msgid "Reset actions to defaults"
+msgstr "Réinitialiser les actions par défaut"
+
+msgid "Reset quick menu to defaults"
+msgstr "Réinitialiser le menu rapide par défaut"
+
+msgid "Reset quick menu to defaults ?"
+msgstr "Réinitialiser le menu rapide par défaut ?"
+
+msgid "Reset section to defaults"
+msgstr "Réinitialiser la section par défaut"
+
+msgid "Tap : Nothing\nHold : Show frontlight dialog"
+msgstr "Appui : Rien\nMaintien : Afficher la lumière frontale"
+
+msgid "Tap : Show value\nHold : Show battery statistics"
+msgstr "Appui : Afficher la valeur\nMaintien : Statistiques batterie"
+
+msgid "Tap : Toggle night mode\nHold : Nothing"
+msgstr "Appui : Basculer mode nuit\nMaintien : Rien"

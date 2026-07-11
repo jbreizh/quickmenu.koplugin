@@ -56,7 +56,11 @@ function Frontlight.build(ctx)
 
     if reader and not section.enabled_r then return nil end
 
-    --if not device:hasFrontlight() then return nil end
+    -- record value easy change for testing on emulator
+    local hasFrontlight = not not device:hasFrontlight() -- force bool
+    local hasNaturalLight = not not device:hasNaturalLight() -- force bool
+
+    if not hasFrontlight then return nil end
 
     local refs = { buttons = {}, sliders = {}, widgets = {} }
 
@@ -64,10 +68,13 @@ function Frontlight.build(ctx)
 
     if section.show_title then
         local row_title = HorizontalGroup:new{ align = "center" }
-        if section.use_zenslider then
+        if section.use_zenslider and not section.collapse then
             table.insert(row_title, HorizontalSpan:new{ width = inner_width - btn_width*2 })
         else
             local label = _("Frontlight") .. " : " .. powerd:frontlightIntensity() .. "%"
+            if  hasNaturalLight and section.collapse then
+                label = label .. " - " .._("Warmth") .. " : " .. powerd:frontlightWarmth() .. "%"
+            end
             local label_title = TextWidget:new{
                 text = label,
                 face =  Font:getFace("cfont", btn_font_size), bold = true,
@@ -108,7 +115,7 @@ function Frontlight.build(ctx)
         if section.collapse then  return { widget = group , refs = refs} end
     end
 
-    --if device:hasFrontlight() then
+    if hasFrontlight then
         if section.use_zenslider then
             local intensityZenUI = IntensityZenUI.build(ctx)
             table.insert(group, intensityZenUI.widget)
@@ -118,10 +125,9 @@ function Frontlight.build(ctx)
             table.insert(group, intensitySection.widget)
             table.insert(refs.sliders, intensitySection.refs.sliders[1])
         end
-    --end
+    end
 
-
-    --if device:hasNaturalLight() then
+    if hasNaturalLight then
         if section.use_zenslider then
             local warmthZenUI = WarmthZenUI.build(ctx)
             table.insert(group, warmthZenUI.widget)
@@ -146,7 +152,7 @@ function Frontlight.build(ctx)
             table.insert(group, warmthSection.widget)
             table.insert(refs.sliders, warmthSection.refs.sliders[1])
         end
-    --end
+    end
 
     return { widget = group , refs = refs }
 end
@@ -160,7 +166,7 @@ function Frontlight.getSettings(ctx, close, refresh)
     local config  = ctx.config
     local section = Utils.getSection(config, SECTION)
 
-    --if not device:hasFrontlight() then return {} end
+    if not device:hasFrontlight() then return {} end
     if not section then return {} end
 
     return {
@@ -187,19 +193,22 @@ function Frontlight.getSettings(ctx, close, refresh)
             separator = true
         },
         {
-        text = _("Reset to defaults"),
+        text = _("Reset section to defaults") .. "\xE2\x80\xA6",
         keep_menu_open = true,
         callback = close(function(touch_menu)
             if touch_menu then ctx.touch_menu = touch_menu end
             UIManager:show(ConfirmBox:new{
-                text = _("Are you sure you want to reset to defaults ?"),
+                text = _("Reset section to defaults") .. " ?",
                 ok_text = _("Reset"),
                 ok_callback = function()
                     local defaults = Config.DEFAULTS.sections[SECTION]
                     Utils.resetSectionToDefaults(section, defaults)
                     Config.saveAndRefresh(ctx)
                     if refresh then refresh() end
-                end
+                end,
+                cancel_callback = function()
+                    if refresh then refresh() end
+                end,
             })
         end)
         }
@@ -222,6 +231,14 @@ function Frontlight.showSettings(ctx)
 
     local buttons = Utils.wrap_items(Frontlight.getSettings(ctx, close, refresh))
     if not buttons or #buttons==0 then return end
+
+    table.insert(buttons, {}) -- separator
+
+    table.insert(buttons, {{
+        text = _("Exit"),
+        callback = close()
+    }})
+
     dialog = ButtonDialog:new{
         -- dismissable = false,
         title = _("Settings") .. " : " .. SECTION,

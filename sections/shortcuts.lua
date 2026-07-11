@@ -74,9 +74,20 @@ function Shortcuts.build(ctx)
 
     local group = VerticalGroup:new{ align = "center" }
 
+    -- title
     if section.show_title then
+        -- add icon near section name when collapse
+        local label_icon = ""
+        if section.collapse then
+            for _, entry in ipairs(visible_actions) do
+                local def = entry.def
+                local icon = def.icon_func and def.icon_func(ctx) or (def.icon or "")
+                label_icon = label_icon .. " " .. Utils.get_safe_icon(icon)
+            end
+        end
+        -- section name
         local label_title = TextWidget:new{
-            text = _("Shortcuts") .. " :",
+            text = _("Shortcuts") .. " : " .. label_icon,
             face =  Font:getFace("cfont", btn_font_size), bold = true,
             max_width = inner_width - btn_width*2,
         }
@@ -113,18 +124,18 @@ function Shortcuts.build(ctx)
             collapse_btn
         }
         table.insert(group, row_title)
-
+        -- don't render actions if section is collapse
         if section.collapse then  return { widget = group } end
     end
 
     local max_cols =  section.max_cols or 3
     local shortcuts_width = Math.round((inner_width  - h_gap * (max_cols - 1)) / max_cols)
 
-    --
+    -- utils to exec actions
     local function exec_action(ctx, action_data)
-        if type(action_data) == "function" then
+        if type(action_data) == "function" then -- native
             action_data(ctx)
-        elseif type(action_data) == "table" then
+        elseif type(action_data) == "table" then -- custom
             ctx.touch_menu:closeMenu()
             UIManager:nextTick(function() ActionExec.dispatch(action_data) end)
         end
@@ -133,7 +144,7 @@ function Shortcuts.build(ctx)
     local function createButton(def)
         local icon = def.icon_func and def.icon_func(ctx) or (def.icon or "")
         local label = def.label_func and def.label_func(ctx) or (def.label or "")
-        local shortcuts_text = section.show_label and (Utils.get_safe_icon(def.icon) .. " " .. _(label)) or Utils.get_safe_icon(def.icon) -- btn doesnt't support svg
+        local shortcuts_text = section.show_label and (Utils.get_safe_icon(icon) .. " " .. _(label)) or Utils.get_safe_icon(icon) -- btn doesnt't support svg
         return Button:new{
             text           = shortcuts_text,
             width          = shortcuts_width,
@@ -209,13 +220,15 @@ function Shortcuts.getSettings(ctx, close, refresh)
                 local original = section.max_cols
                 local function getValue() return section.max_cols end
                 local function setValue(v) section.max_cols = math.max(1, math.min(15, v)); Config.saveAndRefresh(ctx) end
-                local function rebuild()  end -- nothing saveAndRefresh refresh the touchmenu
+                local function rebuild()
+                    UIManager:setDirty("all", "ui") -- HACK touch_menu only repaint touch_menu... dialog outside touch_menu need repaint
+                end
 
                 local dialog
                 local function nudge(delta)
                     setValue(getValue() + delta)
-                    rebuild()
                     dialog:reinit()
+                    rebuild()
                 end
 
                 local function close() UIManager:close(dialog); refresh() end
@@ -262,19 +275,22 @@ function Shortcuts.getSettings(ctx, close, refresh)
 
     -- reset
     table.insert(menu_items, {
-        text = _("Reset to defaults"),
+        text = _("Reset section to defaults") .. "\xE2\x80\xA6",
         keep_menu_open = true,
         callback = close(function(touch_menu)
             if touch_menu then ctx.touch_menu = touch_menu end
             UIManager:show(ConfirmBox:new{
-                text = _("Are you sure you want to reset to defaults ?"),
+                text = _("Reset section to defaults") .. " ?",
                 ok_text = _("Reset"),
                 ok_callback = function()
                     local defaults = Config.DEFAULTS.sections[SECTION]
                     Utils.resetSectionToDefaults(section, defaults)
                     Config.saveAndRefresh(ctx)
                     if refresh then refresh() end
-                end
+                end,
+                cancel_callback = function()
+                    if refresh then refresh() end
+                end,
             })
         end)
     })
@@ -298,6 +314,14 @@ function Shortcuts.showSettings(ctx)
 
     local buttons = Utils.wrap_items(Shortcuts.getSettings(ctx, close, refresh))
     if not buttons or #buttons==0 then return end
+
+    table.insert(buttons, {}) -- separator
+
+    table.insert(buttons, {{
+        text = _("Exit"),
+        callback = close()
+    }})
+
     dialog = ButtonDialog:new{
         -- dismissable = false,
         title = _("Settings") .. " : " .. SECTION,

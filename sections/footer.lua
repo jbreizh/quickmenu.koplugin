@@ -60,10 +60,13 @@ function Footer.build(ctx)
     local section            = Utils.getSection(config, SECTION)
 
     if not section then return nil end
+
+    -- clear existing icon and label up_button
     touch_menu.page_info:clear()
     touch_menu.device_info:clear()
 
     if (filemanager and not section.enabled_f) or (reader and not section.enabled_r) then
+        -- recreate default footer
         local time_info = Button:new{
             text = default_footer(ctx),
             text_font_bold = false,
@@ -96,48 +99,59 @@ function Footer.build(ctx)
         end
     end
 
+    local max_width = math.floor(panel_width *0.8) - btn_width
+    local current_width = 0
+    local has_overflow = false
+    local overflow_items = {}
+
     for index = 1, #section.items do
     local id = section.items[index]
     local item_def = action_defs[id]
 
-    if item_def and (not item_def.visible_func or item_def.visible_func(ctx)) then
-        local icon = item_def.icon_func and item_def.icon_func(ctx) or (item_def.icon or "")
-        local val = item_def.label_func and item_def.label_func(ctx) or (item_def.label or "")
-
-        -- Création d'un bouton spécifique pour cette action
-        local btn = Button:new{
-            text = Utils.get_safe_icon(icon) .. " " .. val, -- btn doesnt't support svg
-            text_font_bold = false,
-            bordersize = 0,
-            show_parent = touch_menu.show_parent,
-            callback       = item_def.callback and function() exec_action(ctx, item_def.callback) end or nil,
-            hold_callback  = item_def.hold_callback and function() exec_action(ctx, item_def.hold_callback) end or nil,
-
-        }
-
-        -- Ajout direct au groupe
-        table.insert(touch_menu.device_info, btn)
-
+        if item_def and (not item_def.visible_func or item_def.visible_func(ctx)) then
+            local icon = item_def.icon_func and item_def.icon_func(ctx) or (item_def.icon or "")
+            local val = item_def.label_func and item_def.label_func(ctx) or (item_def.label or "")
+            -- create btn
+            local btn = Button:new{
+                text = Utils.get_safe_icon(icon) .. " " .. val, -- btn doesnt't support svg
+                text_font_bold = false,
+                bordersize = 0,
+                show_parent = touch_menu.show_parent,
+                callback       = item_def.callback and function() exec_action(ctx, item_def.callback) end or nil,
+                hold_callback  = item_def.hold_callback and function() exec_action(ctx, item_def.hold_callback) end or nil,
+            }
+            -- if item fit then add btn else store hidden items
+            local btn_w = btn:getSize().w
+            if current_width + btn_w <= max_width then
+                current_width = current_width + btn_w
+                table.insert(touch_menu.device_info, btn)
+            else
+                has_overflow = true
+                overflow_icon = table.insert(overflow_items, "• " .. Utils.get_safe_icon(item_def.icon or "") .. " " .. (item_def.label or ""))
+            end
+        end
     end
-end
-
-
 
     local settings_btn = Button:new{
-        text           = "\u{F462}", -- down up \u{EB92}"
+        text           = (has_overflow and "\u{F071}") or "\u{F462}", -- warning icon if overflow
         width          = btn_width,
         radius         = btn_radius,
         bordersize     = 0,
         text_font_size = btn_font_size,
         show_parent    = touch_menu.show_parent,
         callback       = function()
+            if has_overflow then
+                UIManager:show(InfoMessage:new{
+                    text = _("Footer overflow !!!!\nHidden actions :\n") .. table.concat(overflow_items, "\n"),
+                    icon = "notice-warning"
+                })
+            end
             Footer.showSettings(ctx)
         end,
         --hold_callback = function() end,
     }
 
     table.insert(touch_menu.device_info, settings_btn)
-    --ctx.touch_menu.time_info:setText(table.concat(parts, sep))
     return {}
 end
 
@@ -183,19 +197,22 @@ function Footer.getSettings(ctx, close, refresh)
 
     -- reset
     table.insert(menu_items, {
-        text = _("Reset to defaults"),
+        text = _("Reset section to defaults") .. "\xE2\x80\xA6",
         keep_menu_open = true,
         callback = close(function(touch_menu)
             if touch_menu then ctx.touch_menu = touch_menu end
             UIManager:show(ConfirmBox:new{
-                text = _("Are you sure you want to reset to defaults ?"),
+                text = _("Reset section to defaults") .. " ?",
                 ok_text = _("Reset"),
                 ok_callback = function()
                     local defaults = Config.DEFAULTS.sections[SECTION]
                     Utils.resetSectionToDefaults(section, defaults)
                     Config.saveAndRefresh(ctx)
                     if refresh then refresh() end
-                end
+                end,
+                cancel_callback = function()
+                    if refresh then refresh() end
+                end,
             })
         end)
     })
@@ -219,6 +236,14 @@ function Footer.showSettings(ctx)
 
     local buttons = Utils.wrap_items(Footer.getSettings(ctx, close, refresh))
     if not buttons or #buttons==0 then return end
+
+    table.insert(buttons, {}) -- separator
+
+    table.insert(buttons, {{
+        text = _("Exit"),
+        callback = close()
+    }})
+
     dialog = ButtonDialog:new{
         -- dismissable = false,
         title = _("Settings") .. " : " .. SECTION,

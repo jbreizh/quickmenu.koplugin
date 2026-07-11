@@ -43,6 +43,8 @@ function ActionCustom:showActionCustomMenu(ctx)
         end
     end
 
+    table.insert(buttons, {}) -- separator
+
     -- new action
     buttons[#buttons + 1] = {
         {
@@ -116,6 +118,9 @@ function ActionCustom:applyActionCustomDialog(ctx, action)
                 end
             end
         }},
+        {
+           -- separator
+        },
         {{
             text = _("Exit"),
             callback = function()
@@ -187,6 +192,8 @@ function ActionCustom:addActionCustomDialog(ctx)
         self:showActionCustomMenu(ctx)
     end)
 
+    table.insert(buttons, {}) -- separator
+
     buttons[#buttons + 1] = {
         {
         text = _("Exit"),
@@ -246,6 +253,8 @@ function ActionCustom:callbackActionCustomDialog(ctx, action, index, is_hold_cal
         self:callbackActionCustom(action, fields, is_hold_callback)
         self:updateActionCustomDialog(ctx, action, index)
     end)
+
+    table.insert(buttons, {}) -- separator
 
     buttons[#buttons + 1] = {
         {
@@ -396,6 +405,9 @@ function ActionCustom:updateActionCustomDialog(ctx, action, index)
                 self:callbackActionCustomDialog(ctx, temp_action, index, true)
             end
         }},
+        {
+          --separator
+        },
         {
             {
                 text = _("Save"),

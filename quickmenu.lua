@@ -15,7 +15,6 @@ local ButtonDialog  = require("ui/widget/buttondialog")
 local UIManager     = require("ui/uimanager")
 local Event         = require("ui/event")
 
-local FrontlightPreset = require("frontlight_preset")
 local ActionCustom     = require("action_custom")
 local Config           = require("config")
 local Utils            = require("common/utils")
@@ -330,16 +329,6 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
         end
     })
 
-    -- preset
---     table.insert(menu_items, {
---         text = _("Frontlight presets"),
---         --keep_menu_open = true,
---         help_text = _("Author : peterboda236\nProjet : koreader-user-patches\nhttps://github.com/peterboda236/koreader-user-patches"),
---         callback = function(touch_menu)
---             FrontlightPreset:showFrontlightPresetMenu(config)
---         end
---     })
-
     -- style
     table.insert(menu_items, {
         text = _("Style"),
@@ -371,10 +360,10 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
 
     -- reset
     table.insert(menu_items, {
-    text = _("Reset to defaults"),
+    text = _("Reset quick menu to defaults") .. "\xE2\x80\xA6",
     callback = function()
         UIManager:show(ConfirmBox:new{
-            text = _("Are you sure you want to reset to defaults ?"),
+            text = _("Reset quick menu to defaults ?"),
             ok_text = _("Reset"),
             ok_callback = function()
                 -- global
@@ -395,10 +384,8 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
                 for key, value in pairs(Config.DEFAULTS.style) do
                     config.style[key] = value
                 end
-                -- frontlight_preset
-                --config.frontlight_presets = {} --TODO
                 -- custom_actions
-                --config.custom_actions = {} --TODO
+                --config.custom_actions = {} --TODO don't reset custom_actions ??????
                 Config.save(config)
                 QuickMenu.updateTab(config, menu_instance)
             end
