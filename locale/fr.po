@@ -846,3 +846,6 @@ msgstr "Raccourci"
 
 msgid "System"
 msgstr "Système"
+
+msgid "Use ZenFooter "
+msgstr "Utiliser ZenFooter"

@@ -3,11 +3,13 @@ local ConfirmBox   = require("ui/widget/confirmbox")
 local UIManager    = require("ui/uimanager")
 local SortWidget   = require("ui/widget/sortwidget")
 local ButtonDialog = require("ui/widget/buttondialog")
-local Button          = require("ui/widget/button")
+local Button       = require("ui/widget/button")
+local HorizontalGroup  = require("ui/widget/horizontalgroup")
 
 local InfoMessage  = require("ui/widget/infomessage")
 local UIManager    = require("ui/uimanager")
 local Event        = require("ui/event")
+local IconButton   = require("ui/widget/iconbutton")
 
 local ActionExec      = require("action_exec")
 local ActionDefs   = require("action_defs")
@@ -61,12 +63,43 @@ function Footer.build(ctx)
 
     if not section then return nil end
 
+    -- footer layout after orig_init:
+    --   footer[1] = LeftContainer  { up_button (backToUpperMenu) }
+    --   footer[2] = CenterContainer{ self.page_info              }
+    --   footer[3] = RightContainer { self.device_info            }
+
     -- clear existing icon and label up_button
     touch_menu.page_info:clear()
     touch_menu.device_info:clear()
+    touch_menu.footer[1][1] = HorizontalGroup:new{} --clear
+
+    -- settings_btn
+    local settings_btn = Button:new{
+        text           = "\u{F462}",
+        width          = btn_width,
+        radius         = btn_radius,
+        bordersize     = 0,
+        text_font_size = btn_font_size,
+        show_parent    = touch_menu.show_parent,
+        callback       = function()
+            Footer.showSettings(ctx)
+        end,
+        --hold_callback = function() end,
+    }
+    -- up_button
+    local up_button = IconButton:new{
+        icon = "chevron.up",
+        show_parent = touch_menu.show_parent,
+        --padding_left = math.floor(footer_width*0.33*0.1),
+        --padding_right = math.floor(footer_width*0.33*0.1),
+        callback = function()  touch_menu:backToUpperMenu()
+        end,
+    }
 
     if (filemanager and not section.enabled_f) or (reader and not section.enabled_r) then
-        -- recreate default footer
+        -- insert up_button left
+        touch_menu.footer[1][1] = up_button
+        -- create default footer
         local time_info = Button:new{
             text = default_footer(ctx),
             text_font_bold = false,
@@ -81,12 +114,23 @@ function Footer.build(ctx)
             bordersize = 0,
             touch_menu.show_parent,
         }
+        -- insert default_footer right
         table.insert(touch_menu.device_info, time_info)
-        return nil
+        -- insert settings_btn
+        if section.show_title then table.insert(touch_menu.device_info, settings_btn) end
+        return {}
+    elseif section.use_zenfooter then
+        -- insert up_button center
+        table.insert(touch_menu.page_info, up_button)
+        -- insert settings_btn right
+        if section.show_title then table.insert(touch_menu.device_info, settings_btn) end
+        return {}
     end
 
+    -- insert up_button left
+    touch_menu.footer[1][1] = up_button
+    -- create custom footer and insert right
     section.items = section.items or {}
-
     -- actions system and custom
     local action_defs = ActionDefs.getMerged(config.custom_actions)
 
@@ -98,8 +142,9 @@ function Footer.build(ctx)
             UIManager:nextTick(function() ActionExec.dispatch(action_data) end)
         end
     end
-
-    local max_width = math.floor(panel_width *0.8) - btn_width
+    --
+    local max_width = panel_width - btn_width*2
+    --print(panel_width .. ":" .. settings_btn:getSize().w .. ":" .. btn_width .. ":" .. max_width)
     local current_width = 0
     local has_overflow = false
     local overflow_items = {}
@@ -132,7 +177,8 @@ function Footer.build(ctx)
         end
     end
 
-    local settings_btn = Button:new{
+    -- settings_btn_overflow
+    local settings_btn_overflow = Button:new{
         text           = (has_overflow and "\u{F071}") or "\u{F462}", -- warning icon if overflow
         width          = btn_width,
         radius         = btn_radius,
@@ -150,8 +196,8 @@ function Footer.build(ctx)
         end,
         --hold_callback = function() end,
     }
-
-    table.insert(touch_menu.device_info, settings_btn)
+    -- insert settings_btn_overflow right
+    if section.show_title then table.insert(touch_menu.device_info, settings_btn_overflow) end
     return {}
 end
 
@@ -175,6 +221,16 @@ function Footer.getSettings(ctx, close, refresh, reload)
             text = _("Enabled in reader"),
             checked_func = function() if reload then reload() end return section.enabled_r end,
             callback = function() section.enabled_r = not section.enabled_r; Config.saveAndRefresh(ctx) end
+        },
+        {
+            text = _("Show title"),
+            checked_func = function() if reload then reload() end return section.show_title end,
+            callback = function() section.show_title = not section.show_title; Config.saveAndRefresh(ctx) end
+        },
+        {
+            text = _("Use ZenFooter "),
+            checked_func = function() if reload then reload() end return section.use_zenfooter end,
+            callback = function() section.use_zenfooter = not section.use_zenfooter; Config.saveAndRefresh(ctx) end
         }
     }
 

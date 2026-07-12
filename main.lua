@@ -163,12 +163,62 @@ function TouchMenu:updateItems(target_page, target_item_id)
     end)
 end
 
+-- hook for zenslider
+local function get_sliders(touch_menu)
+    local refs = touch_menu._qs_refs
+    if not refs then return {} end
+    local sliders = {}
+    for idx, sr in ipairs(refs.sliders or {}) do
+        table.insert(sliders, sr.slider)
+    end
+    return sliders
+end
+
+function TouchMenu:onPanCloseAllMenus(arg, ges_ev)
+    if not (self._qs_refs and self.item_table and self.item_table.panel) then return end -- not in the panel
+    if self._qs_slider_locked then self._qs_opening_pan = true; return end -- slider lock
+    self._qs_opening_pan = false
+    for _i, sl in ipairs(get_sliders(self)) do
+        if sl:handlePan(ges_ev) then return true end
+    end
+end
+
+function TouchMenu:onPanReleaseCloseAllMenus(arg, ges_ev)
+    if not (self._qs_refs and self.item_table and self.item_table.panel) then return end -- not in the panel
+    if self._qs_slider_locked or self._qs_opening_pan then self._qs_opening_pan = false; return end --slider lock
+    for _i, sl in ipairs(get_sliders(self)) do
+        if sl:handlePanRelease(ges_ev, self.show_parent, self.dimen) then return true end
+    end
+end
+
+local orig_onSwipe = TouchMenu.onSwipe
+function TouchMenu:onSwipe(arg, ges_ev)
+    if self._qs_refs and self.item_table and self.item_table.panel then -- in the panel
+        if not self._qs_slider_locked then --slider lock
+            for _i, sl in ipairs(get_sliders(self)) do
+                if sl:handleSwipe(ges_ev, self.show_parent, self.dimen) then return true end
+            end
+        end
+        return true
+    end
+    if orig_onSwipe then return orig_onSwipe(self, arg, ges_ev) end
+end
+
+local orig_onMultiSwipe = TouchMenu.onMultiSwipe
+function TouchMenu:onMultiSwipe(arg, ges_ev)
+    if self._qs_refs and self.item_table and self.item_table.panel then -- in the panel
+        for _i, sl in ipairs(get_sliders(self)) do
+            if sl:handleMultiSwipe(ges_ev, self.show_parent, self.dimen) then return true end
+        end
+        return true
+    end
+    if orig_onMultiSwipe then return orig_onMultiSwipe(self, arg, ges_ev) end
+end
+
 -- Gesture handler for panel taps/pans
 local function handlePanelGesture(touch_menu, ges, is_hold)
     local refs = touch_menu._qs_refs
     if not refs then return false end
-
-
     if not is_hold then
         for _i, sr in ipairs(refs.sliders or {}) do
             -- zen_slider
@@ -193,46 +243,8 @@ local function handlePanelGesture(touch_menu, ges, is_hold)
             end
         end
     end
-
-    -- BUTTONS (GENERIC) maybe useful
---    if refs.buttons then
---        for _, b in ipairs(refs.buttons) do
---            local w = b.widget-
---            if w and w.dimen and ges.pos:intersectWith(w.dimen) then
---                if is_hold and b.hold_callback then
---                    b.hold_callback()
---                    return true
---                elseif not is_hold and b.callback then
---                    b.callback(touch_menu)
---                    return true
---                elseif not is_hold then
---                    return true -- swallow tap
---                end
---                return false
---            end
---        end
---    end
     return false
 end
-
-local ZenSlider = require("widgets/zen_slider")
-ZenSlider.installTouchMenuHooks(TouchMenu, {
-    in_panel_mode = function(tm)
-        return tm._qs_refs ~= nil and tm.item_table ~= nil and tm.item_table.panel ~= nil
-    end,
-    get_sliders = function(tm)
-        local refs = tm._qs_refs
-        if not refs then return {} end
-        local sliders = {}
-        for idx, sr in ipairs(refs.sliders or {}) do
-            table.insert(sliders, sr.slider)
-        end
-        return sliders
-    end,
-    is_locked           = function(tm) return tm._qs_slider_locked end,
-    swipe_fallback      = nil, --function(tm, ges) handlePanelGesture(tm, ges, false) end,
-    multiswipe_fallback = nil, --function(tm, ges) handlePanelGesture(tm, ges, false) end,
-})
 
 -- Hook onTapCloseAllMenus to intercept taps on panel widgets
 local orig_onTapCloseAllMenus = TouchMenu.onTapCloseAllMenus

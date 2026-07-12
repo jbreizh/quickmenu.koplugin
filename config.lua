@@ -44,6 +44,8 @@ Config.DEFAULTS = {
         footer = {
             enabled_f = true,
             enabled_r = true,
+            show_title = true,
+            use_zenfooter = false,
             items = {"memusedp", "storageusedp", "time", "battery", "auxbattery"}
         },
     },
