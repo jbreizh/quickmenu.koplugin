@@ -84,12 +84,12 @@ function ActionDefs.get()
             callback = function(ctx)
                 if NetworkMgr:isWifiOn() then NetworkMgr:toggleWifiOff()
                 else NetworkMgr:toggleWifiOn() end
-                UIManager:scheduleIn(1, function() ctx.touch_menu:updateItems(1) end)
+                UIManager:scheduleIn(1, function() ctx.touch_menu:updateItems() end)
             end,
             hold_callback = function(ctx)
                 local function do_connect()
                     NetworkMgr:toggleWifiOn(function()
-                        UIManager:scheduleIn(0.5, function() ctx.touch_menu:updateItems(1) end)
+                        UIManager:scheduleIn(0.5, function() ctx.touch_menu:updateItems() end)
                     end, true, true)
                 end
                 if NetworkMgr:isWifiOn() then NetworkMgr:toggleWifiOff(do_connect, true)
@@ -113,7 +113,7 @@ function ActionDefs.get()
             help_text = _("Tap : Toggle night mode\nHold : Nothing"),
             callback = function(ctx)
                 UIManager:broadcastEvent(Event:new("ToggleNightMode"))
-                ctx.touch_menu:updateItems(1)
+                ctx.touch_menu:updateItems()
             end,
             hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
         },
@@ -134,7 +134,7 @@ function ActionDefs.get()
             help_text = _("Tap : Toggle frontlight\nHold : Show frontlight dialog"),
             callback = function(ctx)
                 UIManager:broadcastEvent(Event:new("ToggleFrontlight"))
-                ctx.touch_menu:updateItems(1)
+                ctx.touch_menu:updateItems()
             end,
             hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
@@ -201,14 +201,14 @@ function ActionDefs.get()
                     UIManager:broadcastEvent(Event:new("ToggleGSensor"))
                     if G_reader_settings:isTrue("input_lock_gsensor") then UIManager:broadcastEvent(Event:new("LockGSensor")) end
                 else UIManager:broadcastEvent(Event:new("LockGSensor")) end
-                ctx.touch_menu:updateItems(1)
+                ctx.touch_menu:updateItems()
             end,
             hold_callback = function(ctx)
                 if G_reader_settings:isTrue("input_lock_gsensor") then
                     UIManager:broadcastEvent(Event:new("LockGSensor"))
                     if G_reader_settings:isTrue("input_ignore_gsensor") then UIManager:broadcastEvent(Event:new("ToggleGSensor")) end
                 else UIManager:broadcastEvent(Event:new("ToggleGSensor")) end
-                ctx.touch_menu:updateItems(1)
+                ctx.touch_menu:updateItems()
             end
         },
         usb = {
@@ -596,7 +596,7 @@ function ActionDefs.get()
             callback = function(ctx)
                 if Utils.hasPlugin and Utils.hasPlugin("SSH") then
                     UIManager:broadcastEvent(Event:new("ToggleSSHServer"))
-                    UIManager:scheduleIn(2, function() ctx.touch_menu:updateItems(1) end)
+                    UIManager:scheduleIn(2, function() ctx.touch_menu:updateItems() end)
                 else UIManager:show(InfoMessage:new{ text = "SSH : " .. _("Plugin not activated.") }) end
             end,
             hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
@@ -626,7 +626,7 @@ function ActionDefs.get()
                     local CW = package.loaded["wireless"]
                     if CW and CW.calibre_socket ~= nil then UIManager:broadcastEvent(Event:new("CloseWirelessConnection"))
                     else UIManager:broadcastEvent(Event:new("StartWirelessConnection")) end
-                    UIManager:scheduleIn(2, function() ctx.touch_menu:updateItems(1) end)
+                    UIManager:scheduleIn(2, function() ctx.touch_menu:updateItems() end)
                 else UIManager:show(InfoMessage:new{ text = "Calibre : " .. _("Plugin not activated.") }) end
             end,
             hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end

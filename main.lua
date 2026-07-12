@@ -194,41 +194,6 @@ local function handlePanelGesture(touch_menu, ges, is_hold)
         end
     end
 
-
-
---     -- SLIDERS (GENERIC)
---     if refs.sliders then
---         for _, s in ipairs(refs.sliders) do
---             local w = s.widget
---             if w and w.dimen and ges.pos:intersectWith(w.dimen) then
---
---                 -- preferred API: slider defines its own conversion
---                 local percent
---
---                 if w.getPercentageFromPosition then
---                     percent = w:getPercentageFromPosition(ges.pos)
---                 end
---
---                 if percent then
---                     local value
---
---                     if s.fromPercent then
---                         value = s.fromPercent(percent)
---                     else
---                         value = math.floor(
---                             (s.max - s.min) * percent + s.min + 0.5
---                         )
---                     end
---
---                     if s.set then
---                         s.set(value)
---                         return true
---                     end
---                 end
---             end
---         end
---     end
-
     -- BUTTONS (GENERIC) maybe useful
 --    if refs.buttons then
 --        for _, b in ipairs(refs.buttons) do
@@ -252,23 +217,22 @@ end
 
 local ZenSlider = require("widgets/zen_slider")
 ZenSlider.installTouchMenuHooks(TouchMenu, {
-        in_panel_mode = function(tm)
-            return tm._qs_refs ~= nil and tm.item_table ~= nil and tm.item_table.panel ~= nil
-        end,
-        get_sliders = function(tm)
-            local refs = tm._qs_refs
-            if not refs then return {} end
-            local sliders = {}
-            for idx, sr in ipairs(refs.sliders or {}) do
-                table.insert(sliders, sr.slider)
-            end
-            return sliders
-        end,
-        is_locked           = function(tm) return tm._qs_slider_locked end,
-        swipe_fallback      = nil, --function(tm, ges) handlePanelGesture(tm, ges, false) end,
-        multiswipe_fallback = nil, --function(tm, ges) handlePanelGesture(tm, ges, false) end,
-    })
-
+    in_panel_mode = function(tm)
+        return tm._qs_refs ~= nil and tm.item_table ~= nil and tm.item_table.panel ~= nil
+    end,
+    get_sliders = function(tm)
+        local refs = tm._qs_refs
+        if not refs then return {} end
+        local sliders = {}
+        for idx, sr in ipairs(refs.sliders or {}) do
+            table.insert(sliders, sr.slider)
+        end
+        return sliders
+    end,
+    is_locked           = function(tm) return tm._qs_slider_locked end,
+    swipe_fallback      = nil, --function(tm, ges) handlePanelGesture(tm, ges, false) end,
+    multiswipe_fallback = nil, --function(tm, ges) handlePanelGesture(tm, ges, false) end,
+})
 
 -- Hook onTapCloseAllMenus to intercept taps on panel widgets
 local orig_onTapCloseAllMenus = TouchMenu.onTapCloseAllMenus
@@ -411,6 +375,10 @@ end
 -- Init Plugin
 function QuickMenuPlugin:init()
     self.config = config
+end
+
+function QuickMenuPlugin:onFlushSettings()
+    Config.save(self.config)
 end
 
 return QuickMenuPlugin

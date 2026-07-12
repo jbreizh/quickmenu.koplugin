@@ -86,7 +86,7 @@ function Actions.build(ctx)
             show_parent    = touch_menu.show_parent,
             callback       = function()
                 section.collapse = not section.collapse
-                Config.saveAndRefresh(ctx)
+                Config.saveAndRefresh(ctx, true) -- no flush
             end,
             --hold_callback = function() end,
         }

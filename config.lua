@@ -1,3 +1,9 @@
+local DataStorage = require("datastorage")
+local LuaSettings = require("luasettings")
+
+local SETTINGS_PATH = DataStorage:getSettingsDir() .. "/quick_menu_settings.lua"
+local _settings = LuaSettings:open(SETTINGS_PATH)
+
 local Config = {}
 
 Config.DEFAULTS = {
@@ -81,7 +87,8 @@ local function copyMissing(dst, defaults)
 end
 
 function Config.load()
-    local cfg = G_reader_settings:readSetting("quick_menu_panel", {})
+    local cfg = _settings:readSetting("quick_menu_settings") or {}
+    --local cfg = G_reader_settings:readSetting("quick_menu_panel", {})
     cfg.sections = cfg.sections or {}
 
     -- sections level 1
@@ -116,45 +123,19 @@ function Config.load()
     cfg.frontlight_presets = cfg.frontlight_presets or {}
     cfg.custom_actions = cfg.custom_actions or {}
 
---     -- Dans Config.load()
---     local ActionDefs = require("action_defs")
---
---     -- 1. Récupération des IDs custom valides
---     local valid_custom_ids = {}
---     for _, action in ipairs(cfg.custom_actions) do
---         if action.id then valid_custom_ids[action.id] = true end
---     end
---
---     -- 2. Nettoyage croisé dans les sections
---     if cfg.sections then
---         for _, section_data in pairs(cfg.sections) do
---             if section_data.items and type(section_data.items) == "table" then
---                 for i = #section_data.items, 1, -1 do
---                     local item_id = section_data.items[i]
---
---                     -- On vérifie : Est-ce une action système OU une action custom valide ?
---                     local is_system = ActionDefs.getMerged()[item_id] ~= nil
---                     local is_custom = valid_custom_ids[item_id] ~= nil
---
---                     if not is_system and not is_custom then
---                         table.remove(section_data.items, i)
---                     end
---                 end
---             end
---         end
---     end
-
     return cfg
 end
 
-function Config.save(cfg)
-    G_reader_settings:saveSetting("quick_menu_panel", cfg)
+function Config.save(cfg, no_flush)
+    _settings:saveSetting("quick_menu_settings", cfg)
+    --G_reader_settings:saveSetting("quick_menu_panel", cfg)
+    if not no_flush then _settings:flush() end
 end
 
-function Config.saveAndRefresh(ctx)
+function Config.saveAndRefresh(ctx, no_flush)
     -- save
     local config = ctx.config
-    if config then Config.save(config) end
+    if config then Config.save(config, no_flush) end
     -- refresh
     local touch_menu = ctx.touch_menu
     if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end
