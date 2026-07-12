@@ -19,14 +19,46 @@ local _                = require("common/i18n").gettext
 
 local ActionDefs = {}
 
-function ActionDefs.getMerged(custom_actions)
-    local all = ActionDefs.get()
-    if custom_actions then
-        for i, custom in ipairs(custom_actions) do
-            if custom.id then all[custom.id] = custom end
+local category_label = {
+    ["system"]   = _("System"),
+    ["shortcut"] = _("Shortcut"),
+    ["footer"]   = _("Footer"),
+    ["custom"]   = _("Custom"),
+    ["other"]    = _("Other"),
+}
+
+function ActionDefs.getCategoryLabel(category)
+    return category_label[category] or _("Other")
+end
+
+
+function ActionDefs.getSorted(action_list)
+    local sorted_list = {}
+
+    -- On parcourt directement la table passée en paramètre
+    for id, def in pairs(action_list) do
+        table.insert(sorted_list, {
+            id = id,
+            label = def.label or _("None"),
+            icon = def.icon or "",
+            def = def
+        })
+    end
+
+    Utils.sort_by_field(sorted_list, "label", true, true)
+
+    return sorted_list
+end
+
+
+function ActionDefs.getMerged(action_list)
+    local action_system = ActionDefs.get()
+    if action_list then
+        for i, action in ipairs(action_list) do
+            if action.id then action_system[action.id] = action end
         end
     end
-    return all
+    return action_system
 end
 
 function ActionDefs.get()
@@ -45,6 +77,7 @@ function ActionDefs.get()
                 end
                 return _("Off")
             end,
+            category = "system",
             active_func = function(ctx) return NetworkMgr:isWifiOn() end,
             -- visible_func
             help_text = _("Tap : Toggle wifi\nHold : Show wifi picker"),
@@ -74,6 +107,7 @@ function ActionDefs.get()
                 if G_reader_settings:isTrue("night_mode") then return _("Night") end
                 return _("Day")
             end,
+            category = "system",
             active_func = function(ctx) return G_reader_settings:isTrue("night_mode") end,
             -- visible_func
             help_text = _("Tap : Toggle night mode\nHold : Nothing"),
@@ -94,6 +128,7 @@ function ActionDefs.get()
                 if not ctx.powerd:isFrontlightOn() then return _("Off") end
                 return ("%d%%"):format(ctx.powerd:frontlightIntensity())
             end,
+            category = "system",
             active_func = function(ctx) return ctx.powerd:isFrontlightOn() end,
             visible_func = function(ctx) return ctx.device:hasFrontlight() end,
             help_text = _("Tap : Toggle frontlight\nHold : Show frontlight dialog"),
@@ -117,6 +152,7 @@ function ActionDefs.get()
                 if not ctx.powerd:isFrontlightOn() or ctx.powerd:frontlightWarmth() == 0 then return _("Off") end
                 return ("%d%%"):format(ctx.powerd:frontlightWarmth())
             end,
+            category = "system",
             active_func = function(ctx) return ctx.powerd:isFrontlightOn() and ctx.powerd:frontlightWarmth() ~= 0 end,
             visible_func = function(ctx) return ctx.device:hasFrontlight() and ctx.device:hasNaturalLight() end,
             help_text = _("Tap : Nothing\nHold : Show frontlight dialog"),
@@ -138,6 +174,7 @@ function ActionDefs.get()
                 else                 return "0°" -- 0°
                 end
             end,
+            category = "system",
             -- active_func
             -- visible_func
             help_text = _("Tap : Swap rotation\nHold : Invert rotation"),
@@ -155,6 +192,7 @@ function ActionDefs.get()
                 if G_reader_settings:isTrue("input_lock_gsensor") or G_reader_settings:isTrue("input_ignore_gsensor") then return _("Lock") end
                 return _("Unlock")
             end,
+            category = "system",
             visible_func = function(ctx) return ctx.device:hasGSensor() end,
             active_func = function(ctx) return G_reader_settings:isTrue("input_lock_gsensor") or G_reader_settings:isTrue("input_ignore_gsensor") end,
             help_text = _("Tap : Toggle lock gsensor\nHold : Toggle ignore gsensor"),
@@ -178,6 +216,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("USB"),
             -- label_func
+            category = "system",
             -- active_func
             help_text = _("Tap : Request UBS mass storage\nHold : Nothing"),
             visible_func = function(ctx) return ctx.device.canToggleMassStorage and ctx.device:canToggleMassStorage() end,
@@ -189,6 +228,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Restart"),
             -- label_func
+            category = "system",
             -- active_func
             -- visible_func
             help_text = _("Tap : Ask for restart KOreader\nHold : Ask for exit KOreader"),
@@ -214,6 +254,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Exit"),
             -- label_func
+            category = "system",
             -- active_func
             -- visible_func
             help_text = _("Tap : Ask for exit KOreader\nHold : Ask for restart KOreader"),
@@ -239,6 +280,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Reboot"),
             -- label_func
+            category = "system",
             -- active_func
             visible_func = function(ctx) return ctx.device:canReboot() end,
             help_text = _("Tap : Ask for reboot system\nHold : Ask for power off system"),
@@ -264,6 +306,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Sleep"),
             -- label_func
+            category = "system",
             -- active_func
             visible_func = function(ctx) return ctx.device:canSuspend() end,
             help_text = _("Tap : Suspend system\nHold : Nothing"),
@@ -282,6 +325,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Power off"),
             -- label_func
+            category = "system",
             -- active_func
             visible_func = function(ctx) return ctx.device:canPowerOff() end,
             help_text = _("Tap : Ask for power off system\nHold : Ask for reboot system"),
@@ -307,6 +351,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Power"),
             -- label_func
+            category = "system",
             -- active_func
             -- visible_func
             help_text = _("Tap : Show power dialog\nHold : Nothing"),
@@ -389,6 +434,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Dictionary"),
             -- label_func
+            category = "shortcut",
             -- active_func
             -- visible_func
             help_text = _("Tap : Show dictionary search\nHold : Show wikipedia search"),
@@ -406,6 +452,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Wikipedia"),
             -- label_func
+            category = "shortcut",
             -- active_func
             -- visible_func
             help_text = _("Tap : Show wikipedia search\nHold : Show dictionary search"),
@@ -423,6 +470,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("History"),
             -- label_func
+            category = "shortcut",
             -- active_func
             -- visible_func
             help_text = _("Tap : Show history\nHold : Open last book"),
@@ -442,6 +490,7 @@ function ActionDefs.get()
             label_func = function(ctx)
                 return G_reader_settings:readSetting("lastfile") --TODO find title
             end,
+            category = "shortcut",
             -- active_func
             -- visible_func
             help_text = _("Tap : Open last book\nHold : Show history"),
@@ -459,6 +508,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Collections"),
             -- label_func
+            category = "shortcut",
             -- active_func
             -- visible_func
             help_text = _("Tap : Show collections\nHold : Show favorites"),
@@ -476,6 +526,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Favorites"),
             -- label_func
+            category = "shortcut",
             -- active_func
             -- visible_func
             help_text = _("Tap : Show favorites\nHold : Show collections"),
@@ -494,6 +545,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Cloud"),
             -- label_func
+            category = "shortcut",
             -- active_func
             -- visible_func
             help_text = _("Tap : Show cloud storage\nHold : Show OPDS catalog"),
@@ -512,6 +564,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("OPDS"),
             -- label_func
+            category = "shortcut",
             -- active_func
             help_text = _("Tap : Show OPDS catalog\nHold : Show cloud storage"),
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("opds") end,
@@ -536,6 +589,7 @@ function ActionDefs.get()
                 if Util.pathExists("/tmp/dropbear_koreader.pid") then return _("On") end -- lan-connect
                 return _("Off") -- lan-disconnect
             end,
+            category = "system",
             active_func = function(ctx) return Util.pathExists("/tmp/dropbear_koreader.pid") end,
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("SSH") end,
             help_text = _("Tap : Toggle SSH server\nHold : Nothing"),
@@ -560,6 +614,7 @@ function ActionDefs.get()
                 if CW ~= nil and CW.calibre_socket ~= nil then return _("On") end -- server-network
                 return _("Off") -- server-network-off
             end,
+            category = "system",
             active_func = function(ctx)
                 local CW = package.loaded["wireless"]
                 return CW ~= nil and CW.calibre_socket ~= nil
@@ -581,6 +636,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Search"),
             -- label_func
+            category = "shortcut",
             -- active_func
             -- visible_func
             help_text = _("Tap : Show file search\nHold : Show Calibre search"),
@@ -599,6 +655,7 @@ function ActionDefs.get()
             -- icon_func
             label = "Calibre",
             -- label_func
+            category = "shortcut",
             -- active_func
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("calibre") end,
             help_text = _("Tap : Show Calibre search\nHold : Show file search"),
@@ -617,6 +674,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Statistics"),
             -- label_func
+            category = "shortcut",
             -- active_func
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("statistics") end,
             help_text = _("Tap : Show reader statistics\nHold : Show calendar statistics"),
@@ -636,6 +694,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Calendar"),
             -- label_func
+            category = "shortcut",
             -- active_func
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("statistics") end,
             help_text = _("Tap : Show calendar statistics\nHold : Show reader statistics"),
@@ -655,6 +714,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("KOSync"),
             -- label_func
+            category = "system",
             -- active_func
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("kosync") end,
             help_text = _("Tap : Push progress to KOSync\nHold : Pull progress from KOSync"),
@@ -684,6 +744,7 @@ function ActionDefs.get()
                 -- we got the nb of 4Kb-pages used, that we convert to MiB
                 return ("%d"):format(math.floor(rss * (4096 / 1024 / 1024))) .. _("MB")
             end,
+            category = "footer",
             -- active_func
             -- visible_func
             help_text = _("Tap : Show value\nHold : Show system statistics"),
@@ -707,6 +768,7 @@ function ActionDefs.get()
             --icon_func
             label = _("CPU") .. " (%)",
             label_func = function(ctx) return ctx.stat and ctx.stat.cpu and ctx.stat.cpu.usedp and string.format("%d%%", ctx.stat.cpu.usedp) or "" end,
+            category = "footer",
             -- active_func
             visible_func = function(ctx) return ctx.stat and ctx.stat.cpu and ctx.stat.cpu.usedp end,
             help_text = _("Tap : Show value\nHold : Show system statistics"),
@@ -724,6 +786,7 @@ function ActionDefs.get()
             --icon_func
             label = _("Memory") .. " " .. _("used") .. " (%)",
             label_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.usedp and string.format("%d%%", ctx.stat.memory.usedp) or "" end,
+            category = "footer",
             -- active_func
             visible_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.usedp end,
             help_text = _("Tap : Show value\nHold : Show system statistics"),
@@ -741,6 +804,7 @@ function ActionDefs.get()
             --icon_func
             label = _("Memory") .. " " .. _("available") .. " (%)",
             label_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.availablep and string.format("%d%%", ctx.stat.memory.availablep) or "" end,
+            category = "footer",
             -- active_func
             visible_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.availablep end,
             help_text = _("Tap : Show value\nHold : Show system statistics"),
@@ -758,6 +822,7 @@ function ActionDefs.get()
             --icon_func
             label = _("Memory") .. " " .. _("used") .. " (" .. _("MB") .. ")",
             label_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.used and string.format("%d", math.floor((ctx.stat.memory.used) / 1024)) .. _("MB") or "" end,
+            category = "footer",
             -- active_func
             visible_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.used end,
             help_text = _("Tap : Show value\nHold : Show system statistics"),
@@ -775,6 +840,7 @@ function ActionDefs.get()
             --icon_func
             label = _("Memory") .. " " .. _("available") .. " (" .. _("MB") .. ")",
             label_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.available and string.format("%d", math.floor((ctx.stat.memory.available) / 1024)) .. _("MB") or "" end,
+            category = "footer",
             -- active_func
             visible_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.available end,
             help_text = _("Tap : Show value\nHold : Show system statistics"),
@@ -792,6 +858,7 @@ function ActionDefs.get()
             --icon_func
             label = _("Memory") .. " " .. _("total") .. " (" .. _("MB") .. ")",
             label_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.total and string.format("%d", math.floor(ctx.stat.memory.total / 1024)) .. _("MB") or "" end,
+            category = "footer",
             -- active_func
             visible_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.total end,
             help_text = _("Tap : Show value\nHold : Show system statistics"),
@@ -809,6 +876,7 @@ function ActionDefs.get()
             --icon_func
             label = _("Storage") .. " " .. _("used") .. " (%)",
             label_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.usedp and string.format("%d%%", ctx.stat.storage.usedp) or "" end,
+            category = "footer",
             -- active_func
             visible_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.usedp end,
             help_text = _("Tap : Show value\nHold : Show system statistics"),
@@ -826,6 +894,7 @@ function ActionDefs.get()
             --icon_func
             label = _("Storage") .. " " .. _("available") .. " (%)",
             label_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.availablep and string.format("%d%%", ctx.stat.storage.availablep) or "" end,
+            category = "footer",
             -- active_func
             visible_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.availablep end,
             help_text = _("Tap : Show value\nHold : Show system statistics"),
@@ -843,6 +912,7 @@ function ActionDefs.get()
             --icon_func
             label = _("Storage") .. " " .. _("used") .. " (" .. _("GB") .. ")",
             label_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.used and string.format("%d", math.floor((ctx.stat.storage.used) / 1024 / 1024)) .. _("GB") or "" end,
+            category = "footer",
             -- active_func
             visible_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.used end,
             help_text = _("Tap : Show value\nHold : Show system statistics"),
@@ -860,6 +930,7 @@ function ActionDefs.get()
             --icon_func
             label = _("Storage") .. " " .. _("available") .. " (" .. _("GB") .. ")",
             label_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.available and string.format("%d", math.floor((ctx.stat.storage.available) / 1024 / 1024)) .. _("GB") or "" end,
+            category = "footer",
             -- active_func
             visible_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.available end,
             help_text = _("Tap : Show value\nHold : Show system statistics"),
@@ -877,6 +948,7 @@ function ActionDefs.get()
             --icon_func
             label = _("Storage") .. " " .. _("total") .. " (" .. _("GB") .. ")",
             label_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.total and string.format("%d", math.floor(ctx.stat.storage.total / 1024 / 1024)) .. _("GB") or "" end,
+            category = "footer",
             -- active_func
             visible_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.total end,
             help_text = _("Tap : Show value\nHold : Show system statistics"),
@@ -896,6 +968,7 @@ function ActionDefs.get()
             label_func = function(ctx)
                 return ctx.datetime.secondsToHour(os.time(), G_reader_settings:isTrue("twelve_hour_clock"))
             end,
+            category = "footer",
             -- active_func
             -- visible_func
             help_text = _("Tap : Show time\nHold : Nothing"),
@@ -916,6 +989,7 @@ function ActionDefs.get()
             label_func = function(ctx)
                 return ("%d%%"):format(ctx.powerd:getCapacity())
             end,
+            category = "footer",
             -- active_func
             visible_func = function(ctx) return ctx.device:hasBattery() end,
             help_text = _("Tap : Show value\nHold : Show battery statistics"),
@@ -940,6 +1014,7 @@ function ActionDefs.get()
             label_func = function(ctx)
                 return ("%d%%"):format(ctx.powerd:getAuxCapacity())
             end,
+            category = "footer",
             -- active_func
             visible_func = function(ctx)
                 return ctx.device:hasAuxBattery() and ctx.powerd:isAuxBatteryConnected()

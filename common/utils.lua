@@ -1,5 +1,82 @@
 local M = {}
 
+--- Normalizes a string by removing accents for sorting purposes.
+--- @param str string The string to normalize.
+--- @return string     The normalized string.
+function M.normalize_for_sort(str)
+    local replacements = {
+        ["à"] = "a", ["á"] = "a", ["â"] = "a", ["ã"] = "a", ["ä"] = "a",
+        ["è"] = "e", ["é"] = "e", ["ê"] = "e", ["ë"] = "e",
+        ["ì"] = "i", ["í"] = "i", ["î"] = "i", ["ï"] = "i",
+        ["ò"] = "o", ["ó"] = "o", ["ô"] = "o", ["õ"] = "o", ["ö"] = "o",
+        ["ù"] = "u", ["ú"] = "u", ["û"] = "u", ["ü"] = "u",
+        ["ñ"] = "n", ["ç"] = "c",
+        ["À"] = "a", ["Á"] = "a", ["Â"] = "a", ["Ã"] = "a", ["Ä"] = "a",
+        ["È"] = "e", ["É"] = "e", ["Ê"] = "e", ["Ë"] = "e",
+        ["Ì"] = "i", ["Í"] = "i", ["Î"] = "i", ["Ï"] = "i",
+        ["Ò"] = "o", ["Ó"] = "o", ["Ô"] = "o", ["Õ"] = "o", ["Ö"] = "o",
+        ["Ù"] = "u", ["Ú"] = "u", ["Û"] = "u", ["Ü"] = "u",
+        ["Ñ"] = "n", ["Ç"] = "c"
+    }
+
+    local s = str
+    for char, replacement in pairs(replacements) do
+        s = s:gsub(char, replacement)
+    end
+    return s:lower() -- return lower normalized string
+end
+
+--- Sorts a list of tables based on a specific field.
+--- @param list             table   The table to sort.
+--- @param field            string  The key to sort by.
+--- @param case_insensitive boolean? Sort ignoring case (default: true).
+--- @param normalize        boolean? Use accent-free normalization (default: false).
+function M.sort_by_field(list, field, case_insensitive, normalize)
+    if case_insensitive == nil then case_insensitive = true end
+
+    table.sort(list, function(a, b)
+        local val_a = a[field] or ""
+        local val_b = b[field] or ""
+
+        -- Si on veut normaliser, on applique la fonction de nettoyage
+        if normalize then
+            val_a = M.normalize_for_sort(val_a)
+            val_b = M.normalize_for_sort(val_b)
+        elseif case_insensitive then
+            -- Sinon, on fait juste une mise en minuscule simple
+            val_a = val_a:lower()
+            val_b = val_b:lower()
+        end
+
+        return val_a < val_b
+    end)
+end
+
+--- Checks if a value exists within a table.
+--- @param tbl  table  The table to search in.
+--- @param val  any    The value to look for.
+--- @return     boolean True if the value is found, false otherwise.
+function M.table_contains(tbl, val)
+    for _, v in ipairs(tbl) do
+        if v == val then return true end
+    end
+    return false
+end
+
+--- Removes the first occurrence of a value from a table.
+--- @param tbl  table  The table to modify.
+--- @param val  any    The value to remove.
+--- @return     boolean True if the value was found and removed, false otherwise.
+function M.table_remove(tbl, val)
+    for i, v in ipairs(tbl) do
+        if v == val then
+            table.remove(tbl, i)
+            return true
+        end
+    end
+    return false
+end
+
 --- Wraps each item in a flat list into an individual table.
 --- This transformation converts a flat array of items into a nested structure
 --- (e.g., { {item1}, {item2}, ... }), which is often required for specific
@@ -15,22 +92,6 @@ function M.wrap_items(items)
     end
     return wrapped
 end
-
-
---- Transforms an icon string into a safe, displayable format.
---- If the provided icon string matches the internal SVG reference format
---- (e.g., "[icon=name]"), it is replaced with a default Unicode character.
---- Otherwise, the original icon string is returned.
----
---- @param icon_str string The original icon string or SVG path reference.
---- @return string         A safe Unicode icon or the original string if valid.
-function M.get_safe_icon(icon_str)
-    if not icon_str or icon_str == "" then  return "\u{F059}"  end
-    local extracted_icon = icon_str:match("^%[icon=(.+)%]$")
-    if extracted_icon then return "\u{F059}" end
-    return icon_str
-end
-
 
 --- Unwraps a nested list of items into a flat array.
 --- This transformation converts a nested structure (e.g., { {item1}, {item2}, ... })
@@ -48,6 +109,19 @@ function M.unwrap_items(wrapped_items)
     return unwrapped
 end
 
+--- Transforms an icon string into a safe, displayable format.
+--- If the provided icon string matches the internal SVG reference format
+--- (e.g., "[icon=name]"), it is replaced with a default Unicode character.
+--- Otherwise, the original icon string is returned.
+---
+--- @param icon_str string The original icon string or SVG path reference.
+--- @return string         A safe Unicode icon or the original string if valid.
+function M.get_safe_icon(icon_str)
+    if not icon_str or icon_str == "" then  return "\u{F059}"  end
+    local extracted_icon = icon_str:match("^%[icon=(.+)%]$")
+    if extracted_icon then return "\u{F059}" end
+    return icon_str
+end
 
 --- Find a section by its ID within the config table.
 --- @param config table  The configuration table containing sections.

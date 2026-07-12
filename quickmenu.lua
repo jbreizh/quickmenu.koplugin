@@ -340,11 +340,11 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
     for idx, id in ipairs(ORDER) do
         local section_mod = SECTIONS[id]
         if section_mod and section_mod.getSettings then
-
+            -- for settings in touch_menu all noop function
             local items = section_mod.getSettings(ctx,
                 function(fn) return fn end, -- noop_close
                 function() end,             -- noop_refresh
-                id
+                function() end             -- noop_reload
             )
 
             if items and #items > 0 then

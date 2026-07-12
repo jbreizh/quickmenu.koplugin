@@ -158,7 +158,7 @@ end
 -- ============================================================
 -- Settings Menu Builder
 -- ============================================================
-function Footer.getSettings(ctx, close, refresh)
+function Footer.getSettings(ctx, close, refresh, reload)
     local config = ctx.config
     local section = Utils.getSection(config, SECTION)
 
@@ -168,12 +168,12 @@ function Footer.getSettings(ctx, close, refresh)
     local menu_items = {
         {
             text = _("Enabled in filemanager"),
-            checked_func = function() return section.enabled_f end,
+            checked_func = function() if reload then reload() end return section.enabled_f end,
             callback = function() section.enabled_f = not section.enabled_f; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Enabled in reader"),
-            checked_func = function() return section.enabled_r end,
+            checked_func = function() if reload then reload() end return section.enabled_r end,
             callback = function() section.enabled_r = not section.enabled_r; Config.saveAndRefresh(ctx) end
         }
     }
@@ -233,8 +233,17 @@ function Footer.showSettings(ctx)
     local function refresh()
         Footer.showSettings(ctx)
     end
+    -- use to refresh under check btn when dialog is transparent
+    -- cost perf so block at openig as dialog never open transparent
+    -- only from the dialog from the touch_menu itself it crash koreader
+    local is_initializing = true
+    local function reload()
+        if is_initializing then return end
+        local touch_menu = ctx.touch_menu
+        if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end
+    end
 
-    local buttons = Utils.wrap_items(Footer.getSettings(ctx, close, refresh))
+    local buttons = Utils.wrap_items(Footer.getSettings(ctx, close, refresh, reload))
     if not buttons or #buttons==0 then return end
 
     table.insert(buttons, {}) -- separator
@@ -252,7 +261,7 @@ function Footer.showSettings(ctx)
         buttons = buttons,
     }
     UIManager:show(dialog)
-
+    is_initializing = false -- allow reload after opening
 end
 
 return Footer

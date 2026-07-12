@@ -23,7 +23,7 @@ function ActionCustom:showActionCustomMenu(ctx)
 
     -- existing action
     local config = ctx.config
-    if config.custom_actions then
+    if config.custom_actions and #config.custom_actions > 0 then
         for i, action in ipairs(config.custom_actions) do
             buttons[#buttons + 1] = {
                 {
@@ -41,6 +41,13 @@ function ActionCustom:showActionCustomMenu(ctx)
                 }
             }
         end
+    else
+        buttons[#buttons + 1] = {
+            {
+                text = _("No custom action") .. "\xE2\x80\xA6",
+                enabled = false -- Rend le bouton non cliquable
+            }
+        }
     end
 
     table.insert(buttons, {}) -- separator
@@ -149,6 +156,7 @@ end
 function ActionCustom:addActionCustom(ctx, fields)
     local action = {
         id         = os.time() .. math.random(100, 999),
+        category   = "custom",
         label      = fields.label or "",
         icon       = fields.icon or "",
         callback   = {

@@ -76,6 +76,20 @@ function Actions.build(ctx)
 
     -- title
     if section.show_title then
+        -- collapse
+        local collapse_btn = Button:new{
+            text           = section.collapse and "▶" or "▼",
+            width          = btn_width,
+            radius         = btn_radius,
+            bordersize     = 0,
+            text_font_size = btn_font_size,
+            show_parent    = touch_menu.show_parent,
+            callback       = function()
+                section.collapse = not section.collapse
+                Config.saveAndRefresh(ctx)
+            end,
+            --hold_callback = function() end,
+        }
         -- add icon near section name when collapse
         local label_icon = ""
         if section.collapse then
@@ -92,7 +106,7 @@ function Actions.build(ctx)
             max_width = inner_width - btn_width*2,
         }
         local settings_btn = Button:new{
-            text           = "\u{F462}", -- down up \u{EB92}"
+            text           = "\u{F462}",
             width          = btn_width,
             radius         = btn_radius,
             bordersize     = 0,
@@ -103,26 +117,15 @@ function Actions.build(ctx)
             end,
             --hold_callback = function() end,
         }
-        local collapse_btn = Button:new{
-            text           = section.collapse and "\u{F078}" or "\u{F077}", -- down up
-            width          = btn_width,
-            radius         = btn_radius,
-            bordersize     = 0,
-            text_font_size = btn_font_size,
-            show_parent    = touch_menu.show_parent,
-            callback       = function()
-                section.collapse = not section.collapse
-                Config.saveAndRefresh(ctx)
-            end,
-            --hold_callback = function() end,
-        }
+        --
         local row_title = HorizontalGroup:new{
+            collapse_btn,
             align = "center",
             label_title,
             HorizontalSpan:new{ width = inner_width - label_title:getSize().w - btn_width*2 },
             settings_btn,
-            collapse_btn
         }
+        --
         table.insert(group, row_title)
         -- stop render if section is collapse
         if section.collapse then  return { widget = group } end
@@ -220,42 +223,41 @@ end
 -- ============================================================
 -- Settings Menu Builder
 -- ============================================================
-function Actions.getSettings(ctx, close, refresh)
+function Actions.getSettings(ctx, close, refresh, reload)
     local config = ctx.config
     local section = Utils.getSection(config, SECTION)
-
     if not section then return {} end
 
     -- global
     local menu_items = {
         {
             text = _("Enabled in filemanager"),
-            checked_func = function() return section.enabled_f end,
+            checked_func = function() if reload then reload() end return section.enabled_f end,
             callback = function() section.enabled_f = not section.enabled_f; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Enabled in reader"),
-            checked_func = function() return section.enabled_r end,
+            checked_func = function() if reload then reload() end return section.enabled_r end,
             callback = function() section.enabled_r = not section.enabled_r; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Show title"),
-            checked_func = function() return section.show_title end,
+            checked_func = function() if reload then reload() end  return section.show_title end,
             callback = function() section.show_title = not section.show_title; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Show labels"),
-            checked_func = function() return section.show_label end,
+            checked_func = function() if reload then reload() end return section.show_label end,
             callback = function() section.show_label = not section.show_label; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Fit controls"),
-            checked_func = function() return section.fit_ctrl end,
+            checked_func = function() if reload then reload() end  return section.fit_ctrl end,
             callback = function() section.fit_ctrl = not section.fit_ctrl; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Justify controls"),
-            checked_func = function() return section.justified_ctrl end,
+            checked_func = function() if reload then reload() end  return section.justified_ctrl end,
             callback = function() section.justified_ctrl = not section.justified_ctrl; Config.saveAndRefresh(ctx) end,
             separator= true
         },
@@ -316,8 +318,17 @@ function Actions.showSettings(ctx)
     local function refresh()
         Actions.showSettings(ctx)
     end
+    -- use to refresh under check btn when dialog is transparent
+    -- cost perf so block at openig as dialog never open transparent
+    -- only from the dialog from the touch_menu itself it crash koreader
+    local is_initializing = true
+    local function reload()
+        if is_initializing then return end
+        local touch_menu = ctx.touch_menu
+        if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end
+    end
 
-    local buttons = Utils.wrap_items(Actions.getSettings(ctx, close, refresh))
+    local buttons = Utils.wrap_items(Actions.getSettings(ctx, close, refresh, reload))
     if not buttons or #buttons==0 then return end
 
     table.insert(buttons, {}) -- separator
@@ -336,7 +347,7 @@ function Actions.showSettings(ctx)
         tap_close_callback = close()
     }
     UIManager:show(dialog)
-
+    is_initializing = false -- allow reload after opening
 end
 
 return Actions

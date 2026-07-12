@@ -828,3 +828,21 @@ msgstr "Appui : Afficher la valeur\nMaintien : Statistiques batterie"
 
 msgid "Tap : Toggle night mode\nHold : Nothing"
 msgstr "Appui : Basculer mode nuit\nMaintien : Rien"
+
+msgid "%s of %s"
+msgstr "%s de %s"
+
+msgid "Custom"
+msgstr "Personnalisé"
+
+msgid "No custom action"
+msgstr "Aucune action personnalisée"
+
+msgid "Other"
+msgstr "Autre"
+
+msgid "Shortcut"
+msgstr "Raccourci"
+
+msgid "System"
+msgstr "Système"

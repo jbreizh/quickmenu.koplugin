@@ -128,86 +128,93 @@ end
 -- ============================================================
 -- Select
 -- ============================================================
-local function table_contains(tbl, val)
-    for _, v in ipairs(tbl) do
-        if v == val then return true end
-    end
-    return false
-end
-
-local function table_remove(tbl, val)
-    for i, v in ipairs(tbl) do
-        if v == val then
-            table.remove(tbl, i)
-            return true
-        end
-    end
-    return false
-end
-
-function getSortedActionList(config)
-    local action_defs = ActionDefs.getMerged(config.custom_actions)
-    local sorted_list = {}
-    for id, def in pairs(action_defs) do
-        table.insert(sorted_list, {
-            id = id,
-            label = def.label or _("None"),
-            icon = def.icon or "",
-            def = def -- On garde la définition complète au cas où
-        })
-    end
-
-    -- sort label alphabetical
-    table.sort(sorted_list, function(a, b)
-        return a.label:lower() < b.label:lower()
-    end)
-
-    return sorted_list
-end
+local expanded_categories = {}
 
 function ActionManage:selectActionManageDialog(ctx, section_name, on_close)
     local config = ctx.config
     local section = config.sections[section_name]
     if not section or not section.items then return end
 
-    local all_actions = getSortedActionList(config)
+    -- use to refresh under check btn when dialog is transparent
+    -- cost perf so block at openig as dialog never open transparent
+    local is_initializing = true
+    local function reload()
+        if is_initializing then return end
+        local touch_menu = ctx.touch_menu
+        if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end
+    end
+
+    local all_actions = ActionDefs.getSorted(ActionDefs.getMerged(config.custom_actions))
+    local categorized = {}
+
+    -- group by category
+    for i, action in ipairs(all_actions) do
+        local cat = action.def.category or "other"
+        if not categorized[cat] then categorized[cat] = {} end
+        table.insert(categorized[cat], action)
+    end
+
+    -- sort by category
+    local categories = {}
+    for cat in pairs(categorized) do table.insert(categories, cat) end
+    table.sort(categories)
 
     local buttons = {}
     local dialog
-    -- On construit la liste directement sous forme de boutons
-    for i, action in ipairs(all_actions) do
-        local def = action.def
-        local is_currently_visible = (not def.visible_func or def.visible_func(ctx))
 
-        -- btn doesnt't support svg
-        local label = (Utils.get_safe_icon(def.icon) or "") .. " " .. (def.label or _("None")) .. (not is_currently_visible and " (n/a)" or "")
-
+    -- btn
+    for _, cat in ipairs(categories) do
+        local is_expanded = expanded_categories[cat] or false
+        -- category btn
         table.insert(buttons, {{
-            text = label,
-            --enabled = is_currently_visible,
-            checked_func = function()
-                return table_contains(section.items, action.id)
-            end,
-            callback = function()
-                --if not is_currently_visible then return true end
-                if table_contains(section.items, action.id) then
-                    table_remove(section.items, action.id)
-                else
-                    table.insert(section.items, action.id)
+            text_func = function()
+                -- count selected in category
+                local count = 0
+                for _, action in ipairs(categorized[cat]) do
+                    if Utils.table_contains(section.items, action.id) then count = count + 1 end
                 end
-                Config.saveAndRefresh(ctx)
-                return true
+                -- don't show the count when expanded -> if user select action count won't be refresh, so hide it
+                -- ActionDefs.getCategoryLabel(cat) to get the label instead of the id
+                return (is_expanded and "▼ " or "▶ ") .. ActionDefs.getCategoryLabel(cat) .. ( not is_expanded and (" (" .. count .. ")") or "")
+            end,
+            align = "left",
+            callback = function()
+                expanded_categories[cat] = not expanded_categories[cat]
+                UIManager:close(dialog)
+                self:selectActionManageDialog(ctx, section_name, on_close)
             end
         }})
+
+        -- action btn of the category if category is expanded
+        if is_expanded then
+            for _, action in ipairs(categorized[cat]) do
+                local def = action.def
+                local is_currently_visible = (not def.visible_func or def.visible_func(ctx))
+                local label = (Utils.get_safe_icon(def.icon) or "") .. " " .. (def.label or _("None")) .. (not is_currently_visible and " (n/a)" or "")
+                table.insert(buttons, {{
+                    text = "      " .. label,
+                    checked_func = function()
+                        reload() --  use to refresh under check btn when dialog is transparent
+                        return Utils.table_contains(section.items, action.id)
+                    end,
+                    align = "left",
+                    callback = function()
+                        if Utils.table_contains(section.items, action.id) then Utils.table_remove(section.items, action.id)
+                        else table.insert(section.items, action.id) end
+                        Config.saveAndRefresh(ctx)
+                    end
+                }})
+            end
+        end
     end
 
-    table.insert(buttons, {}) -- separator
+    table.insert(buttons, {}) -- Séparator
 
     table.insert(buttons, {{
         text = _("Exit"),
         callback = function()
+            expanded_categories = {} --clear expanded_categories
             UIManager:close(dialog)
-            --return false
             if on_close then on_close() end
         end
     }})
@@ -218,11 +225,73 @@ function ActionManage:selectActionManageDialog(ctx, section_name, on_close)
         width_factor = WIDTHFACTOR,
         buttons = buttons,
         tap_close_callback = function()
+            expanded_categories = {} --clear expanded_categories
             if on_close then on_close() end
         end,
     }
     UIManager:show(dialog)
+
+    is_initializing = false -- allow reload after opening
 end
+
+-- function ActionManage:selectActionManageDialog(ctx, section_name, on_close)
+--     local config = ctx.config
+--     local section = config.sections[section_name]
+--     if not section or not section.items then return end
+--
+--     local all_actions = ActionDefs.getSorted(ActionDefs.getMerged(config.custom_actions))
+--
+--     local buttons = {}
+--     local dialog
+--     -- On construit la liste directement sous forme de boutons
+--     for i, action in ipairs(all_actions) do
+--         local def = action.def
+--         local is_currently_visible = (not def.visible_func or def.visible_func(ctx))
+--
+--         -- btn doesnt't support svg
+--         local label = (Utils.get_safe_icon(def.icon) or "") .. " " .. (def.label or _("None")) .. (not is_currently_visible and " (n/a)" or "")
+--
+--         table.insert(buttons, {{
+--             text = label,
+--             --enabled = is_currently_visible,
+--             checked_func = function()
+--                 return Utils.table_contains(section.items, action.id)
+--             end,
+--             callback = function()
+--                 --if not is_currently_visible then return true end
+--                 if Utils.table_contains(section.items, action.id) then
+--                     Utils.table_remove(section.items, action.id)
+--                 else
+--                     table.insert(section.items, action.id)
+--                 end
+--                 Config.saveAndRefresh(ctx)
+--                 return true
+--             end
+--         }})
+--     end
+--
+--     table.insert(buttons, {}) -- separator
+--
+--     table.insert(buttons, {{
+--         text = _("Exit"),
+--         callback = function()
+--             UIManager:close(dialog)
+--             --return false
+--             if on_close then on_close() end
+--         end
+--     }})
+--
+--     dialog = ButtonDialog:new{
+--         title = _("Select actions") .. " :",
+--         title_align  = "left",
+--         width_factor = WIDTHFACTOR,
+--         buttons = buttons,
+--         tap_close_callback = function()
+--             if on_close then on_close() end
+--         end,
+--     }
+--     UIManager:show(dialog)
+-- end
 
 -- ============================================================
 -- Sort
