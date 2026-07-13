@@ -1,20 +1,92 @@
 # quickmenu.koplugin
 
-![photo](./assets/global_fm_rd.jpg)
+`quickmenu.koplugin` is a highly customizable menu plugin designed to enhance navigation and accessibility on your e-reader. By providing a centralized hub for frequently used actions, light settings, and shortcuts, it streamlines the reading experience, allowing for quick adjustments without navigating deep into system menus.
 
-Advanced version of [quick-settings patch from qewer33](https://github.com/qewer33/koreader-patches). Mix of personnal and others forks ideas:
-- Adds a Quick menu tab as the first tab in the KOReader top menu that provides a fast access to common actions and device controls without navigating through menus.
-- Adds an Exit tab as the last tab in the Koreader top menu that provides an unify way to close the menu, close the reader and close Koreader.
+<p align="center">
+  <img src="assets/global1.png" width="30%" alt="Global view 1" />
+  <img src="assets/global2.png" width="30%" alt="Global view 2" />
+  <img src="assets/global3.png" width="30%" alt="Global view 3" />
+</p>
 
-The idea is to remain simple and not change everything like zenui or simpleui. It just focus on the top menu.
+## Core Sections
+
+* **Exit:** A dedicated exit tab provides a unified way to manage your session. 
+  - **In Filemanager:** Tap to close the menu, or hold to quit KOReader.
+  - **In Reader:** Tap to close the menu, or hold to quit the reader and return to the Filemanager.
+ 
+ <!-- 
+<p align="center">
+  <img src="assets/footer1.png" width="80%" alt="Exit button functionality" />
+</p>
+ -->
+ 
+* **Actions:** This section provides quick-access toggles for essential device functions, such as Wi-Fi, orientation lock, power, and USB connection. It allows you to toggle system states instantly with a single tap.
+
+<p align="center">
+  <img src="assets/action1.png" width="80%" alt="Actions" />
+</p>
+
+* **Frontlight:** Easily manage your visual comfort with dedicated controls for both intensity and warmth. This section offers granular adjustments to ensure your screen brightness and color temperature are perfectly suited to your environment.
+
+<p align="center">
+  <img src="assets/frontlight1.png" width="80%" alt="Frontlight" />
+</p>
+
+* **Shortcuts:** A customizable grid of buttons providing direct access to key features like your Library, Collections, Search, Dictionary, and Cloud services, helping you jump to your preferred areas with ease.
+
+<p align="center">
+  <img src="assets/shortcuts1.png" width="80%" alt="Shortcuts" />
+</p>
+
+* **Reading:** Designed for in-reading utility, this section provides quick tools to manage your current book or document session, ensuring common reading-related tasks are always one tap away.
+
+<p align="center">
+  <img src="assets/reading1.png" width="80%" alt="Reading" />
+</p>
+
+| Skim | Tap | Hold |
+|:-------- |:--------:|:--------:|
+| Page - | Decrease page by 1 | Set page to first |
+| Page + | Increase page by 1 | Set page to last |
+| Chapter - | Decrease chapter by 1 | Set chapter to first |
+| Chapter toogle | Show "table of contents" | Show "book map" |
+| Chapter + | Increase chapter by 1 | Set chapter to last |
+| Page indicator | Show "goto page dialog" | Go to original page |
+| Bookmark - | Decrease bookmark by 1 | Set bookmark to first |
+| Bookmark toogle | Toogle bookmark | Show "bookmark" |
+| Bookmark + | Increase bookmark by 1 | Set bookmark to last |
+
+* **Footer:** The status bar at the bottom acts as a summary panel, displaying real-time system information including CPU usage, storage availability, current time, and battery level, keeping you informed at a glance.
+
+<p align="center">
+  <img src="assets/footer1.png" width="80%" alt="Footer" />
+</p>
+
+## Settings
+The settings interface allows users to tailor the Quick Menu to their specific workflow. You can toggle visibility for individual tabs (such as the exit tab or the main quick menu tab) and configure startup behavior to ensure the menu opens exactly how you prefer every time you access it.
+
+<p align="center">
+  <img src="assets/settings1.png" width="23%" alt="Settings 1" />
+  <img src="assets/settings2.png" width="23%" alt="Settings 2" />
+  <img src="assets/settings3.png" width="23%" alt="Settings 3" />
+  <img src="assets/settings4.png" width="23%" alt="Settings 4" />
+</p>
+
+## Custom Actions
+The plugin features a robust custom actions engine. Users can define their own menu items, assign custom icons from an extensive internal library, and map specific triggers to actions like "Tap" or "Hold." This flexibility allows you to integrate plugins, system commands, or specific menu navigation directly into your personalized dashboard.
+
+<p align="center">
+  <img src="assets/custom1.png" width="23%" alt="Custom action 1" />
+  <img src="assets/custom2.png" width="23%" alt="Custom action 2" />
+  <img src="assets/custom3.png" width="23%" alt="Custom action 3" />
+  <img src="assets/custom4.png" width="23%" alt="Custom action 4" />
+</p>
 
 ## Installation
 
-1. Go to the [Releases](https://github.com/jbreizh/quickmenu.koplugin/releases) page and download `quickmenu.koplugin.zip` from the latest release.
-2. Unzip the archive. You should have a **folder** named `quickmenu.koplugin`.
-3. Copy the `quickmenu.koplugin` **folder** into the KOReader plugins directory for your device: See table below
-      - Make sure you are copying the unzipped **folder** and **not the .zip** file itself
-4. Restart KOReader. Quickmenu will load automatically
+1. Download the `quickmenu.koplugin.zip` from the [Releases](https://github.com/jbreizh/quickmenu.koplugin/releases) page.
+2. Unzip the archive and copy the `quickmenu.koplugin` **folder** into your device's plugins directory.
+3. Restart KOReader.
 
 | Device | Plugins directory |
 |--------|-------------------|
@@ -24,28 +96,7 @@ The idea is to remain simple and not change everything like zenui or simpleui. I
 | **Android** | `sdcard/koreader/plugins/` |
 | **Desktop (Linux/macOS)** | `/koreader/plugins/` |
 
-## Patches
-  
-The Quick Settings patch can be configured from **Settings" (Gear icon) -> "Quick menu** :
-
-### exit-button
-
-**In filemanager :**  Add an exit button at the left size of the top menu.
-
-![photo](./assets/exit_fm.jpg)
-
-**In reader :** Remove filemanager button and add an exit button at the left size of the top menu.
-
-![photo](./assets/exit_rd.jpg)
-
-| Context | Tap | Hold |
-|:-------- |:--------:|:--------:|
-| Filemanager | Close menu | Quit Koreader |
-| Reader | Close menu | Quit Reader (launch Filemanager) |
-
-### Actions (Both in Filemanager and reader views)
-
-![photo](./assets/quicksettings_actions.jpg)
+## Actions list
 
 | Action | Label | Indicator | Tap | Hold | Default |  |
 |:--------|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|
@@ -61,54 +112,3 @@ The Quick Settings patch can be configured from **Settings" (Gear icon) -> "Quic
 | SSH |  | When enabled | Toggle SSH server |  | [ ] | Core plugin |
 | Calibre |  | When enabled | Toggle Calibre wireless connection |  | [ ] | Core plugin |
 
-### Frontlight (Both in Filemanager and reader views)
-
-![photo](./assets/quicksettings_frontlight.jpg)
-
-| Frontlight | Tap | Hold |
-|:-------- |:--------:|:--------:|
-| Intensity - | Decrease intensity by 1% | Set intensity to 0% (off) |
-| Intensity + | Increase intensity by 1% | Set intensity to 100% (max) |
-| Warmth - | Decrease warmth by 10% | Set warmth to 0% (off) |
-| Warmth - | Increase warmth by 10% | Set warmth to 100% (max) |
-
- ### Shortcuts (Both in Filemanager and reader views)
-
-![photo](./assets/quicksettings_locations.jpg)
-
-| Location | Tap | Hold |
-|:-------- |:--------:|:--------:|
-| History | Open history | Open last(fm)/previous(rd) document  |
-| Collections | Open collections |  |
-| Favorites | Open favorites |  |
-| Search | Show "file search" | Show "Calibre metadata search" |
-| Dictionary | Show "dictionary search" | Show "Wikipedia search" |
-| Cloud | Show "cloud storage" | Show "OPDS catalog" |
-
-### Info (Only in reader views)
-
-
-### Skim (Only in reader views)
-
-![photo](./assets/quicksettings_skim.jpg)
-
-| Skim | Tap | Hold |
-|:-------- |:--------:|:--------:|
-| Page - | Decrease page by 1 | Set page to first |
-| Page + | Increase page by 1 | Set page to last |
-| Chapter - | Decrease chapter by 1 | Set chapter to first |
-| Chapter toogle | Show "table of contents" | Show "book map" |
-| Chapter + | Increase chapter by 1 | Set chapter to last |
-| Page indicator | Show "goto page dialog" | Go to original page |
-| Bookmark - | Decrease bookmark by 1 | Set bookmark to first |
-| Bookmark toogle | Toogle bookmark | Show "bookmark" |
-| Bookmark + | Increase bookmark by 1 | Set bookmark to last |
-
-
-
-
-
-
-### 2-menu-size.lua
-
-Increase the max size of the menu from 10 to 20 to use all the vertical space available.
