@@ -21,10 +21,14 @@ local TextWidget      = require("ui/widget/textwidget")
 local UIManager       = require("ui/uimanager")
 local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
+
+local Utils            = require("common/utils")
 local ZenSlider       = require("widgets/zen_slider")
 local _               = require("common/i18n").gettext
 
 local IntensityZenUI = {}
+
+local SECTION = "frontlight"
 
 function IntensityZenUI.build(ctx)
     local config             = ctx.config
@@ -46,8 +50,10 @@ function IntensityZenUI.build(ctx)
     local btn_font_size      = config.style.btn_font_size or 16
     local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
+    local section = Utils.getSection(config, SECTION)
+    if not section then return nil end
     --
-    local label_center       = false
+    local label_center       = section.center_zenslider_label
     local show_parent        = touch_menu.show_parent
     local medium_font        = Font:getFace("cfont", btn_font_size)
     local slider_width       = inner_width - 2 * btn_width - 2 * h_gap
@@ -68,12 +74,13 @@ function IntensityZenUI.build(ctx)
     local fl_drag_max_num_w = fl_max_num_sample:getSize().w
     fl_max_num_sample:free()
 
-        -- add suffix
+    -- add suffix
     local fl_suffix_text = "%"
     local fl_drag_suffix = TextWidget:new{ text = fl_suffix_text, face = medium_font, bold = true }
     local fl_drag_suffix_w = fl_drag_suffix:getSize().w
+    local fl_drag_ref_w = fl_drag_prefix_w + fl_drag_max_num_w + fl_drag_suffix_w -- add suffix
+    if not label_center then fl_drag_ref_w = fl_drag_ref_w + btn_width end -- add space before
 
-    local fl_drag_ref_w = fl_drag_prefix_w + fl_drag_max_num_w + fl_drag_suffix_w
     local fl_label_h = fl_drag_prefix:getSize().h
     local fl_num_box = LeftContainer:new{
         dimen = Geom:new{ w = fl_drag_max_num_w, h = fl_label_h },
@@ -86,6 +93,8 @@ function IntensityZenUI.build(ctx)
         fl_num_box,
         fl_drag_suffix -- add suffix
     }
+    if not label_center then table.insert(fl_label_group, 1, HorizontalSpan:new{ width = btn_width}) end -- add space before
+
 
     local fl_progress = ZenSlider:new{
         width     = slider_width,
@@ -137,7 +146,7 @@ function IntensityZenUI.build(ctx)
             if label_center then
                 num_x = sx + math.floor((sw - fl_drag_ref_w) / 2) + fl_drag_prefix_w
             else
-                num_x = sx - h_gap - btn_width + fl_drag_prefix_w
+                num_x = sx - h_gap - btn_width + btn_width + fl_drag_prefix_w
             end
             screen.bb:paintRect(num_x, label_y, fl_drag_max_num_w, lh, Blitbuffer.COLOR_WHITE)
             fl_drag_num:setText(tostring(fl.cur))

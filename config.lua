@@ -24,6 +24,7 @@ Config.DEFAULTS = {
             collapse = false,
             show_title = true,
             use_zenslider = false,
+            center_zenslider_label = false,
         },
         shortcuts = {
             enabled_f = true,
@@ -56,12 +57,12 @@ Config.DEFAULTS = {
 
     },
     style = {
-        padding = 10,
+        padding = 5,
         h_gap = 4,
         v_gap = 4,
         action_size = 64,
         action_radius = 32,
-        btn_width = 50,
+        btn_width = 45,
         btn_radius = 7,
         btn_bordersize = 1.5,
         btn_font_size = 16,
@@ -90,7 +91,6 @@ end
 
 function Config.load()
     local cfg = _settings:readSetting("quick_menu_settings") or {}
-    --local cfg = G_reader_settings:readSetting("quick_menu_panel", {})
     cfg.sections = cfg.sections or {}
 
     -- sections level 1
@@ -130,7 +130,6 @@ end
 
 function Config.save(cfg, no_flush)
     _settings:saveSetting("quick_menu_settings", cfg)
-    --G_reader_settings:saveSetting("quick_menu_panel", cfg)
     if not no_flush then _settings:flush() end
 end
 

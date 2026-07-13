@@ -21,10 +21,14 @@ local TextWidget      = require("ui/widget/textwidget")
 local UIManager       = require("ui/uimanager")
 local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
+
+local Utils            = require("common/utils")
 local ZenSlider       = require("widgets/zen_slider")
 local _               = require("common/i18n").gettext
 
 local WarmthZenUI = {}
+
+local SECTION = "frontlight"
 
 function WarmthZenUI.build(ctx)
     local config             = ctx.config
@@ -46,8 +50,10 @@ function WarmthZenUI.build(ctx)
     local btn_font_size      = config.style.btn_font_size or 16
     local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
+    local section = Utils.getSection(config, SECTION)
+    if not section then return nil end
     --
-    local label_center       = false
+    local label_center       = section.center_zenslider_label
     local show_parent        = touch_menu.show_parent
     local medium_font        = Font:getFace("cfont", btn_font_size)
     local slider_width       = inner_width - 2 * btn_width - 2 * h_gap
@@ -72,8 +78,9 @@ function WarmthZenUI.build(ctx)
     local nl_suffix_text = "%"
     local nl_drag_suffix = TextWidget:new{ text = nl_suffix_text, face = medium_font, bold = true }
     local nl_drag_suffix_w = nl_drag_suffix:getSize().w
+    local nl_drag_ref_w = nl_drag_prefix_w + nl_drag_max_num_w + nl_drag_suffix_w -- add suffix
+    if not label_center then nl_drag_ref_w = nl_drag_ref_w + btn_width end -- add space before
 
-    local nl_drag_ref_w = nl_drag_prefix_w + nl_drag_max_num_w + nl_drag_suffix_w
     local nl_label_h = nl_drag_prefix:getSize().h
     local nl_num_box = LeftContainer:new{
         dimen = Geom:new{ w = nl_drag_max_num_w, h = nl_label_h },
@@ -85,6 +92,7 @@ function WarmthZenUI.build(ctx)
         nl_num_box,
         nl_drag_suffix -- add suffix
     }
+    if not label_center then table.insert(nl_label_group, 1, HorizontalSpan:new{ width = btn_width}) end -- add space before
 
     local nl_progress = ZenSlider:new{
         width     = slider_width,
@@ -136,7 +144,7 @@ function WarmthZenUI.build(ctx)
             if label_center then
                 num_x = sx + math.floor((sw - nl_drag_ref_w) / 2) + nl_drag_prefix_w
             else
-                num_x = sx - h_gap - btn_width + nl_drag_prefix_w
+                num_x = sx - h_gap - btn_width + btn_width + nl_drag_prefix_w
             end
             screen.bb:paintRect(num_x, label_y, nl_drag_max_num_w, lh, Blitbuffer.COLOR_WHITE)
             nl_drag_num:setText(tostring(nl.cur))

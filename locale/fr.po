@@ -849,3 +849,6 @@ msgstr "Système"
 
 msgid "Use ZenFooter "
 msgstr "Utiliser ZenFooter"
+
+msgid "Center ZenSlider label"
+msgstr "Centrer l'étiquette du ZenSlider"

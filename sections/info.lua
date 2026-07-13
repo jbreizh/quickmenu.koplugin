@@ -93,7 +93,7 @@ function Info.build(ctx)
         }
         -- settings
         local settings_btn = Button:new{
-            text           = "\u{F462}", -- \u{EB92}"
+            text           = "\u{EB92}",
             width          = btn_width,
             radius         = btn_radius,
             bordersize     = 0,

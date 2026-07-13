@@ -49,7 +49,6 @@ function Frontlight.build(ctx)
     local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
     local section = Utils.getSection(config, SECTION)
-
     if not section then return nil end
 
     if filemanager and not section.enabled_f then return nil end
@@ -101,7 +100,7 @@ function Frontlight.build(ctx)
         end
         -- settings
         local settings_btn = Button:new{
-            text           = "\u{F462}",
+            text           = "\u{EB92}",
             width          = btn_width,
             radius         = btn_radius,
             bordersize     = 0,
@@ -144,8 +143,9 @@ function Frontlight.build(ctx)
                 }
                 local row_title = HorizontalGroup:new{
                 align = "center",
+                HorizontalSpan:new{ width = btn_width},
                 label_title,
-                HorizontalSpan:new{ width = inner_width - label_title:getSize().w}
+                HorizontalSpan:new{ width = inner_width - label_title:getSize().w -btn_width}
             }
                 table.insert(group, row_title)
             else
@@ -193,6 +193,11 @@ function Frontlight.getSettings(ctx, close, refresh, reload)
             checked_func = function() if reload then reload() end return section.use_zenslider end,
             callback = function() section.use_zenslider = not section.use_zenslider; Config.saveAndRefresh(ctx) end,
             help_text = _("Author : Anthony Gress\nProjet : Zen UI\nhttps://github.com/AnthonyGress/zen_ui.koplugin"),
+        },
+        {
+            text = _("Center ZenSlider label"),
+            checked_func = function() if reload then reload() end return section.center_zenslider_label end,
+            callback = function() section.center_zenslider_label = not section.center_zenslider_label; Config.saveAndRefresh(ctx) end,
             separator = true
         },
         {

@@ -106,7 +106,7 @@ function Actions.build(ctx)
             max_width = inner_width - btn_width*2,
         }
         local settings_btn = Button:new{
-            text           = "\u{F462}",
+            text           = "\u{EB92}",
             width          = btn_width,
             radius         = btn_radius,
             bordersize     = 0,

@@ -63,19 +63,18 @@ function Footer.build(ctx)
 
     if not section then return nil end
 
-    -- footer layout after orig_init:
-    --   footer[1] = LeftContainer  { up_button (backToUpperMenu) }
-    --   footer[2] = CenterContainer{ self.page_info              }
-    --   footer[3] = RightContainer { self.device_info            }
+    -- footer layout after orig_init: self=touch_menu
+    --   footer[1] = LeftContainer  {up_button=btn}
+    --   footer[2] = CenterContainer{self.page_info=HGrp{self.page_info_left_chev=btn, self.page_info_text=txtW, self.page_info_right_chev=btn}}
+    --   footer[3] = RightContainer {self.device_info=Hgrp{self.time_info=btn}}
 
-    -- clear existing icon and label up_button
-    touch_menu.page_info:clear()
-    touch_menu.device_info:clear()
-    touch_menu.footer[1][1] = HorizontalGroup:new{} --clear
-
+    -- clear footer slot but don't clear touch_menu.page_info and touch_menu.device_info
+    touch_menu.footer[1][1] = HorizontalGroup:new{}
+    touch_menu.footer[2][1] = HorizontalGroup:new{}
+    touch_menu.footer[3][1] = HorizontalGroup:new{}
     -- settings_btn
     local settings_btn = Button:new{
-        text           = "\u{F462}",
+        text           = "\u{EB92}",
         width          = btn_width,
         radius         = btn_radius,
         bordersize     = 0,
@@ -86,21 +85,25 @@ function Footer.build(ctx)
         end,
         --hold_callback = function() end,
     }
-    -- up_button
-    local up_button = IconButton:new{
-        icon = "chevron.up",
-        show_parent = touch_menu.show_parent,
-        --padding_left = math.floor(footer_width*0.33*0.1),
-        --padding_right = math.floor(footer_width*0.33*0.1),
+    -- up_button : original is local can't reference it
+    local up_button = Button:new{
+        icon           = "chevron.up",
+        --text           = "▲",
+        width          = btn_width,
+        radius         = btn_radius,
+        bordersize     = 0,
+        text_font_size = btn_font_size,
+        show_parent    = touch_menu.show_parent,
         callback = function()  touch_menu:backToUpperMenu()
         end,
     }
 
+    -- default footer
     if (filemanager and not section.enabled_f) or (reader and not section.enabled_r) then
         -- insert up_button left
-        touch_menu.footer[1][1] = up_button
+        table.insert(touch_menu.footer[1][1], up_button)
         -- create default footer
-        local time_info = Button:new{
+        local default_btn = Button:new{
             text = default_footer(ctx),
             text_font_bold = false,
             callback = function()
@@ -114,90 +117,101 @@ function Footer.build(ctx)
             bordersize = 0,
             touch_menu.show_parent,
         }
+         -- insert page_info center
+        table.insert(touch_menu.footer[2][1], touch_menu.page_info)
         -- insert default_footer right
-        table.insert(touch_menu.device_info, time_info)
+        table.insert(touch_menu.footer[3][1], default_btn)
         -- insert settings_btn
-        if section.show_title then table.insert(touch_menu.device_info, settings_btn) end
-        return {}
+        if section.show_title then table.insert(touch_menu.footer[3][1], settings_btn) end
+    -- zenFooter
     elseif section.use_zenfooter then
         -- insert up_button center
-        table.insert(touch_menu.page_info, up_button)
+        table.insert(touch_menu.footer[2][1], up_button)
+        -- insert page_info right
+        table.insert(touch_menu.footer[3][1], touch_menu.page_info)
         -- insert settings_btn right
-        if section.show_title then table.insert(touch_menu.device_info, settings_btn) end
-        return {}
-    end
+        if section.show_title then table.insert(touch_menu.footer[3][1], settings_btn) end
+    -- quickmenu footer
+    else
+        -- insert up_button left
+        table.insert(touch_menu.footer[1][1], up_button)
+        -- insert page_info_left_chev left
+        table.insert(touch_menu.footer[1][1], touch_menu.page_info_left_chev)
+        -- create custom footer and insert right
+        section.items = section.items or {}
+        -- actions system and custom
+        local action_defs = ActionDefs.getMerged(config.custom_actions)
 
-    -- insert up_button left
-    touch_menu.footer[1][1] = up_button
-    -- create custom footer and insert right
-    section.items = section.items or {}
-    -- actions system and custom
-    local action_defs = ActionDefs.getMerged(config.custom_actions)
-
-    local function exec_action(ctx, action_data)
-        if type(action_data) == "function" then
-            action_data(ctx)
-        elseif type(action_data) == "table" then
-            ctx.touch_menu:closeMenu()
-            UIManager:nextTick(function() ActionExec.dispatch(action_data) end)
-        end
-    end
-    --
-    local max_width = panel_width - btn_width*2
-    --print(panel_width .. ":" .. settings_btn:getSize().w .. ":" .. btn_width .. ":" .. max_width)
-    local current_width = 0
-    local has_overflow = false
-    local overflow_items = {}
-
-    for index = 1, #section.items do
-    local id = section.items[index]
-    local item_def = action_defs[id]
-
-        if item_def and (not item_def.visible_func or item_def.visible_func(ctx)) then
-            local icon = item_def.icon_func and item_def.icon_func(ctx) or (item_def.icon or "")
-            local val = item_def.label_func and item_def.label_func(ctx) or (item_def.label or "")
-            -- create btn
-            local btn = Button:new{
-                text = Utils.get_safe_icon(icon) .. " " .. val, -- btn doesnt't support svg
-                text_font_bold = false,
-                bordersize = 0,
-                show_parent = touch_menu.show_parent,
-                callback       = item_def.callback and function() exec_action(ctx, item_def.callback) end or nil,
-                hold_callback  = item_def.hold_callback and function() exec_action(ctx, item_def.hold_callback) end or nil,
-            }
-            -- if item fit then add btn else store hidden items
-            local btn_w = btn:getSize().w
-            if current_width + btn_w <= max_width then
-                current_width = current_width + btn_w
-                table.insert(touch_menu.device_info, btn)
-            else
-                has_overflow = true
-                overflow_icon = table.insert(overflow_items, "• " .. Utils.get_safe_icon(item_def.icon or "") .. " " .. (item_def.label or ""))
+        local function exec_action(ctx, action_data)
+            if type(action_data) == "function" then
+                action_data(ctx)
+            elseif type(action_data) == "table" then
+                ctx.touch_menu:closeMenu()
+                UIManager:nextTick(function() ActionExec.dispatch(action_data) end)
             end
         end
-    end
+        --
+        local footer_width = touch_menu.width - touch_menu.padding*2
+        local chevron_with = touch_menu.page_info_left_chev:getSize().w + touch_menu.page_info_right_chev:getSize().w
+        local max_footer_width = footer_width - btn_width*2 - chevron_with
+        --print(footer_width .. ":" .. touch_menu.page_info_left_chev:getSize().w .. ":" .. max_footer_width)
+        local current_width = 0
+        local has_overflow = false
+        local overflow_items = {}
 
-    -- settings_btn_overflow
-    local settings_btn_overflow = Button:new{
-        text           = (has_overflow and "\u{F071}") or "\u{F462}", -- warning icon if overflow
-        width          = btn_width,
-        radius         = btn_radius,
-        bordersize     = 0,
-        text_font_size = btn_font_size,
-        show_parent    = touch_menu.show_parent,
-        callback       = function()
-            if has_overflow then
-                UIManager:show(InfoMessage:new{
-                    text = _("Footer overflow !!!!\nHidden actions :\n") .. table.concat(overflow_items, "\n"),
-                    icon = "notice-warning"
-                })
+        for index = 1, #section.items do
+        local id = section.items[index]
+        local item_def = action_defs[id]
+
+            if item_def and (not item_def.visible_func or item_def.visible_func(ctx)) then
+                local icon = item_def.icon_func and item_def.icon_func(ctx) or (item_def.icon or "")
+                local val = item_def.label_func and item_def.label_func(ctx) or (item_def.label or "")
+                -- create btn
+                local btn = Button:new{
+                    text = Utils.get_safe_icon(icon) .. " " .. val, -- btn doesnt't support svg
+                    text_font_bold = false,
+                    bordersize = 0,
+                    show_parent = touch_menu.show_parent,
+                    callback       = item_def.callback and function() exec_action(ctx, item_def.callback) end or nil,
+                    hold_callback  = item_def.hold_callback and function() exec_action(ctx, item_def.hold_callback) end or nil,
+                }
+                -- if item fit then add btn else store hidden items
+                local btn_w = btn:getSize().w
+                if current_width + btn_w <= max_footer_width then
+                    current_width = current_width + btn_w
+                    table.insert(touch_menu.footer[3][1], btn)
+                else
+                    has_overflow = true
+                    print("coucou")
+                    overflow_icon = table.insert(overflow_items, "• " .. Utils.get_safe_icon(item_def.icon or "") .. " " .. (item_def.label or ""))
+                end
             end
-            Footer.showSettings(ctx)
-        end,
-        --hold_callback = function() end,
-    }
-    -- insert settings_btn_overflow right
-    if section.show_title then table.insert(touch_menu.device_info, settings_btn_overflow) end
+        end
+
+        -- settings_btn_overflow
+        local settings_btn_overflow = Button:new{
+            text           = (has_overflow and "\u{F071}") or "\u{EB92}", -- warning icon if overflow
+            width          = btn_width,
+            radius         = btn_radius,
+            bordersize     = 0,
+            text_font_size = btn_font_size,
+            show_parent    = touch_menu.show_parent,
+            callback       = function()
+                if has_overflow then
+                    UIManager:show(InfoMessage:new{
+                        text = _("Footer overflow !!!!\nHidden actions :\n") .. table.concat(overflow_items, "\n"),
+                        icon = "notice-warning"
+                    })
+                end
+                Footer.showSettings(ctx)
+            end,
+            --hold_callback = function() end,
+        }
+        -- insert page_info_right_chev right
+        table.insert(touch_menu.footer[3][1], touch_menu.page_info_right_chev)
+        -- insert settings_btn_overflow right
+        if section.show_title then table.insert(touch_menu.footer[3][1], settings_btn_overflow) end
+    end
     return {}
 end
 
