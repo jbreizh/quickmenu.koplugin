@@ -1,0 +1,854 @@
+msgid "%s of %s"
+msgstr "%s из %s"
+
+msgid "%s of %s"
+msgstr "%s из %s"
+
+msgid "Actions"
+msgstr "Действия"
+
+msgid "Add"
+msgstr "Добавить"
+
+msgid "Add as shortcut"
+msgstr "Добавить как ярлык"
+
+msgid "Add exit tab"
+msgstr "Добавить вкладку выхода"
+
+msgid "Add new action"
+msgstr "Добавить новое действие"
+
+msgid "Add quick menu tab"
+msgstr "Добавить вкладку быстрого меню"
+
+msgid "Add this menu page"
+msgstr "Добавить эту страницу меню"
+
+msgid "All"
+msgstr "Все"
+
+msgid "Always start on quick menu tab"
+msgstr "Всегда начинать с вкладки быстрого меню"
+
+msgid "Apply"
+msgstr "Применить"
+
+msgid "Are you sure you want to exit KOReader ?"
+msgstr "Вы уверены, что хотите выйти из KOReader?"
+
+msgid "Are you sure you want to exit book ?"
+msgstr "Вы уверены, что хотите закрыть книгу?"
+
+msgid "Are you sure you want to reset to defaults ?"
+msgstr "Вы уверены, что хотите сбросить настройки до значений по умолчанию?"
+
+msgid "Are you sure you want to restart KOReader ?"
+msgstr "Вы уверены, что хотите перезапустить KOReader?"
+
+msgid "Arrow down"
+msgstr "Стрелка вниз"
+
+msgid "Arrow down then left"
+msgstr "Стрелка вниз, затем влево"
+
+msgid "Arrow down then right"
+msgstr "Стрелка вниз, затем вправо"
+
+msgid "Arrow left"
+msgstr "Стрелка влево"
+
+msgid "Arrow left hooked"
+msgstr "Стрелка влево с крючком"
+
+msgid "Arrow left to bar"
+msgstr "Стрелка влево до полосы"
+
+msgid "Arrow left with tail"
+msgstr "Стрелка влево с хвостиком"
+
+msgid "Arrow right"
+msgstr "Стрелка вправо"
+
+msgid "Arrow right hooked"
+msgstr "Стрелка вправо с крючком"
+
+msgid "Arrow right then down"
+msgstr "Стрелка вправо, затем вниз"
+
+msgid "Arrow right then up"
+msgstr "Стрелка вправо, затем вверх"
+
+msgid "Arrow right to bar"
+msgstr "Стрелка вправо до полосы"
+
+msgid "Arrow right with tail"
+msgstr "Стрелка вправо с хвостиком"
+
+msgid "Arrow up"
+msgstr "Стрелка вверх"
+
+msgid "Arrow up then left"
+msgstr "Стрелка вверх, затем влево"
+
+msgid "Arrow up then right"
+msgstr "Стрелка вверх, затем вправо"
+
+msgid "Arrowhead right"
+msgstr "Наконечник стрелки вправо"
+
+msgid "Arrows"
+msgstr "Стрелки"
+
+msgid "Arrows left-right"
+msgstr "Стрелки влево-вправо"
+
+msgid "Author : Anthony Gress\nProjet : Zen UI\nhttps://github.com/AnthonyGress/zen_ui.koplugin"
+msgstr "Автор : Anthony Gress\nПроект : Zen UI\nhttps://github.com/AnthonyGress/zen_ui.koplugin"
+
+msgid "Back"
+msgstr "Назад"
+
+msgid "Battery"
+msgstr "Батарея"
+
+msgid "Block (dark)"
+msgstr "Блок (темный)"
+
+msgid "Block (full)"
+msgstr "Блок (полный)"
+
+msgid "Block (light)"
+msgstr "Блок (светлый)"
+
+msgid "Block (medium)"
+msgstr "Блок (средний)"
+
+msgid "Blocks"
+msgstr "Блоки"
+
+msgid "Bullet"
+msgstr "Маркер"
+
+msgid "CPU"
+msgstr "Процессор (CPU)"
+
+msgid "CPU used %d%%"
+msgstr "Загрузка CPU %d%%"
+
+msgid "Calendar"
+msgstr "Календарь"
+
+msgid "Cancel"
+msgstr "Отмена"
+
+msgid "Center ZenSlider label"
+msgstr "Выровнять метку ZenSlider по центру"
+
+msgid "Choose a plugin"
+msgstr "Выберите плагин"
+
+msgid "Choose an action"
+msgstr "Выберите действие"
+
+msgid "Circle (empty)"
+msgstr "Круг (пустой)"
+
+msgid "Circle (filled)"
+msgstr "Круг (заполненный)"
+
+msgid "Circle (left half)"
+msgstr "Круг (левая половина)"
+
+msgid "Circle (lower half)"
+msgstr "Круг (нижняя половина)"
+
+msgid "Circle (right half)"
+msgstr "Круг (правая половина)"
+
+msgid "Circle (upper half)"
+msgstr "Круг (верхняя половина)"
+
+msgid "Circle arrow left"
+msgstr "Круговая стрелка влево"
+
+msgid "Circle arrow right"
+msgstr "Круговая стрелка вправо"
+
+msgid "Close"
+msgstr "Закрыть"
+
+msgid "Cloud"
+msgstr "Облако"
+
+msgid "Club"
+msgstr "Трефы"
+
+msgid "Collections"
+msgstr "Коллекции"
+
+msgid "Columns"
+msgstr "Столбцы"
+
+msgid "Curved back arrow"
+msgstr "Изогнутая стрелка назад"
+
+msgid "Custom"
+msgstr "Пользовательский"
+
+msgid "Custom actions"
+msgstr "Пользовательские действия"
+
+msgid "Dagger"
+msgstr "Кинжал"
+
+msgid "Day"
+msgstr "День"
+
+msgid "Default"
+msgstr "По умолчанию"
+
+msgid "Delete"
+msgstr "Удалить"
+
+msgid "Device"
+msgstr "Устройство"
+
+msgid "Diamond (empty)"
+msgstr "Ромб (пустой)"
+
+msgid "Diamond (filled)"
+msgstr "Ромб (заполненный)"
+
+msgid "Diamond suit"
+msgstr "Бубны"
+
+msgid "Dictionary"
+msgstr "Словарь"
+
+msgid "Division slash"
+msgstr "Косая черта деления"
+
+msgid "Double angle left"
+msgstr "Двойная угловая скобка влево"
+
+msgid "Double angle right"
+msgstr "Двойная угловая скобка вправо"
+
+msgid "Double arrow down"
+msgstr "Двойная стрелка вниз"
+
+msgid "Double arrow left"
+msgstr "Двойная стрелка влево"
+
+msgid "Double arrow right"
+msgstr "Двойная стрелка вправо"
+
+msgid "Double arrow up"
+msgstr "Двойная стрелка вверх"
+
+msgid "Double arrows right"
+msgstr "Двойные стрелки вправо"
+
+msgid "Double dagger"
+msgstr "Двойной кинжал"
+
+msgid "Double fraction slash"
+msgstr "Двойная косая черта дроби"
+
+msgid "Drop .svg or .png files in koreader/icons/"
+msgstr "Перетащите .svg или .png файлы в koreader/icons/"
+
+msgid "Dynamic"
+msgstr "Динамический"
+
+msgid "Edit"
+msgstr "Редактировать"
+
+msgid "Em dash"
+msgstr "Длинное тире"
+
+msgid "En dash"
+msgstr "Среднее тире"
+
+msgid "Enabled in filemanager"
+msgstr "Включено в файловом менеджере"
+
+msgid "Enabled in reader"
+msgstr "Включено в читалке"
+
+msgid "Exit"
+msgstr "Выход"
+
+msgid "Favorites"
+msgstr "Избранное"
+
+msgid "Fit controls"
+msgstr "Подогнать элементы управления"
+
+msgid "Footer"
+msgstr "Нижний колонтитул"
+
+msgid "Footer overflow !!!!\nHidden actions :\n"
+msgstr "Переполнение нижнего колонтитула!!!!\nСкрытые действия:\n"
+
+msgid "Fraction slash"
+msgstr "Косая черта дроби"
+
+msgid "Frontlight"
+msgstr "Подсветка"
+
+msgid "GB"
+msgstr "ГБ"
+
+msgid "Heart"
+msgstr "Сердце"
+
+msgid "Heavy arrow right"
+msgstr "Жирная стрелка вправо"
+
+msgid "Heavy round arrow right"
+msgstr "Жирная закругленная стрелка вправо"
+
+msgid "Heavy triangle right"
+msgstr "Жирный треугольник вправо"
+
+msgid "High voltage"
+msgstr "Высокое напряжение"
+
+msgid "History"
+msgstr "История"
+
+msgid "Hold"
+msgstr "Удержание"
+
+msgid "Horizontal ellipsis"
+msgstr "Горизонтальное многоточие"
+
+msgid "Hot springs / warmth"
+msgstr "Горячие источники / тепло"
+
+msgid "Icon"
+msgstr "Иконка"
+
+msgid "Icons library"
+msgstr "Библиотека иконок"
+
+msgid "Infinity"
+msgstr "Бесконечность"
+
+msgid "Informations"
+msgstr "Информация"
+
+msgid "Justify controls"
+msgstr "Выровнять элементы управления"
+
+msgid "KOSync"
+msgstr "KOSync"
+
+msgid "Label"
+msgstr "Метка"
+
+msgid "Left 1/8 block"
+msgstr "Блок слева 1/8"
+
+msgid "Left 2/8 block"
+msgstr "Блок слева 2/8"
+
+msgid "Left 3/8 block"
+msgstr "Блок слева 3/8"
+
+msgid "Left 4/8 block"
+msgstr "Блок слева 4/8"
+
+msgid "Left 5/8 block"
+msgstr "Блок слева 5/8"
+
+msgid "Left 6/8 block"
+msgstr "Блок слева 6/8"
+
+msgid "Left 7/8 block"
+msgstr "Блок слева 7/8"
+
+msgid "Left harpoon with right arrow"
+msgstr "Левый гарпун с правой стрелкой"
+
+msgid "Light"
+msgstr "Свет"
+
+msgid "Lock"
+msgstr "Блокировка"
+
+msgid "Long arrow left"
+msgstr "Длинная стрелка влево"
+
+msgid "Long arrow right"
+msgstr "Длинная стрелка вправо"
+
+msgid "Lower 1/8 block"
+msgstr "Нижний блок 1/8"
+
+msgid "Lower 2/8 block"
+msgstr "Нижний блок 2/8"
+
+msgid "Lower 3/8 block"
+msgstr "Нижний блок 3/8"
+
+msgid "Lower 4/8 block"
+msgstr "Нижний блок 4/8"
+
+msgid "Lower 5/8 block"
+msgstr "Нижний блок 5/8"
+
+msgid "Lower 6/8 block"
+msgstr "Нижний блок 6/8"
+
+msgid "Lower 7/8 block"
+msgstr "Нижний блок 7/8"
+
+msgid "MB"
+msgstr "МБ"
+
+msgid "Manage actions"
+msgstr "Управление действиями"
+
+msgid "Memory"
+msgstr "Память"
+
+msgid "Memory available %d MB"
+msgstr "Доступно памяти: %d МБ"
+
+msgid "Memory available %d%%"
+msgstr "Доступно памяти: %d%%"
+
+msgid "Memory total %d MB"
+msgstr "Всего памяти: %d МБ"
+
+msgid "Memory used %d MB"
+msgstr "Использовано памяти: %d МБ"
+
+msgid "Memory used %d%%"
+msgstr "Использовано памяти: %d%%"
+
+msgid "Menu"
+msgstr "Меню"
+
+msgid "Menu action"
+msgstr "Действие меню"
+
+msgid "Menu unavailable"
+msgstr "Меню недоступно"
+
+msgid "Middle dot"
+msgstr "Средняя точка"
+
+msgid "Night"
+msgstr "Ночь"
+
+msgid "Night mode"
+msgstr "Ночной режим"
+
+msgid "No custom action"
+msgstr "Нет пользовательского действия"
+
+msgid "No launchable plugins found"
+msgstr "Запускаемые плагины не найдены"
+
+msgid "None"
+msgstr "Нет"
+
+msgid "Not possible"
+msgstr "Невозможно"
+
+msgid "Nothing to do"
+msgstr "Нечего делать"
+
+msgid "Numero"
+msgstr "Номер"
+
+msgid "OPDS"
+msgstr "OPDS"
+
+msgid "Off"
+msgstr "Выкл"
+
+msgid "On"
+msgstr "Вкл"
+
+msgid "Other"
+msgstr "Другое"
+
+msgid "Page %1 of %2"
+msgstr "Страница %1 из %2"
+
+msgid "Pilcrow / paragraph"
+msgstr "Знак абзаца"
+
+msgid "Plugin"
+msgstr "Плагин"
+
+msgid "Plugin not activated."
+msgstr "Плагин не активирован."
+
+msgid "Power"
+msgstr "Питание"
+
+msgid "Power off"
+msgstr "Выключить"
+
+msgid "Process"
+msgstr "Процесс"
+
+msgid "Process memory %s MB"
+msgstr "Память процесса: %s МБ"
+
+msgid "Quick Menu"
+msgstr "Быстрое меню"
+
+msgid "Quick Menu for settings and actions."
+msgstr "Быстрое меню для настроек и действий."
+
+msgid "Quick menu"
+msgstr "Быстрое меню"
+
+msgid "Reading"
+msgstr "Чтение"
+
+msgid "Reboot"
+msgstr "Перезагрузить"
+
+msgid "Rectangle (empty)"
+msgstr "Прямоугольник (пустой)"
+
+msgid "Rectangle (filled)"
+msgstr "Прямоугольник (заполненный)"
+
+msgid "Reset"
+msgstr "Сброс"
+
+msgid "Reset actions to defaults"
+msgstr "Сбросить действия по умолчанию"
+
+msgid "Reset quick menu to defaults"
+msgstr "Сбросить быстрое меню по умолчанию"
+
+msgid "Reset quick menu to defaults ?"
+msgstr "Сбросить быстрое меню по умолчанию?"
+
+msgid "Reset section to defaults"
+msgstr "Сбросить раздел по умолчанию"
+
+msgid "Reset to defaults"
+msgstr "Сбросить до значений по умолчанию"
+
+msgid "Restart"
+msgstr "Перезапуск"
+
+msgid "Resume"
+msgstr "Возобновить"
+
+msgid "Right half block"
+msgstr "Правый полублок"
+
+msgid "Rotate"
+msgstr "Поворот"
+
+msgid "SSH"
+msgstr "SSH"
+
+msgid "SVG icon folder"
+msgstr "Папка SVG иконок"
+
+msgid "Save"
+msgstr "Сохранить"
+
+msgid "Search"
+msgstr "Поиск"
+
+msgid "Search %1 icons by name…"
+msgstr "Поиск %1 иконок по имени…"
+
+msgid "Search…"
+msgstr "Поиск…"
+
+msgid "Section sign"
+msgstr "Знак раздела"
+
+msgid "Select actions"
+msgstr "Выбрать действия"
+
+msgid "Select hold"
+msgstr "Выбрать удержание"
+
+msgid "Select label"
+msgstr "Выбрать метку"
+
+msgid "Select tap"
+msgstr "Выбрать нажатие"
+
+msgid "Separators"
+msgstr "Разделители"
+
+msgid "Settings"
+msgstr "Настройки"
+
+msgid "Shortcut"
+msgstr "Ярлык"
+
+msgid "Shortcuts"
+msgstr "Ярлыки"
+
+msgid "Show labels"
+msgstr "Показывать метки"
+
+msgid "Show skim"
+msgstr "Показывать skim"
+
+msgid "Show thumbnail"
+msgstr "Показывать миниатюру"
+
+msgid "Show title"
+msgstr "Показывать название"
+
+msgid "Single angle left"
+msgstr "Одинарная угловая скобка влево"
+
+msgid "Single angle right"
+msgstr "Одинарная угловая скобка вправо"
+
+msgid "Slant block"
+msgstr "Наклонный блок"
+
+msgid "Slant block (empty)"
+msgstr "Наклонный блок (пустой)"
+
+msgid "Slash"
+msgstr "Косая черта"
+
+msgid "Sleep"
+msgstr "Сон"
+
+msgid "Sort actions"
+msgstr "Сортировать действия"
+
+msgid "Spade"
+msgstr "Пики"
+
+msgid "Square (empty)"
+msgstr "Квадрат (пустой)"
+
+msgid "Square (filled)"
+msgstr "Квадрат (заполненный)"
+
+msgid "Star (filled)"
+msgstr "Звезда (заполненная)"
+
+msgid "Star (outline)"
+msgstr "Звезда (контур)"
+
+msgid "Statistics"
+msgstr "Статистика"
+
+msgid "Storage"
+msgstr "Хранилище"
+
+msgid "Storage available %d GB"
+msgstr "Доступно хранилища: %d ГБ"
+
+msgid "Storage available %d%%"
+msgstr "Доступно хранилища: %d%%"
+
+msgid "Storage total %d GB"
+msgstr "Всего хранилища: %d ГБ"
+
+msgid "Storage used %d GB"
+msgstr "Использовано хранилища: %d ГБ"
+
+msgid "Storage used %d%%"
+msgstr "Использовано хранилища: %d%%"
+
+msgid "Style"
+msgstr "Стиль"
+
+msgid "Sun (outline)"
+msgstr "Солнце (контур)"
+
+msgid "Symbols"
+msgstr "Символы"
+
+msgid "System"
+msgstr "Система"
+
+msgid "System action"
+msgstr "Системное действие"
+
+msgid "Tap"
+msgstr "Нажатие"
+
+msgid "Tap : Ask for exit KOreader\nHold : Ask for restart KOreader"
+msgstr "Нажатие: Выход из KOReader\nУдержание: Перезапуск KOReader"
+
+msgid "Tap : Ask for power off system\nHold : Ask for reboot system"
+msgstr "Нажатие: Выключить систему\nУдержание: Перезагрузить систему"
+
+msgid "Tap : Ask for reboot system\nHold : Ask for power off system"
+msgstr "Нажатие: Перезагрузить систему\nУдержание: Выключить систему"
+
+msgid "Tap : Ask for restart KOreader\nHold : Ask for exit KOreader"
+msgstr "Нажатие: Перезапуск KOReader\nУдержание: Выход из KOReader"
+
+msgid "Tap : Nothing\nHold : Show frontlight dialog"
+msgstr "Нажатие: Ничего\nУдержание: Показать диалог подсветки"
+
+msgid "Tap : Open last book\nHold : Show history"
+msgstr "Нажатие: Открыть последнюю книгу\nУдержание: Показать историю"
+
+msgid "Tap : Push progress to KOSync\nHold : Pull progress from KOSync"
+msgstr "Нажатие: Отправить прогресс в KOSync\nУдержание: Загрузить прогресс из KOSync"
+
+msgid "Tap : Request UBS mass storage\nHold : Nothing"
+msgstr "Нажатие: Запрос режима USB-накопителя\nУдержание: Ничего"
+
+msgid "Tap : Show Calibre search\nHold : Show file search"
+msgstr "Нажатие: Поиск Calibre\nУдержание: Поиск файлов"
+
+msgid "Tap : Show OPDS catalog\nHold : Show cloud storage"
+msgstr "Нажатие: Каталог OPDS\nУдержание: Облачное хранилище"
+
+msgid "Tap : Show calendar statistics\nHold : Show reader statistics"
+msgstr "Нажатие: Статистика по календарю\nУдержание: Статистика чтения"
+
+msgid "Tap : Show cloud storage\nHold : Show OPDS catalog"
+msgstr "Нажатие: Облачное хранилище\nУдержание: Каталог OPDS"
+
+msgid "Tap : Show collections\nHold : Show favorites"
+msgstr "Нажатие: Коллекции\nУдержание: Избранное"
+
+msgid "Tap : Show dictionary search\nHold : Show wikipedia search"
+msgstr "Нажатие: Поиск по словарю\nУдержание: Поиск по Википедии"
+
+msgid "Tap : Show favorites\nHold : Show collections"
+msgstr "Нажатие: Избранное\nУдержание: Коллекции"
+
+msgid "Tap : Show file search\nHold : Show Calibre search"
+msgstr "Нажатие: Поиск файлов\nУдержание: Поиск Calibre"
+
+msgid "Tap : Show history\nHold : Open last book"
+msgstr "Нажатие: История\nУдержание: Открыть последнюю книгу"
+
+msgid "Tap : Show power dialog\nHold : Nothing"
+msgstr "Нажатие: Диалог питания\nУдержание: Ничего"
+
+msgid "Tap : Show reader statistics\nHold : Show calendar statistics"
+msgstr "Нажатие: Статистика чтения\nУдержание: Статистика по календарю"
+
+msgid "Tap : Show time\nHold : Nothing"
+msgstr "Нажатие: Время\nУдержание: Ничего"
+
+msgid "Tap : Show value\nHold : Show battery statistics"
+msgstr "Нажатие: Показать значение\nУдержание: Статистика батареи"
+
+msgid "Tap : Show value\nHold : Show system statistics"
+msgstr "Нажатие: Показать значение\nУдержание: Статистика системы"
+
+msgid "Tap : Show wikipedia search\nHold : Show dictionary search"
+msgstr "Нажатие: Поиск по Википедии\nУдержание: Поиск по словарю"
+
+msgid "Tap : Suspend system\nHold : Nothing"
+msgstr "Нажатие: Приостановить систему\nУдержание: Ничего"
+
+msgid "Tap : Swap rotation\nHold : Invert rotation"
+msgstr "Нажатие: Поменять ориентацию\nУдержание: Инвертировать поворот"
+
+msgid "Tap : Toggle Calibre connection\nHold : Nothing"
+msgstr "Нажатие: Переключить соединение Calibre\nУдержание: Ничего"
+
+msgid "Tap : Toggle SSH server\nHold : Nothing"
+msgstr "Нажатие: Переключить SSH-сервер\nУдержание: Ничего"
+
+msgid "Tap : Toggle frontlight\nHold : Show frontlight dialog"
+msgstr "Нажатие: Переключить подсветку\nУдержание: Диалог подсветки"
+
+msgid "Tap : Toggle lock gsensor\nHold : Toggle ignore gsensor"
+msgstr "Нажатие: Блокировка G-сенсора\nУдержание: Игнорировать G-сенсор"
+
+msgid "Tap : Toggle night mode\nHold : Nothing"
+msgstr "Нажатие: Ночной режим\nУдержание: Ничего"
+
+msgid "Tap : Toggle wifi\nHold : Show wifi picker"
+msgstr "Нажатие: Переключить Wi-Fi\nУдержание: Выбор Wi-Fi"
+
+msgid "That menu item isn't available"
+msgstr "Этот пункт меню недоступен"
+
+msgid "Tilde"
+msgstr "Тильда"
+
+msgid "Time"
+msgstr "Время"
+
+msgid "Triangle-head right"
+msgstr "Треугольная головка вправо"
+
+msgid "Triangular bullet"
+msgstr "Треугольный маркер"
+
+msgid "USB"
+msgstr "USB"
+
+msgid "Unknown author"
+msgstr "Неизвестный автор"
+
+msgid "Unknown chapter"
+msgstr "Неизвестная глава"
+
+msgid "Unknown title"
+msgstr "Неизвестное название"
+
+msgid "Unlock"
+msgstr "Разблокировать"
+
+msgid "Upper half block"
+msgstr "Верхний полублок"
+
+msgid "Use ZenFooter "
+msgstr "Использовать ZenFooter"
+
+msgid "Use ZenSlider"
+msgstr "Использовать ZenSlider"
+
+msgid "Vertical bar"
+msgstr "Вертикальная полоса"
+
+msgid "Vertical block"
+msgstr "Вертикальный блок"
+
+msgid "Vertical block (empty)"
+msgstr "Вертикальный блок (пустой)"
+
+msgid "Vertical ellipsis"
+msgstr "Вертикальное многоточие"
+
+msgid "Warmth"
+msgstr "Теплота"
+
+msgid "Wi-Fi"
+msgstr "Wi-Fi"
+
+msgid "WiFi"
+msgstr "WiFi"
+
+msgid "Wikipedia"
+msgstr "Википедия"
+
+msgid "available"
+msgstr "доступно"
+
+msgid "batterystat)"
+msgstr "стат_батареи)"
+
+msgid "total"
+msgstr "всего"
+
+msgid "used"
+msgstr "использовано"

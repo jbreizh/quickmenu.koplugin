@@ -1,0 +1,854 @@
+msgid "%s of %s"
+msgstr "%s de %s"
+
+msgid "%s of %s"
+msgstr "%s de %s"
+
+msgid "Actions"
+msgstr "Acciones"
+
+msgid "Add"
+msgstr "Añadir"
+
+msgid "Add as shortcut"
+msgstr "Añadir como acceso directo"
+
+msgid "Add exit tab"
+msgstr "Añadir pestaña de salida"
+
+msgid "Add new action"
+msgstr "Añadir nueva acción"
+
+msgid "Add quick menu tab"
+msgstr "Añadir pestaña al menú rápido"
+
+msgid "Add this menu page"
+msgstr "Añadir esta página de menú"
+
+msgid "All"
+msgstr "Todo"
+
+msgid "Always start on quick menu tab"
+msgstr "Empezar siempre en la pestaña de menú rápido"
+
+msgid "Apply"
+msgstr "Aplicar"
+
+msgid "Are you sure you want to exit KOReader ?"
+msgstr "¿Está seguro de que desea salir de KOReader?"
+
+msgid "Are you sure you want to exit book ?"
+msgstr "¿Está seguro de que desea cerrar el libro?"
+
+msgid "Are you sure you want to reset to defaults ?"
+msgstr "¿Está seguro de que desea restablecer los valores predeterminados?"
+
+msgid "Are you sure you want to restart KOReader ?"
+msgstr "¿Está seguro de que desea reiniciar KOReader?"
+
+msgid "Arrow down"
+msgstr "Flecha hacia abajo"
+
+msgid "Arrow down then left"
+msgstr "Flecha hacia abajo y luego a la izquierda"
+
+msgid "Arrow down then right"
+msgstr "Flecha hacia abajo y luego a la derecha"
+
+msgid "Arrow left"
+msgstr "Flecha a la izquierda"
+
+msgid "Arrow left hooked"
+msgstr "Flecha a la izquierda con gancho"
+
+msgid "Arrow left to bar"
+msgstr "Flecha a la izquierda hasta la barra"
+
+msgid "Arrow left with tail"
+msgstr "Flecha a la izquierda con cola"
+
+msgid "Arrow right"
+msgstr "Flecha a la derecha"
+
+msgid "Arrow right hooked"
+msgstr "Flecha a la derecha con gancho"
+
+msgid "Arrow right then down"
+msgstr "Flecha a la derecha y luego hacia abajo"
+
+msgid "Arrow right then up"
+msgstr "Flecha a la derecha y luego hacia arriba"
+
+msgid "Arrow right to bar"
+msgstr "Flecha a la derecha hasta la barra"
+
+msgid "Arrow right with tail"
+msgstr "Flecha a la derecha con cola"
+
+msgid "Arrow up"
+msgstr "Flecha hacia arriba"
+
+msgid "Arrow up then left"
+msgstr "Flecha hacia arriba y luego a la izquierda"
+
+msgid "Arrow up then right"
+msgstr "Flecha hacia arriba y luego a la derecha"
+
+msgid "Arrowhead right"
+msgstr "Punta de flecha derecha"
+
+msgid "Arrows"
+msgstr "Flechas"
+
+msgid "Arrows left-right"
+msgstr "Flechas izquierda-derecha"
+
+msgid "Author : Anthony Gress\nProjet : Zen UI\nhttps://github.com/AnthonyGress/zen_ui.koplugin"
+msgstr "Autor : Anthony Gress\nProyecto : Zen UI\nhttps://github.com/AnthonyGress/zen_ui.koplugin"
+
+msgid "Back"
+msgstr "Atrás"
+
+msgid "Battery"
+msgstr "Batería"
+
+msgid "Block (dark)"
+msgstr "Bloque (oscuro)"
+
+msgid "Block (full)"
+msgstr "Bloque (completo)"
+
+msgid "Block (light)"
+msgstr "Bloque (claro)"
+
+msgid "Block (medium)"
+msgstr "Bloque (medio)"
+
+msgid "Blocks"
+msgstr "Bloques"
+
+msgid "Bullet"
+msgstr "Viñeta"
+
+msgid "CPU"
+msgstr "CPU"
+
+msgid "CPU used %d%%"
+msgstr "Uso de CPU %d%%"
+
+msgid "Calendar"
+msgstr "Calendario"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Center ZenSlider label"
+msgstr "Centrar etiqueta ZenSlider"
+
+msgid "Choose a plugin"
+msgstr "Elegir un plugin"
+
+msgid "Choose an action"
+msgstr "Elegir una acción"
+
+msgid "Circle (empty)"
+msgstr "Círculo (vacío)"
+
+msgid "Circle (filled)"
+msgstr "Círculo (relleno)"
+
+msgid "Circle (left half)"
+msgstr "Círculo (mitad izquierda)"
+
+msgid "Circle (lower half)"
+msgstr "Círculo (mitad inferior)"
+
+msgid "Circle (right half)"
+msgstr "Círculo (mitad derecha)"
+
+msgid "Circle (upper half)"
+msgstr "Círculo (mitad superior)"
+
+msgid "Circle arrow left"
+msgstr "Flecha circular izquierda"
+
+msgid "Circle arrow right"
+msgstr "Flecha circular derecha"
+
+msgid "Close"
+msgstr "Cerrar"
+
+msgid "Cloud"
+msgstr "Nube"
+
+msgid "Club"
+msgstr "Trébol"
+
+msgid "Collections"
+msgstr "Colecciones"
+
+msgid "Columns"
+msgstr "Columnas"
+
+msgid "Curved back arrow"
+msgstr "Flecha de retorno curva"
+
+msgid "Custom"
+msgstr "Personalizado"
+
+msgid "Custom actions"
+msgstr "Acciones personalizadas"
+
+msgid "Dagger"
+msgstr "Daga"
+
+msgid "Day"
+msgstr "Día"
+
+msgid "Default"
+msgstr "Predeterminado"
+
+msgid "Delete"
+msgstr "Eliminar"
+
+msgid "Device"
+msgstr "Dispositivo"
+
+msgid "Diamond (empty)"
+msgstr "Diamante (vacío)"
+
+msgid "Diamond (filled)"
+msgstr "Diamante (relleno)"
+
+msgid "Diamond suit"
+msgstr "Palo de diamantes"
+
+msgid "Dictionary"
+msgstr "Diccionario"
+
+msgid "Division slash"
+msgstr "Barra de división"
+
+msgid "Double angle left"
+msgstr "Doble ángulo izquierdo"
+
+msgid "Double angle right"
+msgstr "Doble ángulo derecho"
+
+msgid "Double arrow down"
+msgstr "Doble flecha hacia abajo"
+
+msgid "Double arrow left"
+msgstr "Doble flecha hacia la izquierda"
+
+msgid "Double arrow right"
+msgstr "Doble flecha hacia la derecha"
+
+msgid "Double arrow up"
+msgstr "Doble flecha hacia arriba"
+
+msgid "Double arrows right"
+msgstr "Flechas dobles hacia la derecha"
+
+msgid "Double dagger"
+msgstr "Doble daga"
+
+msgid "Double fraction slash"
+msgstr "Doble barra de fracción"
+
+msgid "Drop .svg or .png files in koreader/icons/"
+msgstr "Arrastre archivos .svg o .png a koreader/icons/"
+
+msgid "Dynamic"
+msgstr "Dinámico"
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Em dash"
+msgstr "Raya (em)"
+
+msgid "En dash"
+msgstr "Raya (en)"
+
+msgid "Enabled in filemanager"
+msgstr "Habilitado en el gestor de archivos"
+
+msgid "Enabled in reader"
+msgstr "Habilitado en el lector"
+
+msgid "Exit"
+msgstr "Salir"
+
+msgid "Favorites"
+msgstr "Favoritos"
+
+msgid "Fit controls"
+msgstr "Ajustar controles"
+
+msgid "Footer"
+msgstr "Pie de página"
+
+msgid "Footer overflow !!!!\nHidden actions :\n"
+msgstr "Desbordamiento de pie de página !!!!\nAcciones ocultas :\n"
+
+msgid "Fraction slash"
+msgstr "Barra de fracción"
+
+msgid "Frontlight"
+msgstr "Luz frontal"
+
+msgid "GB"
+msgstr "GB"
+
+msgid "Heart"
+msgstr "Corazón"
+
+msgid "Heavy arrow right"
+msgstr "Flecha gruesa hacia la derecha"
+
+msgid "Heavy round arrow right"
+msgstr "Flecha redonda gruesa hacia la derecha"
+
+msgid "Heavy triangle right"
+msgstr "Triángulo grueso hacia la derecha"
+
+msgid "High voltage"
+msgstr "Alto voltaje"
+
+msgid "History"
+msgstr "Historial"
+
+msgid "Hold"
+msgstr "Mantener"
+
+msgid "Horizontal ellipsis"
+msgstr "Puntos suspensivos horizontales"
+
+msgid "Hot springs / warmth"
+msgstr "Aguas termales / calor"
+
+msgid "Icon"
+msgstr "Icono"
+
+msgid "Icons library"
+msgstr "Biblioteca de iconos"
+
+msgid "Infinity"
+msgstr "Infinito"
+
+msgid "Informations"
+msgstr "Información"
+
+msgid "Justify controls"
+msgstr "Justificar controles"
+
+msgid "KOSync"
+msgstr "KOSync"
+
+msgid "Label"
+msgstr "Etiqueta"
+
+msgid "Left 1/8 block"
+msgstr "Bloque 1/8 izquierda"
+
+msgid "Left 2/8 block"
+msgstr "Bloque 2/8 izquierda"
+
+msgid "Left 3/8 block"
+msgstr "Bloque 3/8 izquierda"
+
+msgid "Left 4/8 block"
+msgstr "Bloque 4/8 izquierda"
+
+msgid "Left 5/8 block"
+msgstr "Bloque 5/8 izquierda"
+
+msgid "Left 6/8 block"
+msgstr "Bloque 6/8 izquierda"
+
+msgid "Left 7/8 block"
+msgstr "Bloque 7/8 izquierda"
+
+msgid "Left harpoon with right arrow"
+msgstr "Arpón izquierdo con flecha derecha"
+
+msgid "Light"
+msgstr "Luz"
+
+msgid "Lock"
+msgstr "Bloquear"
+
+msgid "Long arrow left"
+msgstr "Flecha larga a la izquierda"
+
+msgid "Long arrow right"
+msgstr "Flecha larga a la derecha"
+
+msgid "Lower 1/8 block"
+msgstr "Bloque inferior 1/8"
+
+msgid "Lower 2/8 block"
+msgstr "Bloque inferior 2/8"
+
+msgid "Lower 3/8 block"
+msgstr "Bloque inferior 3/8"
+
+msgid "Lower 4/8 block"
+msgstr "Bloque inferior 4/8"
+
+msgid "Lower 5/8 block"
+msgstr "Bloque inferior 5/8"
+
+msgid "Lower 6/8 block"
+msgstr "Bloque inferior 6/8"
+
+msgid "Lower 7/8 block"
+msgstr "Bloque inferior 7/8"
+
+msgid "MB"
+msgstr "MB"
+
+msgid "Manage actions"
+msgstr "Gestionar acciones"
+
+msgid "Memory"
+msgstr "Memoria"
+
+msgid "Memory available %d MB"
+msgstr "Memoria disponible %d MB"
+
+msgid "Memory available %d%%"
+msgstr "Memoria disponible %d%%"
+
+msgid "Memory total %d MB"
+msgstr "Memoria total %d MB"
+
+msgid "Memory used %d MB"
+msgstr "Memoria usada %d MB"
+
+msgid "Memory used %d%%"
+msgstr "Memoria usada %d%%"
+
+msgid "Menu"
+msgstr "Menú"
+
+msgid "Menu action"
+msgstr "Acción de menú"
+
+msgid "Menu unavailable"
+msgstr "Menú no disponible"
+
+msgid "Middle dot"
+msgstr "Punto medio"
+
+msgid "Night"
+msgstr "Noche"
+
+msgid "Night mode"
+msgstr "Modo noche"
+
+msgid "No custom action"
+msgstr "Sin acción personalizada"
+
+msgid "No launchable plugins found"
+msgstr "No se encontraron plugins ejecutables"
+
+msgid "None"
+msgstr "Ninguno"
+
+msgid "Not possible"
+msgstr "No es posible"
+
+msgid "Nothing to do"
+msgstr "Nada que hacer"
+
+msgid "Numero"
+msgstr "Número"
+
+msgid "OPDS"
+msgstr "OPDS"
+
+msgid "Off"
+msgstr "Apagado"
+
+msgid "On"
+msgstr "Encendido"
+
+msgid "Other"
+msgstr "Otro"
+
+msgid "Page %1 of %2"
+msgstr "Página %1 de %2"
+
+msgid "Pilcrow / paragraph"
+msgstr "Calderón / párrafo"
+
+msgid "Plugin"
+msgstr "Plugin"
+
+msgid "Plugin not activated."
+msgstr "Plugin no activado."
+
+msgid "Power"
+msgstr "Energía"
+
+msgid "Power off"
+msgstr "Apagar"
+
+msgid "Process"
+msgstr "Proceso"
+
+msgid "Process memory %s MB"
+msgstr "Memoria del proceso %s MB"
+
+msgid "Quick Menu"
+msgstr "Menú rápido"
+
+msgid "Quick Menu for settings and actions."
+msgstr "Menú rápido para ajustes y acciones."
+
+msgid "Quick menu"
+msgstr "Menú rápido"
+
+msgid "Reading"
+msgstr "Lectura"
+
+msgid "Reboot"
+msgstr "Reiniciar"
+
+msgid "Rectangle (empty)"
+msgstr "Rectángulo (vacío)"
+
+msgid "Rectangle (filled)"
+msgstr "Rectángulo (relleno)"
+
+msgid "Reset"
+msgstr "Restablecer"
+
+msgid "Reset actions to defaults"
+msgstr "Restablecer acciones a valores predeterminados"
+
+msgid "Reset quick menu to defaults"
+msgstr "Restablecer menú rápido a valores predeterminados"
+
+msgid "Reset quick menu to defaults ?"
+msgstr "¿Restablecer menú rápido a valores predeterminados?"
+
+msgid "Reset section to defaults"
+msgstr "Restablecer sección a valores predeterminados"
+
+msgid "Reset to defaults"
+msgstr "Restablecer valores predeterminados"
+
+msgid "Restart"
+msgstr "Reiniciar"
+
+msgid "Resume"
+msgstr "Reanudar"
+
+msgid "Right half block"
+msgstr "Bloque mitad derecha"
+
+msgid "Rotate"
+msgstr "Rotar"
+
+msgid "SSH"
+msgstr "SSH"
+
+msgid "SVG icon folder"
+msgstr "Carpeta de iconos SVG"
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Search"
+msgstr "Buscar"
+
+msgid "Search %1 icons by name…"
+msgstr "Buscar %1 iconos por nombre…"
+
+msgid "Search…"
+msgstr "Buscar…"
+
+msgid "Section sign"
+msgstr "Signo de sección"
+
+msgid "Select actions"
+msgstr "Seleccionar acciones"
+
+msgid "Select hold"
+msgstr "Seleccionar mantener"
+
+msgid "Select label"
+msgstr "Seleccionar etiqueta"
+
+msgid "Select tap"
+msgstr "Seleccionar tocar"
+
+msgid "Separators"
+msgstr "Separadores"
+
+msgid "Settings"
+msgstr "Ajustes"
+
+msgid "Shortcut"
+msgstr "Acceso directo"
+
+msgid "Shortcuts"
+msgstr "Accesos directos"
+
+msgid "Show labels"
+msgstr "Mostrar etiquetas"
+
+msgid "Show skim"
+msgstr "Mostrar skim"
+
+msgid "Show thumbnail"
+msgstr "Mostrar miniatura"
+
+msgid "Show title"
+msgstr "Mostrar título"
+
+msgid "Single angle left"
+msgstr "Ángulo simple izquierdo"
+
+msgid "Single angle right"
+msgstr "Ángulo simple derecho"
+
+msgid "Slant block"
+msgstr "Bloque inclinado"
+
+msgid "Slant block (empty)"
+msgstr "Bloque inclinado (vacío)"
+
+msgid "Slash"
+msgstr "Barra diagonal"
+
+msgid "Sleep"
+msgstr "Suspender"
+
+msgid "Sort actions"
+msgstr "Ordenar acciones"
+
+msgid "Spade"
+msgstr "Pica"
+
+msgid "Square (empty)"
+msgstr "Cuadrado (vacío)"
+
+msgid "Square (filled)"
+msgstr "Cuadrado (relleno)"
+
+msgid "Star (filled)"
+msgstr "Estrella (rellena)"
+
+msgid "Star (outline)"
+msgstr "Estrella (contorno)"
+
+msgid "Statistics"
+msgstr "Estadísticas"
+
+msgid "Storage"
+msgstr "Almacenamiento"
+
+msgid "Storage available %d GB"
+msgstr "Almacenamiento disponible %d GB"
+
+msgid "Storage available %d%%"
+msgstr "Almacenamiento disponible %d%%"
+
+msgid "Storage total %d GB"
+msgstr "Almacenamiento total %d GB"
+
+msgid "Storage used %d GB"
+msgstr "Almacenamiento usado %d GB"
+
+msgid "Storage used %d%%"
+msgstr "Almacenamiento usado %d%%"
+
+msgid "Style"
+msgstr "Estilo"
+
+msgid "Sun (outline)"
+msgstr "Sol (contorno)"
+
+msgid "Symbols"
+msgstr "Símbolos"
+
+msgid "System"
+msgstr "Sistema"
+
+msgid "System action"
+msgstr "Acción del sistema"
+
+msgid "Tap"
+msgstr "Tocar"
+
+msgid "Tap : Ask for exit KOreader\nHold : Ask for restart KOreader"
+msgstr "Tocar : Preguntar por salir de KOReader\nMantener : Preguntar por reiniciar KOReader"
+
+msgid "Tap : Ask for power off system\nHold : Ask for reboot system"
+msgstr "Tocar : Preguntar por apagar sistema\nMantener : Preguntar por reiniciar sistema"
+
+msgid "Tap : Ask for reboot system\nHold : Ask for power off system"
+msgstr "Tocar : Preguntar por reiniciar sistema\nMantener : Preguntar por apagar sistema"
+
+msgid "Tap : Ask for restart KOreader\nHold : Ask for exit KOreader"
+msgstr "Tocar : Preguntar por reiniciar KOReader\nMantener : Preguntar por salir de KOReader"
+
+msgid "Tap : Nothing\nHold : Show frontlight dialog"
+msgstr "Tocar : Nada\nMantener : Mostrar diálogo de luz frontal"
+
+msgid "Tap : Open last book\nHold : Show history"
+msgstr "Tocar : Abrir último libro\nMantener : Mostrar historial"
+
+msgid "Tap : Push progress to KOSync\nHold : Pull progress from KOSync"
+msgstr "Tocar : Subir progreso a KOSync\nMantener : Bajar progreso de KOSync"
+
+msgid "Tap : Request UBS mass storage\nHold : Nothing"
+msgstr "Tocar : Solicitar almacenamiento masivo USB\nMantener : Nada"
+
+msgid "Tap : Show Calibre search\nHold : Show file search"
+msgstr "Tocar : Mostrar búsqueda de Calibre\nMantener : Mostrar búsqueda de archivo"
+
+msgid "Tap : Show OPDS catalog\nHold : Show cloud storage"
+msgstr "Tocar : Mostrar catálogo OPDS\nMantener : Mostrar almacenamiento en la nube"
+
+msgid "Tap : Show calendar statistics\nHold : Show reader statistics"
+msgstr "Tocar : Mostrar estadísticas de calendario\nMantener : Mostrar estadísticas de lector"
+
+msgid "Tap : Show cloud storage\nHold : Show OPDS catalog"
+msgstr "Tocar : Mostrar almacenamiento en la nube\nMantener : Mostrar catálogo OPDS"
+
+msgid "Tap : Show collections\nHold : Show favorites"
+msgstr "Tocar : Mostrar colecciones\nMantener : Mostrar favoritos"
+
+msgid "Tap : Show dictionary search\nHold : Show wikipedia search"
+msgstr "Tocar : Mostrar búsqueda en diccionario\nMantener : Mostrar búsqueda en Wikipedia"
+
+msgid "Tap : Show favorites\nHold : Show collections"
+msgstr "Tocar : Mostrar favoritos\nMantener : Mostrar colecciones"
+
+msgid "Tap : Show file search\nHold : Show Calibre search"
+msgstr "Tocar : Mostrar búsqueda de archivo\nMantener : Mostrar búsqueda de Calibre"
+
+msgid "Tap : Show history\nHold : Open last book"
+msgstr "Tocar : Mostrar historial\nMantener : Abrir último libro"
+
+msgid "Tap : Show power dialog\nHold : Nothing"
+msgstr "Tocar : Mostrar diálogo de energía\nMantener : Nada"
+
+msgid "Tap : Show reader statistics\nHold : Show calendar statistics"
+msgstr "Tocar : Mostrar estadísticas de lector\nMantener : Mostrar estadísticas de calendario"
+
+msgid "Tap : Show time\nHold : Nothing"
+msgstr "Tocar : Mostrar hora\nMantener : Nada"
+
+msgid "Tap : Show value\nHold : Show battery statistics"
+msgstr "Tocar : Mostrar valor\nMantener : Mostrar estadísticas de batería"
+
+msgid "Tap : Show value\nHold : Show system statistics"
+msgstr "Tocar : Mostrar valor\nMantener : Mostrar estadísticas del sistema"
+
+msgid "Tap : Show wikipedia search\nHold : Show dictionary search"
+msgstr "Tocar : Mostrar búsqueda en Wikipedia\nMantener : Mostrar búsqueda en diccionario"
+
+msgid "Tap : Suspend system\nHold : Nothing"
+msgstr "Tocar : Suspender sistema\nMantener : Nada"
+
+msgid "Tap : Swap rotation\nHold : Invert rotation"
+msgstr "Tocar : Cambiar rotación\nMantener : Invertir rotación"
+
+msgid "Tap : Toggle Calibre connection\nHold : Nothing"
+msgstr "Tocar : Alternar conexión Calibre\nMantener : Nada"
+
+msgid "Tap : Toggle SSH server\nHold : Nothing"
+msgstr "Tocar : Alternar servidor SSH\nMantener : Nada"
+
+msgid "Tap : Toggle frontlight\nHold : Show frontlight dialog"
+msgstr "Tocar : Alternar luz frontal\nMantener : Mostrar diálogo de luz frontal"
+
+msgid "Tap : Toggle lock gsensor\nHold : Toggle ignore gsensor"
+msgstr "Tocar : Alternar bloqueo de gsensor\nMantener : Alternar ignorar gsensor"
+
+msgid "Tap : Toggle night mode\nHold : Nothing"
+msgstr "Tocar : Alternar modo noche\nMantener : Nada"
+
+msgid "Tap : Toggle wifi\nHold : Show wifi picker"
+msgstr "Tocar : Alternar wifi\nMantener : Mostrar selector de wifi"
+
+msgid "That menu item isn't available"
+msgstr "Ese elemento de menú no está disponible"
+
+msgid "Tilde"
+msgstr "Tilde"
+
+msgid "Time"
+msgstr "Hora"
+
+msgid "Triangle-head right"
+msgstr "Cabeza triangular derecha"
+
+msgid "Triangular bullet"
+msgstr "Viñeta triangular"
+
+msgid "USB"
+msgstr "USB"
+
+msgid "Unknown author"
+msgstr "Autor desconocido"
+
+msgid "Unknown chapter"
+msgstr "Capítulo desconocido"
+
+msgid "Unknown title"
+msgstr "Título desconocido"
+
+msgid "Unlock"
+msgstr "Desbloquear"
+
+msgid "Upper half block"
+msgstr "Bloque mitad superior"
+
+msgid "Use ZenFooter "
+msgstr "Usar ZenFooter "
+
+msgid "Use ZenSlider"
+msgstr "Usar ZenSlider"
+
+msgid "Vertical bar"
+msgstr "Barra vertical"
+
+msgid "Vertical block"
+msgstr "Bloque vertical"
+
+msgid "Vertical block (empty)"
+msgstr "Bloque vertical (vacío)"
+
+msgid "Vertical ellipsis"
+msgstr "Puntos suspensivos verticales"
+
+msgid "Warmth"
+msgstr "Calidez"
+
+msgid "Wi-Fi"
+msgstr "Wi-Fi"
+
+msgid "WiFi"
+msgstr "WiFi"
+
+msgid "Wikipedia"
+msgstr "Wikipedia"
+
+msgid "available"
+msgstr "disponible"
+
+msgid "batterystat)"
+msgstr "estadísticasbatería)"
+
+msgid "total"
+msgstr "total"
+
+msgid "used"
+msgstr "usado"

@@ -1,0 +1,853 @@
+
+
+msgid "%s of %s"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Add as shortcut"
+msgstr ""
+
+msgid "Add exit tab"
+msgstr ""
+
+msgid "Add new action"
+msgstr ""
+
+msgid "Add quick menu tab"
+msgstr ""
+
+msgid "Add this menu page"
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "Always start on quick menu tab"
+msgstr ""
+
+msgid "Apply"
+msgstr ""
+
+msgid "Are you sure you want to exit KOReader ?"
+msgstr ""
+
+msgid "Are you sure you want to exit book ?"
+msgstr ""
+
+msgid "Are you sure you want to reset to defaults ?"
+msgstr ""
+
+msgid "Are you sure you want to restart KOReader ?"
+msgstr ""
+
+msgid "Arrow down"
+msgstr ""
+
+msgid "Arrow down then left"
+msgstr ""
+
+msgid "Arrow down then right"
+msgstr ""
+
+msgid "Arrow left"
+msgstr ""
+
+msgid "Arrow left hooked"
+msgstr ""
+
+msgid "Arrow left to bar"
+msgstr ""
+
+msgid "Arrow left with tail"
+msgstr ""
+
+msgid "Arrow right"
+msgstr ""
+
+msgid "Arrow right hooked"
+msgstr ""
+
+msgid "Arrow right then down"
+msgstr ""
+
+msgid "Arrow right then up"
+msgstr ""
+
+msgid "Arrow right to bar"
+msgstr ""
+
+msgid "Arrow right with tail"
+msgstr ""
+
+msgid "Arrow up"
+msgstr ""
+
+msgid "Arrow up then left"
+msgstr ""
+
+msgid "Arrow up then right"
+msgstr ""
+
+msgid "Arrowhead right"
+msgstr ""
+
+msgid "Arrows"
+msgstr ""
+
+msgid "Arrows left-right"
+msgstr ""
+
+msgid "Author : Anthony Gress\nProjet : Zen UI\nhttps://github.com/AnthonyGress/zen_ui.koplugin"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "Battery"
+msgstr ""
+
+msgid "Block (dark)"
+msgstr ""
+
+msgid "Block (full)"
+msgstr ""
+
+msgid "Block (light)"
+msgstr ""
+
+msgid "Block (medium)"
+msgstr ""
+
+msgid "Blocks"
+msgstr ""
+
+msgid "Bullet"
+msgstr ""
+
+msgid "CPU"
+msgstr ""
+
+msgid "CPU used %d%%"
+msgstr ""
+
+msgid "Calendar"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Center ZenSlider label"
+msgstr ""
+
+msgid "Choose a plugin"
+msgstr ""
+
+msgid "Choose an action"
+msgstr ""
+
+msgid "Circle (empty)"
+msgstr ""
+
+msgid "Circle (filled)"
+msgstr ""
+
+msgid "Circle (left half)"
+msgstr ""
+
+msgid "Circle (lower half)"
+msgstr ""
+
+msgid "Circle (right half)"
+msgstr ""
+
+msgid "Circle (upper half)"
+msgstr ""
+
+msgid "Circle arrow left"
+msgstr ""
+
+msgid "Circle arrow right"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Cloud"
+msgstr ""
+
+msgid "Club"
+msgstr ""
+
+msgid "Collections"
+msgstr ""
+
+msgid "Columns"
+msgstr ""
+
+msgid "Curved back arrow"
+msgstr ""
+
+msgid "Custom"
+msgstr ""
+
+msgid "Custom actions"
+msgstr ""
+
+msgid "Dagger"
+msgstr ""
+
+msgid "Day"
+msgstr ""
+
+msgid "Default"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Device"
+msgstr ""
+
+msgid "Diamond (empty)"
+msgstr ""
+
+msgid "Diamond (filled)"
+msgstr ""
+
+msgid "Diamond suit"
+msgstr ""
+
+msgid "Dictionary"
+msgstr ""
+
+msgid "Division slash"
+msgstr ""
+
+msgid "Double angle left"
+msgstr ""
+
+msgid "Double angle right"
+msgstr ""
+
+msgid "Double arrow down"
+msgstr ""
+
+msgid "Double arrow left"
+msgstr ""
+
+msgid "Double arrow right"
+msgstr ""
+
+msgid "Double arrow up"
+msgstr ""
+
+msgid "Double arrows right"
+msgstr ""
+
+msgid "Double dagger"
+msgstr ""
+
+msgid "Double fraction slash"
+msgstr ""
+
+msgid "Drop .svg or .png files in koreader/icons/"
+msgstr ""
+
+msgid "Dynamic"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Em dash"
+msgstr ""
+
+msgid "En dash"
+msgstr ""
+
+msgid "Enabled in filemanager"
+msgstr ""
+
+msgid "Enabled in reader"
+msgstr ""
+
+msgid "Exit"
+msgstr ""
+
+msgid "Favorites"
+msgstr ""
+
+msgid "Fit controls"
+msgstr ""
+
+msgid "Footer"
+msgstr ""
+
+msgid "Footer overflow !!!!\nHidden actions :\n"
+msgstr ""
+
+msgid "Fraction slash"
+msgstr ""
+
+msgid "Frontlight"
+msgstr ""
+
+msgid "GB"
+msgstr ""
+
+msgid "Heart"
+msgstr ""
+
+msgid "Heavy arrow right"
+msgstr ""
+
+msgid "Heavy round arrow right"
+msgstr ""
+
+msgid "Heavy triangle right"
+msgstr ""
+
+msgid "High voltage"
+msgstr ""
+
+msgid "History"
+msgstr ""
+
+msgid "Hold"
+msgstr ""
+
+msgid "Horizontal ellipsis"
+msgstr ""
+
+msgid "Hot springs / warmth"
+msgstr ""
+
+msgid "Icon"
+msgstr ""
+
+msgid "Icons library"
+msgstr ""
+
+msgid "Infinity"
+msgstr ""
+
+msgid "Informations"
+msgstr ""
+
+msgid "Justify controls"
+msgstr ""
+
+msgid "KOSync"
+msgstr ""
+
+msgid "Label"
+msgstr ""
+
+msgid "Left 1/8 block"
+msgstr ""
+
+msgid "Left 2/8 block"
+msgstr ""
+
+msgid "Left 3/8 block"
+msgstr ""
+
+msgid "Left 4/8 block"
+msgstr ""
+
+msgid "Left 5/8 block"
+msgstr ""
+
+msgid "Left 6/8 block"
+msgstr ""
+
+msgid "Left 7/8 block"
+msgstr ""
+
+msgid "Left harpoon with right arrow"
+msgstr ""
+
+msgid "Light"
+msgstr ""
+
+msgid "Lock"
+msgstr ""
+
+msgid "Long arrow left"
+msgstr ""
+
+msgid "Long arrow right"
+msgstr ""
+
+msgid "Lower 1/8 block"
+msgstr ""
+
+msgid "Lower 2/8 block"
+msgstr ""
+
+msgid "Lower 3/8 block"
+msgstr ""
+
+msgid "Lower 4/8 block"
+msgstr ""
+
+msgid "Lower 5/8 block"
+msgstr ""
+
+msgid "Lower 6/8 block"
+msgstr ""
+
+msgid "Lower 7/8 block"
+msgstr ""
+
+msgid "MB"
+msgstr ""
+
+msgid "Manage actions"
+msgstr ""
+
+msgid "Memory"
+msgstr ""
+
+msgid "Memory available %d MB"
+msgstr ""
+
+msgid "Memory available %d%%"
+msgstr ""
+
+msgid "Memory total %d MB"
+msgstr ""
+
+msgid "Memory used %d MB"
+msgstr ""
+
+msgid "Memory used %d%%"
+msgstr ""
+
+msgid "Menu"
+msgstr ""
+
+msgid "Menu action"
+msgstr ""
+
+msgid "Menu unavailable"
+msgstr ""
+
+msgid "Middle dot"
+msgstr ""
+
+msgid "Night"
+msgstr ""
+
+msgid "Night mode"
+msgstr ""
+
+msgid "No custom action"
+msgstr ""
+
+msgid "No launchable plugins found"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Not possible"
+msgstr ""
+
+msgid "Nothing to do"
+msgstr ""
+
+msgid "Numero"
+msgstr ""
+
+msgid "OPDS"
+msgstr ""
+
+msgid "Off"
+msgstr ""
+
+msgid "On"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
+msgid "Page %1 of %2"
+msgstr ""
+
+msgid "Pilcrow / paragraph"
+msgstr ""
+
+msgid "Plugin"
+msgstr ""
+
+msgid "Plugin not activated."
+msgstr ""
+
+msgid "Power"
+msgstr ""
+
+msgid "Power off"
+msgstr ""
+
+msgid "Process"
+msgstr ""
+
+msgid "Process memory %s MB"
+msgstr ""
+
+msgid "Quick Menu"
+msgstr ""
+
+msgid "Quick Menu for settings and actions."
+msgstr ""
+
+msgid "Quick menu"
+msgstr ""
+
+msgid "Reading"
+msgstr ""
+
+msgid "Reboot"
+msgstr ""
+
+msgid "Rectangle (empty)"
+msgstr ""
+
+msgid "Rectangle (filled)"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Reset actions to defaults"
+msgstr ""
+
+msgid "Reset quick menu to defaults"
+msgstr ""
+
+msgid "Reset quick menu to defaults ?"
+msgstr ""
+
+msgid "Reset section to defaults"
+msgstr ""
+
+msgid "Reset to defaults"
+msgstr ""
+
+msgid "Restart"
+msgstr ""
+
+msgid "Resume"
+msgstr ""
+
+msgid "Right half block"
+msgstr ""
+
+msgid "Rotate"
+msgstr ""
+
+msgid "SSH"
+msgstr ""
+
+msgid "SVG icon folder"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Search"
+msgstr ""
+
+msgid "Search %1 icons by name…"
+msgstr ""
+
+msgid "Search…"
+msgstr ""
+
+msgid "Section sign"
+msgstr ""
+
+msgid "Select actions"
+msgstr ""
+
+msgid "Select hold"
+msgstr ""
+
+msgid "Select label"
+msgstr ""
+
+msgid "Select tap"
+msgstr ""
+
+msgid "Separators"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Shortcut"
+msgstr ""
+
+msgid "Shortcuts"
+msgstr ""
+
+msgid "Show labels"
+msgstr ""
+
+msgid "Show skim"
+msgstr ""
+
+msgid "Show thumbnail"
+msgstr ""
+
+msgid "Show title"
+msgstr ""
+
+msgid "Single angle left"
+msgstr ""
+
+msgid "Single angle right"
+msgstr ""
+
+msgid "Slant block"
+msgstr ""
+
+msgid "Slant block (empty)"
+msgstr ""
+
+msgid "Slash"
+msgstr ""
+
+msgid "Sleep"
+msgstr ""
+
+msgid "Sort actions"
+msgstr ""
+
+msgid "Spade"
+msgstr ""
+
+msgid "Square (empty)"
+msgstr ""
+
+msgid "Square (filled)"
+msgstr ""
+
+msgid "Star (filled)"
+msgstr ""
+
+msgid "Star (outline)"
+msgstr ""
+
+msgid "Statistics"
+msgstr ""
+
+msgid "Storage"
+msgstr ""
+
+msgid "Storage available %d GB"
+msgstr ""
+
+msgid "Storage available %d%%"
+msgstr ""
+
+msgid "Storage total %d GB"
+msgstr ""
+
+msgid "Storage used %d GB"
+msgstr ""
+
+msgid "Storage used %d%%"
+msgstr ""
+
+msgid "Style"
+msgstr ""
+
+msgid "Sun (outline)"
+msgstr ""
+
+msgid "Symbols"
+msgstr ""
+
+msgid "System"
+msgstr ""
+
+msgid "System action"
+msgstr ""
+
+msgid "Tap"
+msgstr ""
+
+msgid "Tap : Ask for exit KOreader\nHold : Ask for restart KOreader"
+msgstr ""
+
+msgid "Tap : Ask for power off system\nHold : Ask for reboot system"
+msgstr ""
+
+msgid "Tap : Ask for reboot system\nHold : Ask for power off system"
+msgstr ""
+
+msgid "Tap : Ask for restart KOreader\nHold : Ask for exit KOreader"
+msgstr ""
+
+msgid "Tap : Nothing\nHold : Show frontlight dialog"
+msgstr ""
+
+msgid "Tap : Open last book\nHold : Show history"
+msgstr ""
+
+msgid "Tap : Push progress to KOSync\nHold : Pull progress from KOSync"
+msgstr ""
+
+msgid "Tap : Request UBS mass storage\nHold : Nothing"
+msgstr ""
+
+msgid "Tap : Show Calibre search\nHold : Show file search"
+msgstr ""
+
+msgid "Tap : Show OPDS catalog\nHold : Show cloud storage"
+msgstr ""
+
+msgid "Tap : Show calendar statistics\nHold : Show reader statistics"
+msgstr ""
+
+msgid "Tap : Show cloud storage\nHold : Show OPDS catalog"
+msgstr ""
+
+msgid "Tap : Show collections\nHold : Show favorites"
+msgstr ""
+
+msgid "Tap : Show dictionary search\nHold : Show wikipedia search"
+msgstr ""
+
+msgid "Tap : Show favorites\nHold : Show collections"
+msgstr ""
+
+msgid "Tap : Show file search\nHold : Show Calibre search"
+msgstr ""
+
+msgid "Tap : Show history\nHold : Open last book"
+msgstr ""
+
+msgid "Tap : Show power dialog\nHold : Nothing"
+msgstr ""
+
+msgid "Tap : Show reader statistics\nHold : Show calendar statistics"
+msgstr ""
+
+msgid "Tap : Show time\nHold : Nothing"
+msgstr ""
+
+msgid "Tap : Show value\nHold : Show battery statistics"
+msgstr ""
+
+msgid "Tap : Show value\nHold : Show system statistics"
+msgstr ""
+
+msgid "Tap : Show wikipedia search\nHold : Show dictionary search"
+msgstr ""
+
+msgid "Tap : Suspend system\nHold : Nothing"
+msgstr ""
+
+msgid "Tap : Swap rotation\nHold : Invert rotation"
+msgstr ""
+
+msgid "Tap : Toggle Calibre connection\nHold : Nothing"
+msgstr ""
+
+msgid "Tap : Toggle SSH server\nHold : Nothing"
+msgstr ""
+
+msgid "Tap : Toggle frontlight\nHold : Show frontlight dialog"
+msgstr ""
+
+msgid "Tap : Toggle lock gsensor\nHold : Toggle ignore gsensor"
+msgstr ""
+
+msgid "Tap : Toggle night mode\nHold : Nothing"
+msgstr ""
+
+msgid "Tap : Toggle wifi\nHold : Show wifi picker"
+msgstr ""
+
+msgid "That menu item isn't available"
+msgstr ""
+
+msgid "Tilde"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "Triangle-head right"
+msgstr ""
+
+msgid "Triangular bullet"
+msgstr ""
+
+msgid "USB"
+msgstr ""
+
+msgid "Unknown author"
+msgstr ""
+
+msgid "Unknown chapter"
+msgstr ""
+
+msgid "Unknown title"
+msgstr ""
+
+msgid "Unlock"
+msgstr ""
+
+msgid "Upper half block"
+msgstr ""
+
+msgid "Use ZenFooter "
+msgstr ""
+
+msgid "Use ZenSlider"
+msgstr ""
+
+msgid "Vertical bar"
+msgstr ""
+
+msgid "Vertical block"
+msgstr ""
+
+msgid "Vertical block (empty)"
+msgstr ""
+
+msgid "Vertical ellipsis"
+msgstr ""
+
+msgid "Warmth"
+msgstr ""
+
+msgid "Wi-Fi"
+msgstr ""
+
+msgid "WiFi"
+msgstr ""
+
+msgid "Wikipedia"
+msgstr ""
+
+msgid "available"
+msgstr ""
+
+msgid "batterystat)"
+msgstr ""
+
+msgid "total"
+msgstr ""
+
+msgid "used"
+msgstr ""

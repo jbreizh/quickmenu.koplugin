@@ -1,0 +1,854 @@
+msgid "%s of %s"
+msgstr "%s / %s"
+
+msgid "%s of %s"
+msgstr "%s / %s"
+
+msgid "Actions"
+msgstr "アクション"
+
+msgid "Add"
+msgstr "追加"
+
+msgid "Add as shortcut"
+msgstr "ショートカットとして追加"
+
+msgid "Add exit tab"
+msgstr "終了タブを追加"
+
+msgid "Add new action"
+msgstr "新規アクションを追加"
+
+msgid "Add quick menu tab"
+msgstr "クイックメニュータブを追加"
+
+msgid "Add this menu page"
+msgstr "このメニューページを追加"
+
+msgid "All"
+msgstr "すべて"
+
+msgid "Always start on quick menu tab"
+msgstr "常にクイックメニュータブで開始"
+
+msgid "Apply"
+msgstr "適用"
+
+msgid "Are you sure you want to exit KOReader ?"
+msgstr "KOReaderを終了してもよろしいですか？"
+
+msgid "Are you sure you want to exit book ?"
+msgstr "本を閉じてもよろしいですか？"
+
+msgid "Are you sure you want to reset to defaults ?"
+msgstr "デフォルト設定にリセットしてもよろしいですか？"
+
+msgid "Are you sure you want to restart KOReader ?"
+msgstr "KOReaderを再起動してもよろしいですか？"
+
+msgid "Arrow down"
+msgstr "下矢印"
+
+msgid "Arrow down then left"
+msgstr "下矢印の後に左"
+
+msgid "Arrow down then right"
+msgstr "下矢印の後に右"
+
+msgid "Arrow left"
+msgstr "左矢印"
+
+msgid "Arrow left hooked"
+msgstr "フック付き左矢印"
+
+msgid "Arrow left to bar"
+msgstr "バーへの左矢印"
+
+msgid "Arrow left with tail"
+msgstr "尾付き左矢印"
+
+msgid "Arrow right"
+msgstr "右矢印"
+
+msgid "Arrow right hooked"
+msgstr "フック付き右矢印"
+
+msgid "Arrow right then down"
+msgstr "右矢印の後に下"
+
+msgid "Arrow right then up"
+msgstr "右矢印の後に上"
+
+msgid "Arrow right to bar"
+msgstr "バーへの右矢印"
+
+msgid "Arrow right with tail"
+msgstr "尾付き右矢印"
+
+msgid "Arrow up"
+msgstr "上矢印"
+
+msgid "Arrow up then left"
+msgstr "上矢印の後に左"
+
+msgid "Arrow up then right"
+msgstr "上矢印の後に右"
+
+msgid "Arrowhead right"
+msgstr "右向きの矢印の頭"
+
+msgid "Arrows"
+msgstr "矢印"
+
+msgid "Arrows left-right"
+msgstr "左右矢印"
+
+msgid "Author : Anthony Gress\nProjet : Zen UI\nhttps://github.com/AnthonyGress/zen_ui.koplugin"
+msgstr "作成者 : Anthony Gress\nプロジェクト : Zen UI\nhttps://github.com/AnthonyGress/zen_ui.koplugin"
+
+msgid "Back"
+msgstr "戻る"
+
+msgid "Battery"
+msgstr "バッテリー"
+
+msgid "Block (dark)"
+msgstr "ブロック (暗)"
+
+msgid "Block (full)"
+msgstr "ブロック (全)"
+
+msgid "Block (light)"
+msgstr "ブロック (明)"
+
+msgid "Block (medium)"
+msgstr "ブロック (中)"
+
+msgid "Blocks"
+msgstr "ブロック"
+
+msgid "Bullet"
+msgstr "箇条書き"
+
+msgid "CPU"
+msgstr "CPU"
+
+msgid "CPU used %d%%"
+msgstr "CPU使用率 %d%%"
+
+msgid "Calendar"
+msgstr "カレンダー"
+
+msgid "Cancel"
+msgstr "キャンセル"
+
+msgid "Center ZenSlider label"
+msgstr "ZenSliderラベルを中央揃え"
+
+msgid "Choose a plugin"
+msgstr "プラグインを選択"
+
+msgid "Choose an action"
+msgstr "アクションを選択"
+
+msgid "Circle (empty)"
+msgstr "円 (空)"
+
+msgid "Circle (filled)"
+msgstr "円 (塗りつぶし)"
+
+msgid "Circle (left half)"
+msgstr "円 (左半分)"
+
+msgid "Circle (lower half)"
+msgstr "円 (下半分)"
+
+msgid "Circle (right half)"
+msgstr "円 (右半分)"
+
+msgid "Circle (upper half)"
+msgstr "円 (上半分)"
+
+msgid "Circle arrow left"
+msgstr "円形左矢印"
+
+msgid "Circle arrow right"
+msgstr "円形右矢印"
+
+msgid "Close"
+msgstr "閉じる"
+
+msgid "Cloud"
+msgstr "クラウド"
+
+msgid "Club"
+msgstr "クラブ"
+
+msgid "Collections"
+msgstr "コレクション"
+
+msgid "Columns"
+msgstr "列"
+
+msgid "Curved back arrow"
+msgstr "曲線戻る矢印"
+
+msgid "Custom"
+msgstr "カスタム"
+
+msgid "Custom actions"
+msgstr "カスタムアクション"
+
+msgid "Dagger"
+msgstr "短剣"
+
+msgid "Day"
+msgstr "日"
+
+msgid "Default"
+msgstr "デフォルト"
+
+msgid "Delete"
+msgstr "削除"
+
+msgid "Device"
+msgstr "デバイス"
+
+msgid "Diamond (empty)"
+msgstr "ダイヤモンド (空)"
+
+msgid "Diamond (filled)"
+msgstr "ダイヤモンド (塗りつぶし)"
+
+msgid "Diamond suit"
+msgstr "ダイヤ"
+
+msgid "Dictionary"
+msgstr "辞書"
+
+msgid "Division slash"
+msgstr "除算スラッシュ"
+
+msgid "Double angle left"
+msgstr "二重左アングル"
+
+msgid "Double angle right"
+msgstr "二重右アングル"
+
+msgid "Double arrow down"
+msgstr "二重下矢印"
+
+msgid "Double arrow left"
+msgstr "二重左矢印"
+
+msgid "Double arrow right"
+msgstr "二重右矢印"
+
+msgid "Double arrow up"
+msgstr "二重上矢印"
+
+msgid "Double arrows right"
+msgstr "二重右矢印"
+
+msgid "Double dagger"
+msgstr "二重短剣"
+
+msgid "Double fraction slash"
+msgstr "二重分数スラッシュ"
+
+msgid "Drop .svg or .png files in koreader/icons/"
+msgstr ".svg または .png ファイルを koreader/icons/ にドロップしてください"
+
+msgid "Dynamic"
+msgstr "動的"
+
+msgid "Edit"
+msgstr "編集"
+
+msgid "Em dash"
+msgstr "ダッシュ (Em)"
+
+msgid "En dash"
+msgstr "ダッシュ (En)"
+
+msgid "Enabled in filemanager"
+msgstr "ファイルマネージャーで有効"
+
+msgid "Enabled in reader"
+msgstr "リーダーで有効"
+
+msgid "Exit"
+msgstr "終了"
+
+msgid "Favorites"
+msgstr "お気に入り"
+
+msgid "Fit controls"
+msgstr "コントロールを合わせる"
+
+msgid "Footer"
+msgstr "フッター"
+
+msgid "Footer overflow !!!!\nHidden actions :\n"
+msgstr "フッターが溢れています！！！！\n非表示アクション :\n"
+
+msgid "Fraction slash"
+msgstr "分数スラッシュ"
+
+msgid "Frontlight"
+msgstr "フロントライト"
+
+msgid "GB"
+msgstr "GB"
+
+msgid "Heart"
+msgstr "ハート"
+
+msgid "Heavy arrow right"
+msgstr "太い右矢印"
+
+msgid "Heavy round arrow right"
+msgstr "太い丸右矢印"
+
+msgid "Heavy triangle right"
+msgstr "太い右三角形"
+
+msgid "High voltage"
+msgstr "高電圧"
+
+msgid "History"
+msgstr "履歴"
+
+msgid "Hold"
+msgstr "長押し"
+
+msgid "Horizontal ellipsis"
+msgstr "水平省略記号"
+
+msgid "Hot springs / warmth"
+msgstr "温泉 / 温かさ"
+
+msgid "Icon"
+msgstr "アイコン"
+
+msgid "Icons library"
+msgstr "アイコンライブラリ"
+
+msgid "Infinity"
+msgstr "無限大"
+
+msgid "Informations"
+msgstr "情報"
+
+msgid "Justify controls"
+msgstr "コントロールを両端揃え"
+
+msgid "KOSync"
+msgstr "KOSync"
+
+msgid "Label"
+msgstr "ラベル"
+
+msgid "Left 1/8 block"
+msgstr "左1/8ブロック"
+
+msgid "Left 2/8 block"
+msgstr "左2/8ブロック"
+
+msgid "Left 3/8 block"
+msgstr "左3/8ブロック"
+
+msgid "Left 4/8 block"
+msgstr "左4/8ブロック"
+
+msgid "Left 5/8 block"
+msgstr "左5/8ブロック"
+
+msgid "Left 6/8 block"
+msgstr "左6/8ブロック"
+
+msgid "Left 7/8 block"
+msgstr "左7/8ブロック"
+
+msgid "Left harpoon with right arrow"
+msgstr "右矢印付き左ハープーン"
+
+msgid "Light"
+msgstr "ライト"
+
+msgid "Lock"
+msgstr "ロック"
+
+msgid "Long arrow left"
+msgstr "長い左矢印"
+
+msgid "Long arrow right"
+msgstr "長い右矢印"
+
+msgid "Lower 1/8 block"
+msgstr "下1/8ブロック"
+
+msgid "Lower 2/8 block"
+msgstr "下2/8ブロック"
+
+msgid "Lower 3/8 block"
+msgstr "下3/8ブロック"
+
+msgid "Lower 4/8 block"
+msgstr "下4/8ブロック"
+
+msgid "Lower 5/8 block"
+msgstr "下5/8ブロック"
+
+msgid "Lower 6/8 block"
+msgstr "下6/8ブロック"
+
+msgid "Lower 7/8 block"
+msgstr "下7/8ブロック"
+
+msgid "MB"
+msgstr "MB"
+
+msgid "Manage actions"
+msgstr "アクションを管理"
+
+msgid "Memory"
+msgstr "メモリ"
+
+msgid "Memory available %d MB"
+msgstr "利用可能なメモリ %d MB"
+
+msgid "Memory available %d%%"
+msgstr "利用可能なメモリ %d%%"
+
+msgid "Memory total %d MB"
+msgstr "メモリ合計 %d MB"
+
+msgid "Memory used %d MB"
+msgstr "使用メモリ %d MB"
+
+msgid "Memory used %d%%"
+msgstr "メモリ使用率 %d%%"
+
+msgid "Menu"
+msgstr "メニュー"
+
+msgid "Menu action"
+msgstr "メニューアクション"
+
+msgid "Menu unavailable"
+msgstr "メニュー利用不可"
+
+msgid "Middle dot"
+msgstr "中黒"
+
+msgid "Night"
+msgstr "夜"
+
+msgid "Night mode"
+msgstr "ナイトモード"
+
+msgid "No custom action"
+msgstr "カスタムアクションなし"
+
+msgid "No launchable plugins found"
+msgstr "起動可能なプラグインが見つかりません"
+
+msgid "None"
+msgstr "なし"
+
+msgid "Not possible"
+msgstr "不可能"
+
+msgid "Nothing to do"
+msgstr "何もすることがありません"
+
+msgid "Numero"
+msgstr "番号"
+
+msgid "OPDS"
+msgstr "OPDS"
+
+msgid "Off"
+msgstr "オフ"
+
+msgid "On"
+msgstr "オン"
+
+msgid "Other"
+msgstr "その他"
+
+msgid "Page %1 of %2"
+msgstr "ページ %1 / %2"
+
+msgid "Pilcrow / paragraph"
+msgstr "段落記号"
+
+msgid "Plugin"
+msgstr "プラグイン"
+
+msgid "Plugin not activated."
+msgstr "プラグインがアクティブ化されていません。"
+
+msgid "Power"
+msgstr "電源"
+
+msgid "Power off"
+msgstr "電源オフ"
+
+msgid "Process"
+msgstr "プロセス"
+
+msgid "Process memory %s MB"
+msgstr "プロセスメモリ %s MB"
+
+msgid "Quick Menu"
+msgstr "クイックメニュー"
+
+msgid "Quick Menu for settings and actions."
+msgstr "設定とアクションのためのクイックメニュー。"
+
+msgid "Quick menu"
+msgstr "クイックメニュー"
+
+msgid "Reading"
+msgstr "読書"
+
+msgid "Reboot"
+msgstr "再起動"
+
+msgid "Rectangle (empty)"
+msgstr "長方形 (空)"
+
+msgid "Rectangle (filled)"
+msgstr "長方形 (塗りつぶし)"
+
+msgid "Reset"
+msgstr "リセット"
+
+msgid "Reset actions to defaults"
+msgstr "アクションをデフォルトにリセット"
+
+msgid "Reset quick menu to defaults"
+msgstr "クイックメニューをデフォルトにリセット"
+
+msgid "Reset quick menu to defaults ?"
+msgstr "クイックメニューをデフォルトにリセットしますか？"
+
+msgid "Reset section to defaults"
+msgstr "セクションをデフォルトにリセット"
+
+msgid "Reset to defaults"
+msgstr "デフォルトにリセット"
+
+msgid "Restart"
+msgstr "再起動"
+
+msgid "Resume"
+msgstr "再開"
+
+msgid "Right half block"
+msgstr "右半分ブロック"
+
+msgid "Rotate"
+msgstr "回転"
+
+msgid "SSH"
+msgstr "SSH"
+
+msgid "SVG icon folder"
+msgstr "SVGアイコンフォルダ"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "Search"
+msgstr "検索"
+
+msgid "Search %1 icons by name…"
+msgstr "名前で %1 アイコンを検索…"
+
+msgid "Search…"
+msgstr "検索…"
+
+msgid "Section sign"
+msgstr "セクション記号"
+
+msgid "Select actions"
+msgstr "アクションを選択"
+
+msgid "Select hold"
+msgstr "長押しを選択"
+
+msgid "Select label"
+msgstr "ラベルを選択"
+
+msgid "Select tap"
+msgstr "タップを選択"
+
+msgid "Separators"
+msgstr "セパレーター"
+
+msgid "Settings"
+msgstr "設定"
+
+msgid "Shortcut"
+msgstr "ショートカット"
+
+msgid "Shortcuts"
+msgstr "ショートカット"
+
+msgid "Show labels"
+msgstr "ラベルを表示"
+
+msgid "Show skim"
+msgstr "skimを表示"
+
+msgid "Show thumbnail"
+msgstr "サムネイルを表示"
+
+msgid "Show title"
+msgstr "タイトルを表示"
+
+msgid "Single angle left"
+msgstr "単一左アングル"
+
+msgid "Single angle right"
+msgstr "単一右アングル"
+
+msgid "Slant block"
+msgstr "斜めブロック"
+
+msgid "Slant block (empty)"
+msgstr "斜めブロック (空)"
+
+msgid "Slash"
+msgstr "スラッシュ"
+
+msgid "Sleep"
+msgstr "スリープ"
+
+msgid "Sort actions"
+msgstr "アクションを並べ替え"
+
+msgid "Spade"
+msgstr "スペード"
+
+msgid "Square (empty)"
+msgstr "正方形 (空)"
+
+msgid "Square (filled)"
+msgstr "正方形 (塗りつぶし)"
+
+msgid "Star (filled)"
+msgstr "星 (塗りつぶし)"
+
+msgid "Star (outline)"
+msgstr "星 (枠線)"
+
+msgid "Statistics"
+msgstr "統計"
+
+msgid "Storage"
+msgstr "ストレージ"
+
+msgid "Storage available %d GB"
+msgstr "利用可能なストレージ %d GB"
+
+msgid "Storage available %d%%"
+msgstr "利用可能なストレージ %d%%"
+
+msgid "Storage total %d GB"
+msgstr "ストレージ合計 %d GB"
+
+msgid "Storage used %d GB"
+msgstr "使用ストレージ %d GB"
+
+msgid "Storage used %d%%"
+msgstr "ストレージ使用率 %d%%"
+
+msgid "Style"
+msgstr "スタイル"
+
+msgid "Sun (outline)"
+msgstr "太陽 (枠線)"
+
+msgid "Symbols"
+msgstr "記号"
+
+msgid "System"
+msgstr "システム"
+
+msgid "System action"
+msgstr "システムアクション"
+
+msgid "Tap"
+msgstr "タップ"
+
+msgid "Tap : Ask for exit KOreader\nHold : Ask for restart KOreader"
+msgstr "タップ : KOReaderを終了\n長押し : KOReaderを再起動"
+
+msgid "Tap : Ask for power off system\nHold : Ask for reboot system"
+msgstr "タップ : システムを電源オフ\n長押し : システムを再起動"
+
+msgid "Tap : Ask for reboot system\nHold : Ask for power off system"
+msgstr "タップ : システムを再起動\n長押し : システムを電源オフ"
+
+msgid "Tap : Ask for restart KOreader\nHold : Ask for exit KOreader"
+msgstr "タップ : KOReaderを再起動\n長押し : KOReaderを終了"
+
+msgid "Tap : Nothing\nHold : Show frontlight dialog"
+msgstr "タップ : なし\n長押し : フロントライトダイアログを表示"
+
+msgid "Tap : Open last book\nHold : Show history"
+msgstr "タップ : 最後に開いた本を開く\n長押し : 履歴を表示"
+
+msgid "Tap : Push progress to KOSync\nHold : Pull progress from KOSync"
+msgstr "タップ : KOSyncへ進捗をプッシュ\n長押し : KOSyncから進捗をプル"
+
+msgid "Tap : Request UBS mass storage\nHold : Nothing"
+msgstr "タップ : USBマスストレージを要求\n長押し : なし"
+
+msgid "Tap : Show Calibre search\nHold : Show file search"
+msgstr "タップ : Calibre検索を表示\n長押し : ファイル検索を表示"
+
+msgid "Tap : Show OPDS catalog\nHold : Show cloud storage"
+msgstr "タップ : OPDSカタログを表示\n長押し : クラウドストレージを表示"
+
+msgid "Tap : Show calendar statistics\nHold : Show reader statistics"
+msgstr "タップ : カレンダースタッツを表示\n長押し : リーダースタッツを表示"
+
+msgid "Tap : Show cloud storage\nHold : Show OPDS catalog"
+msgstr "タップ : クラウドストレージを表示\n長押し : OPDSカタログを表示"
+
+msgid "Tap : Show collections\nHold : Show favorites"
+msgstr "タップ : コレクションを表示\n長押し : お気に入りを表示"
+
+msgid "Tap : Show dictionary search\nHold : Show wikipedia search"
+msgstr "タップ : 辞書検索を表示\n長押し : Wikipedia検索を表示"
+
+msgid "Tap : Show favorites\nHold : Show collections"
+msgstr "タップ : お気に入りを表示\n長押し : コレクションを表示"
+
+msgid "Tap : Show file search\nHold : Show Calibre search"
+msgstr "タップ : ファイル検索を表示\n長押し : Calibre検索を表示"
+
+msgid "Tap : Show history\nHold : Open last book"
+msgstr "タップ : 履歴を表示\n長押し : 最後に開いた本を開く"
+
+msgid "Tap : Show power dialog\nHold : Nothing"
+msgstr "タップ : 電源ダイアログを表示\n長押し : なし"
+
+msgid "Tap : Show reader statistics\nHold : Show calendar statistics"
+msgstr "タップ : リーダースタッツを表示\n長押し : カレンダースタッツを表示"
+
+msgid "Tap : Show time\nHold : Nothing"
+msgstr "タップ : 時刻を表示\n長押し : なし"
+
+msgid "Tap : Show value\nHold : Show battery statistics"
+msgstr "タップ : 値を表示\n長押し : バッテリースタッツを表示"
+
+msgid "Tap : Show value\nHold : Show system statistics"
+msgstr "タップ : 値を表示\n長押し : システムスタッツを表示"
+
+msgid "Tap : Show wikipedia search\nHold : Show dictionary search"
+msgstr "タップ : Wikipedia検索を表示\n長押し : 辞書検索を表示"
+
+msgid "Tap : Suspend system\nHold : Nothing"
+msgstr "タップ : システムをサスペンド\n長押し : なし"
+
+msgid "Tap : Swap rotation\nHold : Invert rotation"
+msgstr "タップ : 回転を入れ替え\n長押し : 回転を反転"
+
+msgid "Tap : Toggle Calibre connection\nHold : Nothing"
+msgstr "タップ : Calibre接続を切り替え\n長押し : なし"
+
+msgid "Tap : Toggle SSH server\nHold : Nothing"
+msgstr "タップ : SSHサーバーを切り替え\n長押し : なし"
+
+msgid "Tap : Toggle frontlight\nHold : Show frontlight dialog"
+msgstr "タップ : フロントライトを切り替え\n長押し : フロントライトダイアログを表示"
+
+msgid "Tap : Toggle lock gsensor\nHold : Toggle ignore gsensor"
+msgstr "タップ : Gセンサーロックを切り替え\n長押し : Gセンサー無視を切り替え"
+
+msgid "Tap : Toggle night mode\nHold : Nothing"
+msgstr "タップ : ナイトモードを切り替え\n長押し : なし"
+
+msgid "Tap : Toggle wifi\nHold : Show wifi picker"
+msgstr "タップ : Wi-Fiを切り替え\n長押し : Wi-Fiピッカーを表示"
+
+msgid "That menu item isn't available"
+msgstr "そのメニュー項目は利用できません"
+
+msgid "Tilde"
+msgstr "チルダ"
+
+msgid "Time"
+msgstr "時刻"
+
+msgid "Triangle-head right"
+msgstr "右三角頭"
+
+msgid "Triangular bullet"
+msgstr "三角形の箇条書き"
+
+msgid "USB"
+msgstr "USB"
+
+msgid "Unknown author"
+msgstr "不明な作成者"
+
+msgid "Unknown chapter"
+msgstr "不明な章"
+
+msgid "Unknown title"
+msgstr "不明なタイトル"
+
+msgid "Unlock"
+msgstr "ロック解除"
+
+msgid "Upper half block"
+msgstr "上半分ブロック"
+
+msgid "Use ZenFooter "
+msgstr "ZenFooterを使用"
+
+msgid "Use ZenSlider"
+msgstr "ZenSliderを使用"
+
+msgid "Vertical bar"
+msgstr "垂直バー"
+
+msgid "Vertical block"
+msgstr "垂直ブロック"
+
+msgid "Vertical block (empty)"
+msgstr "垂直ブロック (空)"
+
+msgid "Vertical ellipsis"
+msgstr "垂直省略記号"
+
+msgid "Warmth"
+msgstr "温かさ"
+
+msgid "Wi-Fi"
+msgstr "Wi-Fi"
+
+msgid "WiFi"
+msgstr "WiFi"
+
+msgid "Wikipedia"
+msgstr "Wikipedia"
+
+msgid "available"
+msgstr "利用可能"
+
+msgid "batterystat)"
+msgstr "バッテリー統計)"
+
+msgid "total"
+msgstr "合計"
+
+msgid "used"
+msgstr "使用済み"

@@ -30,6 +30,13 @@
   <img src="assets/frontlight1.png" width="80%" alt="Frontlight" />
 </p>
 
+| Frontlight | Tap | Hold |
+|:-------- |:--------:|:--------:|
+| Intensity - | Decrease intensity by 1% | Set intensity to 0% (off) |
+| Intensity + | Increase intensity by 1% | Set intensity to 100% (max) |
+| Warmth - | Decrease warmth by 10% | Set warmth to 0% (off) |
+| Warmth - | Increase warmth by 10% | Set warmth to 100% (max) |
+
 * **Shortcuts:** A customizable grid of buttons providing direct access to key features like your Library, Collections, Search, Dictionary, and Cloud services, helping you jump to your preferred areas with ease.
 
 <p align="center">
