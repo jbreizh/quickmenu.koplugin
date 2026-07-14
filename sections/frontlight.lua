@@ -65,27 +65,35 @@ function Frontlight.build(ctx)
 
     local group = VerticalGroup:new{ align = "center" }
 
-    if section.show_title then
-        local row_title = HorizontalGroup:new{ align = "center" }
-        -- collapse
-        local collapse_btn = Button:new{
-            text           = section.collapse and "▶" or "▼",
-            width          = btn_width,
-            radius         = btn_radius,
-            bordersize     = 0,
-            text_font_size = btn_font_size,
-            show_parent    = touch_menu.show_parent,
-            callback       = function()
-                section.collapse = not section.collapse
-                Config.saveAndRefresh(ctx, true) -- no flush
-            end,
-            -- hold_callback
-        }
-        table.insert(row_title, collapse_btn)
-        -- label
-        if section.use_zenslider and not section.collapse then
-            table.insert(row_title, HorizontalSpan:new{ width = inner_width - btn_width*2 })
-        else
+    if section.use_zenslider then
+        -- collapse, label_title, settings and slider
+        local function settings_func() -- need to pass settings_func for settings_btn
+            Frontlight.showSettings(ctx)
+        end
+        local intensityZenUI = IntensityZenUI.build(ctx, settings_func)
+        table.insert(group, intensityZenUI.widget)
+        table.insert(refs.sliders, intensityZenUI.refs.sliders[1])
+        -- collapse break
+        if section.collapse then return { widget = group , refs = refs} end
+    else
+        if section.show_title then
+            local row_title = HorizontalGroup:new{ align = "center" }
+            -- collapse
+            local collapse_btn = Button:new{
+                text           = section.collapse and "▶" or "▼",
+                width          = btn_width,
+                radius         = btn_radius,
+                bordersize     = 0,
+                text_font_size = btn_font_size,
+                show_parent    = touch_menu.show_parent,
+                callback       = function()
+                    section.collapse = not section.collapse
+                    Config.saveAndRefresh(ctx, true) -- no flush
+                end,
+                -- hold_callback
+            }
+            table.insert(row_title, collapse_btn)
+            -- label
             local label = _("Frontlight") .. " : " .. powerd:frontlightIntensity() .. "%"
             if  hasNaturalLight and section.collapse then
                 label = label .. " - " .._("Warmth") .. " : " .. powerd:frontlightWarmth() .. "%"
@@ -97,36 +105,29 @@ function Frontlight.build(ctx)
             }
             table.insert(row_title, label_title)
             table.insert(row_title, HorizontalSpan:new{ width = inner_width - label_title:getSize().w - btn_width*2 })
+            -- settings
+            local settings_btn = Button:new{
+                text           = "\u{EB92}",
+                width          = btn_width,
+                radius         = btn_radius,
+                bordersize     = 0,
+                text_font_size = btn_font_size,
+                show_parent    = touch_menu.show_parent,
+                callback       = function()
+                    Frontlight.showSettings(ctx)
+                end,
+                --hold_callback = function() end,
+            }
+            table.insert(row_title, settings_btn)
+            --
+            table.insert(group, row_title)
+            -- collapse break
+            if section.collapse then  return { widget = group , refs = refs} end
         end
-        -- settings
-        local settings_btn = Button:new{
-            text           = "\u{EB92}",
-            width          = btn_width,
-            radius         = btn_radius,
-            bordersize     = 0,
-            text_font_size = btn_font_size,
-            show_parent    = touch_menu.show_parent,
-            callback       = function()
-                Frontlight.showSettings(ctx)
-            end,
-            --hold_callback = function() end,
-        }
-        table.insert(row_title, settings_btn)
-        --
-        table.insert(group, row_title)
-        if section.collapse then  return { widget = group , refs = refs} end
-    end
-
-    if hasFrontlight then
-        if section.use_zenslider then
-            local intensityZenUI = IntensityZenUI.build(ctx)
-            table.insert(group, intensityZenUI.widget)
-            table.insert(refs.sliders, intensityZenUI.refs.sliders[1])
-        else
-            local intensitySection = IntensitySection.build(ctx)
-            table.insert(group, intensitySection.widget)
-            table.insert(refs.sliders, intensitySection.refs.sliders[1])
-        end
+        -- slider
+        local intensitySection = IntensitySection.build(ctx)
+        table.insert(group, intensitySection.widget)
+        table.insert(refs.sliders, intensitySection.refs.sliders[1])
     end
 
     if hasNaturalLight then
@@ -135,7 +136,7 @@ function Frontlight.build(ctx)
             table.insert(group, warmthZenUI.widget)
             table.insert(refs.sliders, warmthZenUI.refs.sliders[1])
         else
-           if section.show_title then
+            if section.show_title then
                 local label_title = TextWidget:new{
                     text = _("Warmth") .. " : " .. powerd:frontlightWarmth() .. "%",
                     face =  Font:getFace("cfont", btn_font_size), bold = true,
@@ -146,10 +147,10 @@ function Frontlight.build(ctx)
                 HorizontalSpan:new{ width = btn_width},
                 label_title,
                 HorizontalSpan:new{ width = inner_width - label_title:getSize().w -btn_width}
-            }
+                }
                 table.insert(group, row_title)
             else
-                table.insert(group, VerticalSpan:new{ width = v_gap })
+                table.insert(group, VerticalSpan:new{ width = v_gap }) -- better for visual
             end
             local warmthSection = WarmthSection.build(ctx)
             table.insert(group, warmthSection.widget)
@@ -193,12 +194,6 @@ function Frontlight.getSettings(ctx, close, refresh, reload)
             checked_func = function() if reload then reload() end return section.use_zenslider end,
             callback = function() section.use_zenslider = not section.use_zenslider; Config.saveAndRefresh(ctx) end,
             help_text = _("Author : Anthony Gress\nProjet : Zen UI\nhttps://github.com/AnthonyGress/zen_ui.koplugin"),
-        },
-        {
-            text = _("Center ZenSlider label"),
-            checked_func = function() if reload then reload() end return section.center_zenslider_label end,
-            callback = function() section.center_zenslider_label = not section.center_zenslider_label; Config.saveAndRefresh(ctx) end,
-            separator = true
         },
         {
         text = _("Reset section to defaults") .. "\xE2\x80\xA6",

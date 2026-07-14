@@ -142,9 +142,6 @@ msgstr "カレンダー"
 msgid "Cancel"
 msgstr "キャンセル"
 
-msgid "Center ZenSlider label"
-msgstr "ZenSliderラベルを中央揃え"
-
 msgid "Choose a plugin"
 msgstr "プラグインを選択"
 
@@ -852,3 +849,12 @@ msgstr "合計"
 
 msgid "used"
 msgstr "使用済み"
+
+msgid "Network"
+msgstr ""
+
+msgid "Tap : Toggle LocalSend connection\nHold : Nothing"
+msgstr ""
+
+msgid "Tap : Toggle FileBrowserPlus connection\nHold : Nothing"
+msgstr ""

@@ -641,7 +641,7 @@ function ActionDefs.get()
                 if f then f:close(); return "\u{F1D9}" end
                 return "\u{F1D8}"
             end,
-            label = _("LocalSend"),
+            label = "LocalSend",
             label_func = function(ctx)
                 local f = io.open("/tmp/localsend_koreader.pid", "r")
                 if f then f:close(); return _("On") end
@@ -670,7 +670,7 @@ function ActionDefs.get()
                     if ok and type(fb.isRunning) == "function" and fb:isRunning() then return "\u{F0F6}" end -- active
                     return "\u{F15C}" -- inactive
                 end,
-                label = _("FileBrowser+"),
+                label = "FileBrowserPlus",
                 label_func = function(ctx)
                     local ok, fb = pcall(require, "plugins/filebrowserplus.koplugin.main")
                     if ok and type(fb.isRunning) == "function" and fb:isRunning() then return _("On") end -- active
@@ -678,6 +678,7 @@ function ActionDefs.get()
                 end,
                 category = "network",
                 visible_func = function() return Utils.hasPlugin("filebrowserplus") end,
+                help_text = _("Tap : Toggle FileBrowserPlus connection\nHold : Nothing"),
                 active_func = function(ctx)
                     local ok, fb = pcall(require, "plugins/filebrowserplus.koplugin.main")
                     if ok and type(fb.isRunning) == "function" and fb:isRunning() then return true end -- active

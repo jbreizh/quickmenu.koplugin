@@ -850,5 +850,11 @@ msgstr "Système"
 msgid "Use ZenFooter "
 msgstr "Utiliser ZenFooter"
 
-msgid "Center ZenSlider label"
-msgstr "Centrer l'étiquette du ZenSlider"
+msgid "Network"
+msgstr ""
+
+msgid "Tap : Toggle LocalSend connection\nHold : Nothing"
+msgstr ""
+
+msgid "Tap : Toggle FileBrowserPlus connection\nHold : Nothing"
+msgstr ""

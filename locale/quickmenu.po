@@ -141,9 +141,6 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-msgid "Center ZenSlider label"
-msgstr ""
-
 msgid "Choose a plugin"
 msgstr ""
 
@@ -850,4 +847,13 @@ msgid "total"
 msgstr ""
 
 msgid "used"
+msgstr ""
+
+msgid "Network"
+msgstr ""
+
+msgid "Tap : Toggle LocalSend connection\nHold : Nothing"
+msgstr ""
+
+msgid "Tap : Toggle FileBrowserPlus connection\nHold : Nothing"
 msgstr ""

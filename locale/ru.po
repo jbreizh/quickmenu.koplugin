@@ -142,9 +142,6 @@ msgstr "Календарь"
 msgid "Cancel"
 msgstr "Отмена"
 
-msgid "Center ZenSlider label"
-msgstr "Выровнять метку ZenSlider по центру"
-
 msgid "Choose a plugin"
 msgstr "Выберите плагин"
 
@@ -852,3 +849,12 @@ msgstr "всего"
 
 msgid "used"
 msgstr "использовано"
+
+msgid "Network"
+msgstr ""
+
+msgid "Tap : Toggle LocalSend connection\nHold : Nothing"
+msgstr ""
+
+msgid "Tap : Toggle FileBrowserPlus connection\nHold : Nothing"
+msgstr ""

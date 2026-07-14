@@ -24,7 +24,6 @@ Config.DEFAULTS = {
             collapse = false,
             show_title = true,
             use_zenslider = false,
-            center_zenslider_label = false,
         },
         shortcuts = {
             enabled_f = true,

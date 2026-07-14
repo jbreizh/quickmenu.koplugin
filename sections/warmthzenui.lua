@@ -53,10 +53,13 @@ function WarmthZenUI.build(ctx)
     local section = Utils.getSection(config, SECTION)
     if not section then return nil end
     --
-    local label_center       = section.center_zenslider_label
     local show_parent        = touch_menu.show_parent
     local medium_font        = Font:getFace("cfont", btn_font_size)
     local slider_width       = inner_width - 2 * btn_width - 2 * h_gap
+    --
+    local group = VerticalGroup:new{ align = "center" }
+    local refs = { buttons = {}, sliders = {}, widgets = {} }
+    local update_touch_menu = function() if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end end
 
     local nl = {
         min = powerd.fl_warmth_min,
@@ -66,41 +69,54 @@ function WarmthZenUI.build(ctx)
 
     -- Split label: static prefix + fixed-width number box so the prefix
     -- never shifts when the number changes width (e.g. 9 → 10).
-    local nl_prefix_text = _("Warmth") .. " : "
-    local nl_drag_prefix = TextWidget:new{ text = nl_prefix_text, face = medium_font, bold = true }
-    local nl_drag_prefix_w = nl_drag_prefix:getSize().w
-    local nl_drag_num = TextWidget:new{ text = tostring(nl.cur), face = medium_font, bold = true }
-    local nl_max_num_sample = TextWidget:new{ text = tostring(nl.max), face = medium_font, bold = true }
-    local nl_drag_max_num_w = nl_max_num_sample:getSize().w
-    nl_max_num_sample:free()
+    local nl_drag_prefix
+    local nl_drag_prefix_w
+    local nl_drag_num
+    local nl_drag_max_num_w
+    if section.show_title then
+        local nl_prefix_text = _("Warmth") .. " : "
+        nl_drag_prefix = TextWidget:new{ text = nl_prefix_text, face = medium_font, bold = true }
+        nl_drag_prefix_w = nl_drag_prefix:getSize().w
+        nl_drag_num = TextWidget:new{ text = tostring(nl.cur), face = medium_font, bold = true }
+        local nl_max_num_sample = TextWidget:new{ text = tostring(nl.max), face = medium_font, bold = true }
+        nl_drag_max_num_w = nl_max_num_sample:getSize().w
+        nl_max_num_sample:free()
 
-        -- add suffix
-    local nl_suffix_text = "%"
-    local nl_drag_suffix = TextWidget:new{ text = nl_suffix_text, face = medium_font, bold = true }
-    local nl_drag_suffix_w = nl_drag_suffix:getSize().w
-    local nl_drag_ref_w = nl_drag_prefix_w + nl_drag_max_num_w + nl_drag_suffix_w -- add suffix
-    if not label_center then nl_drag_ref_w = nl_drag_ref_w + btn_width end -- add space before
+            -- add suffix
+        local nl_suffix_text = "%"
+        local nl_drag_suffix = TextWidget:new{ text = nl_suffix_text, face = medium_font, bold = true }
+        local nl_drag_suffix_w = nl_drag_suffix:getSize().w
+        local nl_drag_ref_w = nl_drag_prefix_w + nl_drag_max_num_w + nl_drag_suffix_w -- add suffix
+        nl_drag_ref_w = nl_drag_ref_w + btn_width -- add space before
 
-    local nl_label_h = nl_drag_prefix:getSize().h
-    local nl_num_box = LeftContainer:new{
-        dimen = Geom:new{ w = nl_drag_max_num_w, h = nl_label_h },
-        nl_drag_num,
-    }
+        local nl_label_h = nl_drag_prefix:getSize().h
+        local nl_num_box = LeftContainer:new{
+            dimen = Geom:new{ w = nl_drag_max_num_w, h = nl_label_h },
+            nl_drag_num,
+        }
 
-    local nl_label_group = HorizontalGroup:new{
-        nl_drag_prefix,
-        nl_num_box,
-        nl_drag_suffix -- add suffix
-    }
-    if not label_center then table.insert(nl_label_group, 1, HorizontalSpan:new{ width = btn_width}) end -- add space before
+        local nl_label_group = HorizontalGroup:new{
+            HorizontalSpan:new{ width = btn_width}, -- add space before
+            nl_drag_prefix,
+            nl_num_box,
+            nl_drag_suffix -- add suffix
+        }
+        --
+        local nl_cap_row = LeftContainer:new{
+            dimen = Geom:new{ w = inner_width, h = nl_label_h },
+            nl_label_group,
+        }
+        table.insert(group, nl_cap_row)
+    end
 
+    -- progress bar
     local nl_progress = ZenSlider:new{
         width     = slider_width,
         value     = nl.cur,
         value_min = nl.min,
         value_max = nl.max,
         show_parent = show_parent,
-        knob_radius = screen:scaleBySize(13),
+        --knob_radius = screen:scaleBySize(13),
     }
 
     local nl_row  -- forward-declare for on_change closure
@@ -112,7 +128,7 @@ function WarmthZenUI.build(ctx)
         nl.cur = warmth
         if nl.cur > nl.min then nl.prev_non_min = nl.cur end
         nl_progress:setValue(nl.cur)
-        nl_drag_num:setText(tostring(nl.cur))
+        if section.show_title then nl_drag_num:setText(tostring(nl.cur)) end
         UIManager:setDirty(show_parent, "ui", touch_menu.dimen)
     end
 
@@ -123,9 +139,6 @@ function WarmthZenUI.build(ctx)
     -- GL16 from other widgets can cause flicker.  A2 completes in ~60ms
     -- and renders the pure B/W slider content without ghosting.
     -- On release / tap: full menu GL16 refresh to update label + slider.
-
-    local update_touch_menu = function() if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end end
-
     nl_progress.on_change = function(v)
         powerd:setWarmth(powerd:fromNativeWarmth(v))
         nl.cur = v
@@ -133,42 +146,48 @@ function WarmthZenUI.build(ctx)
         if nl_progress._dragging then
             nl_progress:paintTo(screen.bb, nl_progress.dimen.x, nl_progress.dimen.y)
             -- Only repaint the number — prefix is static in the framebuffer.
-            local row_gap_h = 0 -- v_gap
-            local lh = nl_drag_prefix:getSize().h
-            local row_h = nl_row and nl_row:getSize().h or nl_progress.dimen.h
-            local row_top = nl_progress.dimen.y - math.floor((row_h - nl_progress.dimen.h) / 2)
-            local label_y = row_top - row_gap_h - lh
-            local sx = nl_progress.dimen.x
-            local sw = nl_progress.dimen.w
-            local num_x
-            if label_center then
-                num_x = sx + math.floor((sw - nl_drag_ref_w) / 2) + nl_drag_prefix_w
+            if section.show_title then
+                local row_gap_h = 0 -- v_gap
+                local lh = nl_drag_prefix:getSize().h
+                local row_h = nl_row and nl_row:getSize().h or nl_progress.dimen.h
+                local row_top = nl_progress.dimen.y - math.floor((row_h - nl_progress.dimen.h) / 2)
+                local label_y = row_top - row_gap_h - lh
+                local sx = nl_progress.dimen.x
+                local sw = nl_progress.dimen.w
+                local num_x = sx - h_gap - btn_width + btn_width + nl_drag_prefix_w
+                screen.bb:paintRect(num_x, label_y, nl_drag_max_num_w, lh, Blitbuffer.COLOR_WHITE)
+                nl_drag_num:setText(tostring(nl.cur))
+                nl_drag_num:paintTo(screen.bb, num_x, label_y)
+                -- Single A2 covering label + slider (two back-to-back A2 calls
+                -- can race on Kobo, causing the second refresh to be dropped).
+                UIManager:setDirty(nil, "fast", Geom:new{
+                    x = nl_progress.dimen.x,
+                    y = label_y,
+                    w = nl_progress.dimen.w,
+                    h = nl_progress.dimen.y + nl_progress.dimen.h - label_y,
+                })
             else
-                num_x = sx - h_gap - btn_width + btn_width + nl_drag_prefix_w
+                -- Single A2 covering label + slider (two back-to-back A2 calls
+                -- can race on Kobo, causing the second refresh to be dropped).
+                UIManager:setDirty(nil, "fast", Geom:new{
+                    x = nl_progress.dimen.x,
+                    y = nl_progress.dimen.y,
+                    w = nl_progress.dimen.w,
+                    h = nl_progress.dimen.y + nl_progress.dimen.h,
+                })
             end
-            screen.bb:paintRect(num_x, label_y, nl_drag_max_num_w, lh, Blitbuffer.COLOR_WHITE)
-            nl_drag_num:setText(tostring(nl.cur))
-            nl_drag_num:paintTo(screen.bb, num_x, label_y)
-            -- Single A2 covering label + slider (two back-to-back A2 calls
-            -- can race on Kobo, causing the second refresh to be dropped).
-            UIManager:setDirty(nil, "fast", Geom:new{
-                x = nl_progress.dimen.x,
-                y = label_y,
-                w = nl_progress.dimen.w,
-                h = nl_progress.dimen.y + nl_progress.dimen.h - label_y,
-            })
             -- update touch_menu after dragging
             UIManager:unschedule(update_touch_menu)
             UIManager:scheduleIn(0.5, update_touch_menu)
         else
-            nl_drag_num:setText(tostring(nl.cur))
+            if section.show_title then nl_drag_num:setText(tostring(nl.cur)) end
             update_touch_menu()
             --UIManager:setDirty(show_parent, "ui", touch_menu.dimen)
         end
     end
 
     local nl_minus = Button:new{
-        text           = "−",
+        text           = "\u{F2DC}", --"−"
         text_font_size = btn_font_size,
         --text_font_bold = false,
         width          = btn_width,
@@ -179,7 +198,7 @@ function WarmthZenUI.build(ctx)
     }
 
     local nl_plus = Button:new{
-        text           = "＋",
+        text           = "\u{F490}", --"＋"
         text_font_size = btn_font_size,
         --text_font_bold = false,
         width          = btn_width,
@@ -189,19 +208,6 @@ function WarmthZenUI.build(ctx)
         hold_callback  = function() setWarmth(nl.max); update_touch_menu() end,
     }
 
-    local nl_cap_row
-    if label_center then
-        nl_cap_row = CenterContainer:new{
-            dimen = Geom:new{ w = inner_width, h = nl_label_h },
-            nl_label_group,
-        }
-    else
-        nl_cap_row = LeftContainer:new{
-            dimen = Geom:new{ w = inner_width, h = nl_label_h },
-            nl_label_group,
-        }
-    end
-
     nl_row = HorizontalGroup:new{
         align = "center",
         nl_minus,
@@ -210,14 +216,12 @@ function WarmthZenUI.build(ctx)
         HorizontalSpan:new{ width = h_gap },
         nl_plus,
     }
-    local refs = { buttons = {}, sliders = {}, widgets = {} }
+
     refs.nl_progress = nl_progress
     refs.nl_state    = nl
     refs.setWarmth   = setWarmth
     table.insert(refs.sliders, { slider = nl_progress })
 
-    local group = VerticalGroup:new{ align = "center" }
-    table.insert(group, nl_cap_row)
     -- table.insert(group, VerticalSpan:new{ width = v_gap })
     table.insert(group, nl_row)
     return { widget = group, refs = refs }
