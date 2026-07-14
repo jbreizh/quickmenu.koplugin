@@ -310,10 +310,12 @@ end
 -- Inject FileManagerMenu
 -- ============================================================
 local FileManagerMenu = require("apps/filemanager/filemanagermenu")
-local FileManagerMenuOrder = require("ui/elements/filemanager_menu_order")
 local ReaderMenu = require("apps/reader/modules/readermenu")
-local ReaderMenuOrder = require("ui/elements/reader_menu_order")
 local BD = require("ui/bidi")
+local ConfirmBox    = require("ui/widget/confirmbox")
+local _                = require("common/i18n").gettext
+local UIManager     = require("ui/uimanager")
+local Event         = require("ui/event")
 
 function printTableLevel1(t)
     if type(t) ~= "table" then
@@ -333,21 +335,8 @@ end
 
 local orig_fm_setUpdateItemTable = FileManagerMenu.setUpdateItemTable
 function FileManagerMenu:setUpdateItemTable()
-    local ConfirmBox    = require("ui/widget/confirmbox")
-    local order = require("ui/elements/filemanager_menu_order")
-    local _                = require("common/i18n").gettext
-    local UIManager     = require("ui/uimanager")
-    local Event         = require("ui/event")
 
-    if config.add_quickmenu_tab then
-        order.quick_menu_tab = {}
-        table.insert(order["KOMenu:menu_buttons"], 1, "quick_menu_tab")
-    end
-
-    if config.add_exit_tab then
-        order.exit_tab = {}
-        table.insert(order["KOMenu:menu_buttons"], "exit_tab")
-    end
+    print("fm : setUpdateItemTable")
 
     self.menu_items.quick_menu_tab = {
         icon = "home",
@@ -402,27 +391,7 @@ end
 local orig_reader_setUpdateItemTable = ReaderMenu.setUpdateItemTable
 
 function ReaderMenu:setUpdateItemTable()
-    local ConfirmBox    = require("ui/widget/confirmbox")
-    local order         = require("ui/elements/reader_menu_order")
-    local _             = require("common/i18n").gettext
-    local UIManager     = require("ui/uimanager")
-    local Event         = require("ui/event")
-
-    if config.add_quickmenu_tab then
-        order.quick_menu_tab = {}
-        table.insert(order["KOMenu:menu_buttons"], 1, "quick_menu_tab")
-    end
-
-    if config.add_exit_tab then
-        order.exit_tab = {}
-        table.insert(order["KOMenu:menu_buttons"], "exit_tab")
-        for i, value in ipairs(order["KOMenu:menu_buttons"]) do
-            if value == "filemanager" then
-                table.remove(order["KOMenu:menu_buttons"], i)
-                break -- On arrête la boucle une fois l'élément trouvé et supprimé
-            end
-        end
-    end
+    print("rd : setUpdateItemTable")
 
     self.menu_items.quick_menu_tab = {
         icon = "home",
@@ -478,6 +447,28 @@ end
 function QuickMenuPlugin:init()
     self.config = config
     self.ui.menu:registerToMainMenu(self)
+    print("quickmenu : init")
+    local fm_order   = require("ui/elements/filemanager_menu_order")
+    local rd_order   = require("ui/elements/reader_menu_order")
+    if config.add_quickmenu_tab then
+        fm_order.quick_menu_tab = {}
+        table.insert(fm_order["KOMenu:menu_buttons"], 1, "quick_menu_tab")
+        rd_order.quick_menu_tab = {}
+        table.insert(rd_order["KOMenu:menu_buttons"], 1, "quick_menu_tab")
+    end
+
+    if config.add_exit_tab then
+        fm_order.exit_tab = {}
+        table.insert(fm_order["KOMenu:menu_buttons"], "exit_tab")
+        rd_order.exit_tab = {}
+        table.insert(rd_order["KOMenu:menu_buttons"], "exit_tab")
+        for i, value in ipairs(rd_order["KOMenu:menu_buttons"]) do
+            if value == "filemanager" then
+                table.remove(rd_order["KOMenu:menu_buttons"], i)
+                break -- On arrête la boucle une fois l'élément trouvé et supprimé
+            end
+        end
+    end
 end
 
 function QuickMenuPlugin:addToMainMenu(menu_items)
