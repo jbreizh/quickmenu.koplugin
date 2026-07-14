@@ -656,12 +656,43 @@ function ActionDefs.get()
                 return false
             end,
             callback = function(ctx)
+                ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("localsend") then
-                    UIManager:broadcastEvent(Event:new("ToggleLocalSend"))
-                    UIManager:scheduleIn(2, function() ctx.touch_menu:updateItems() end)
+                    local buttons = {
+                    {{
+                        text = "\u{F15C} " ..  _("Send file") .. "\xE2\x80\xA6",
+                        callback = function()
+                            local d = dialog
+                            dialog = nil
+                            UIManager:close(d)
+                            UIManager:broadcastEvent(Event:new("ShowLocalSendFileSendFlow"))
+                        end
+                    }},
+                    {{
+                        text = "\u{F02D} " ..  _("Send current book"),
+                        callback = function()
+                            local d = dialog
+                            dialog = nil
+                            UIManager:close(d)
+                            UIManager:broadcastEvent(Event:new("SendCurrentBookWithLocalSend"))
+                        end
+                    }},
+
+                    }
+                    dialog = ButtonDialog:new{
+                        title        = _("LocalSend") .. " :",
+                        width_factor =  0.5,
+                        buttons      = buttons,
+                    }
+                    UIManager:show(dialog)
                 else UIManager:show(InfoMessage:new{ text = "LocalSend : " .. _("Plugin not activated.") }) end
             end,
-            hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
+            hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                if Utils.hasPlugin and Utils.hasPlugin("localsend") then
+                    UIManager:broadcastEvent(Event:new("ToggleLocalSend"))
+                else UIManager:show(InfoMessage:new{ text = "LocalSend : " .. _("Plugin not activated.") }) end
+            end
         },
         filebrowserplus = {
                 icon  = "\u{F15C}",
@@ -691,9 +722,7 @@ function ActionDefs.get()
                     else UIManager:show(InfoMessage:new{ text = "Filebrowserplus : " .. _("Plugin not activated.") }) end
                 end,
                 hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
-            },
-
-
+        },
         search = {
             icon = "\u{F002}",
             -- icon_func
