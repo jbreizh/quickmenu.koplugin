@@ -21,6 +21,9 @@ local ActionDefs = {}
 
 local category_label = {
     ["system"]   = _("System"),
+    ["network"]  = _("Network"),
+    ["power"]    = _("Power"),
+    ["search"]   = _("Search"),
     ["shortcut"] = _("Shortcut"),
     ["footer"]   = _("Footer"),
     ["custom"]   = _("Custom"),
@@ -228,7 +231,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Restart"),
             -- label_func
-            category = "system",
+            category = "power",
             -- active_func
             -- visible_func
             help_text = _("Tap : Ask for restart KOreader\nHold : Ask for exit KOreader"),
@@ -254,7 +257,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Exit"),
             -- label_func
-            category = "system",
+            category = "power",
             -- active_func
             -- visible_func
             help_text = _("Tap : Ask for exit KOreader\nHold : Ask for restart KOreader"),
@@ -280,7 +283,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Reboot"),
             -- label_func
-            category = "system",
+            category = "power",
             -- active_func
             visible_func = function(ctx) return ctx.device:canReboot() end,
             help_text = _("Tap : Ask for reboot system\nHold : Ask for power off system"),
@@ -306,7 +309,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Sleep"),
             -- label_func
-            category = "system",
+            category = "power",
             -- active_func
             visible_func = function(ctx) return ctx.device:canSuspend() end,
             help_text = _("Tap : Suspend system\nHold : Nothing"),
@@ -325,7 +328,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Power off"),
             -- label_func
-            category = "system",
+            category = "power",
             -- active_func
             visible_func = function(ctx) return ctx.device:canPowerOff() end,
             help_text = _("Tap : Ask for power off system\nHold : Ask for reboot system"),
@@ -351,7 +354,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Power"),
             -- label_func
-            category = "system",
+            category = "power",
             -- active_func
             -- visible_func
             help_text = _("Tap : Show power dialog\nHold : Nothing"),
@@ -434,7 +437,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Dictionary"),
             -- label_func
-            category = "shortcut",
+            category = "search",
             -- active_func
             -- visible_func
             help_text = _("Tap : Show dictionary search\nHold : Show wikipedia search"),
@@ -452,7 +455,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Wikipedia"),
             -- label_func
-            category = "shortcut",
+            category = "search",
             -- active_func
             -- visible_func
             help_text = _("Tap : Show wikipedia search\nHold : Show dictionary search"),
@@ -545,7 +548,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("Cloud"),
             -- label_func
-            category = "shortcut",
+            category = "network",
             -- active_func
             -- visible_func
             help_text = _("Tap : Show cloud storage\nHold : Show OPDS catalog"),
@@ -564,7 +567,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("OPDS"),
             -- label_func
-            category = "shortcut",
+            category = "network",
             -- active_func
             help_text = _("Tap : Show OPDS catalog\nHold : Show cloud storage"),
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("opds") end,
@@ -589,7 +592,7 @@ function ActionDefs.get()
                 if Util.pathExists("/tmp/dropbear_koreader.pid") then return _("On") end -- lan-connect
                 return _("Off") -- lan-disconnect
             end,
-            category = "system",
+            category = "network",
             active_func = function(ctx) return Util.pathExists("/tmp/dropbear_koreader.pid") end,
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("SSH") end,
             help_text = _("Tap : Toggle SSH server\nHold : Nothing"),
@@ -614,7 +617,7 @@ function ActionDefs.get()
                 if CW ~= nil and CW.calibre_socket ~= nil then return _("On") end -- server-network
                 return _("Off") -- server-network-off
             end,
-            category = "system",
+            category = "network",
             active_func = function(ctx)
                 local CW = package.loaded["wireless"]
                 return CW ~= nil and CW.calibre_socket ~= nil
@@ -631,12 +634,71 @@ function ActionDefs.get()
             end,
             hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
         },
+        localsend = {
+            icon = "\u{F1D8}",
+            icon_func = function(ctx)
+                local f = io.open("/tmp/localsend_koreader.pid", "r")
+                if f then f:close(); return "\u{F1D9}" end
+                return "\u{F1D8}"
+            end,
+            label = _("LocalSend"),
+            label_func = function(ctx)
+                local f = io.open("/tmp/localsend_koreader.pid", "r")
+                if f then f:close(); return _("On") end
+                return _("Off")
+            end,
+            category = "network",
+            visible_func = function(ctx) return Utils.hasPlugin("localsend") end,
+            help_text = _("Tap : Toggle LocalSend connection\nHold : Nothing"),
+            active_func = function(ctx)
+                local f = io.open("/tmp/localsend_koreader.pid", "r")
+                if f then f:close(); return true end
+                return false
+            end,
+            callback = function(ctx)
+                if Utils.hasPlugin and Utils.hasPlugin("localsend") then
+                    UIManager:broadcastEvent(Event:new("ToggleLocalSend"))
+                    UIManager:scheduleIn(2, function() ctx.touch_menu:updateItems() end)
+                else UIManager:show(InfoMessage:new{ text = "LocalSend : " .. _("Plugin not activated.") }) end
+            end,
+            hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
+        },
+        filebrowserplus = {
+                icon  = "\u{F15C}",
+                icon_func = function(ctx)
+                    local ok, fb = pcall(require, "plugins/filebrowserplus.koplugin.main")
+                    if ok and type(fb.isRunning) == "function" and fb:isRunning() then return "\u{F0F6}" end -- active
+                    return "\u{F15C}" -- inactive
+                end,
+                label = _("FileBrowser+"),
+                label_func = function(ctx)
+                    local ok, fb = pcall(require, "plugins/filebrowserplus.koplugin.main")
+                    if ok and type(fb.isRunning) == "function" and fb:isRunning() then return _("On") end -- active
+                    return _("Off") -- inactive
+                end,
+                category = "network",
+                visible_func = function() return Utils.hasPlugin("filebrowserplus") end,
+                active_func = function(ctx)
+                    local ok, fb = pcall(require, "plugins/filebrowserplus.koplugin.main")
+                    if ok and type(fb.isRunning) == "function" and fb:isRunning() then return true end -- active
+                    return false -- inactive
+                end,
+                callback = function(ctx)
+                    if Utils.hasPlugin and Utils.hasPlugin("filebrowserplus") then
+                        UIManager:broadcastEvent(Event:new("ToggleFilebrowserPlusServer"))
+                        UIManager:scheduleIn(2, function() ctx.touch_menu:updateItems() end)
+                    else UIManager:show(InfoMessage:new{ text = "Filebrowserplus : " .. _("Plugin not activated.") }) end
+                end,
+                hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
+            },
+
+
         search = {
             icon = "\u{F002}",
             -- icon_func
             label = _("Search"),
             -- label_func
-            category = "shortcut",
+            category = "search",
             -- active_func
             -- visible_func
             help_text = _("Tap : Show file search\nHold : Show Calibre search"),
@@ -655,7 +717,7 @@ function ActionDefs.get()
             -- icon_func
             label = "Calibre",
             -- label_func
-            category = "shortcut",
+            category = "search",
             -- active_func
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("calibre") end,
             help_text = _("Tap : Show Calibre search\nHold : Show file search"),
@@ -714,7 +776,7 @@ function ActionDefs.get()
             -- icon_func
             label = _("KOSync"),
             -- label_func
-            category = "system",
+            category = "network",
             -- active_func
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("kosync") end,
             help_text = _("Tap : Push progress to KOSync\nHold : Pull progress from KOSync"),

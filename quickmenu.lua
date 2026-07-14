@@ -324,7 +324,7 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
         end,
         keep_menu_open = true,
         callback = function(touch_menu)
-            ctx.touch_menu = touch_menu
+            if touch_menu then ctx.touch_menu = touch_menu end
             ActionCustom:showActionCustomMenu(ctx)
         end
     })

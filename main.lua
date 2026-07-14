@@ -142,10 +142,7 @@ function TouchMenu:updateItems(target_page, target_item_id)
     self.page_num = 1
     self.page = 1
 
-    -- Update footer
-    --self.time_info:setText(QuickMenu.footer)
-
-    -- Recalculate dimen
+     -- Recalculate dimen
     local old_dimen = self.dimen:copy()
     self.dimen.w = self.width
     self.dimen.h = self.item_group:getSize().h + self.bordersize * 2 + self.padding
@@ -304,14 +301,14 @@ local BD = require("ui/bidi")
 local orig_fm_setUpdateItemTable = FileManagerMenu.setUpdateItemTable
 
 function FileManagerMenu:setUpdateItemTable()
-    -- inject settings
+    -- settings
     if not is_injected(FileManagerMenuOrder.setting, "quick_menu_config") then
         table.insert(FileManagerMenuOrder.setting, "----------------------------")
         table.insert(FileManagerMenuOrder.setting, "quick_menu_config")
     end
     self.menu_items.quick_menu_config = QuickMenu.buildSettingsMenu(config, self)
 
-    -- inject ori
+    -- orig
     orig_fm_setUpdateItemTable(self)
 
     -- tab
@@ -348,12 +345,12 @@ end
 local orig_reader_setUpdateItemTable = ReaderMenu.setUpdateItemTable
 
 function ReaderMenu:setUpdateItemTable()
-    -- inject settings
+    -- settings
     if not is_injected(ReaderMenuOrder.setting, "quick_menu_config") then
         table.insert(ReaderMenuOrder.setting, "quick_menu_config")
     end
     self.menu_items.quick_menu_config = QuickMenu.buildSettingsMenu(config, self)
-    -- inject ori
+    -- orig
     orig_reader_setUpdateItemTable(self)
 
     -- tab
