@@ -609,8 +609,8 @@ function ActionDefs.get()
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("SSH") end,
             help_text = _("Tap : Toggle SSH server\nHold : Nothing"),
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-                UIManager:broadcastEvent(Event:new("ToggleSSHServer"))
+                UIManager:broadcastEvent(Event:new("ToggleSSHServer")) -- SSH doesn't need connection
+                UIManager:scheduleIn(1, function() ctx.touch_menu:updateItems() end)
             end,
             hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
         },
@@ -624,9 +624,11 @@ function ActionDefs.get()
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("calibre") end,
             help_text = _("Tap : Toggle Calibre connection\nHold : Nothing"),
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-                local event = is_calibre_active() and "CloseWirelessConnection" or "StartWirelessConnection"
-                UIManager:broadcastEvent(Event:new(event))
+                NetworkMgr:runWhenOnline(function() -- check connection
+                    local event = is_calibre_active() and "CloseWirelessConnection" or "StartWirelessConnection"
+                    UIManager:broadcastEvent(Event:new(event))
+                    UIManager:scheduleIn(2, function() ctx.touch_menu:updateItems() end)
+                end)
             end,
             hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text = _("Nothing to do") }) end
         },
@@ -689,8 +691,10 @@ function ActionDefs.get()
             help_text = _("Tap : Toggle LocalSend connection\nHold : Show localSend dialog"),
             active_func = function(ctx) return is_localsend_active() end,
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-                UIManager:broadcastEvent(Event:new("ToggleLocalSend"))
+                NetworkMgr:runWhenOnline(function() -- check connection
+                    UIManager:broadcastEvent(Event:new("ToggleLocalSend"))
+                    UIManager:scheduleIn(1, function() ctx.touch_menu:updateItems() end)
+                end)
             end,
             hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
@@ -733,8 +737,10 @@ function ActionDefs.get()
             help_text = _("Tap : Toggle FileBrowserPlus connection\nHold : Nothing"),
             active_func = function(ctx) return is_filebrowserplus_active() end,
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-                UIManager:broadcastEvent(Event:new("ToggleFilebrowserPlusServer"))
+                NetworkMgr:runWhenOnline(function() -- check connection
+                    UIManager:broadcastEvent(Event:new("ToggleFilebrowserPlusServer"))
+                    UIManager:scheduleIn(1, function() ctx.touch_menu:updateItems() end)
+                end)
             end,
             hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text = _("Nothing to do") }) end
         },

@@ -853,8 +853,23 @@ msgstr "использовано"
 msgid "Network"
 msgstr ""
 
-msgid "Tap : Toggle LocalSend connection\nHold : Nothing"
+msgid "Tap : Toggle FileBrowserPlus connection\nHold : Nothing"
 msgstr ""
 
-msgid "Tap : Toggle FileBrowserPlus connection\nHold : Nothing"
+msgid "LocalSend"
+msgstr ""
+
+msgid "Pull progress"
+msgstr ""
+
+msgid "Push progress"
+msgstr ""
+
+msgid "Send current book"
+msgstr ""
+
+msgid "Send file"
+msgstr ""
+
+msgid "Tap : Toggle LocalSend connection\nHold : Show localSend dialog"
 msgstr ""
