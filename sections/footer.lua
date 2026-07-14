@@ -24,21 +24,6 @@ local SECTION = "footer"
 -- ============================================================
 -- Footer Builder
 -- ============================================================
-local function default_footer(ctx)
-    local default_footer = ctx.datetime.secondsToHour(os.time(), G_reader_settings:isTrue("twelve_hour_clock"))
-    if ctx.device:hasBattery() then
-        local batt_lvl = ctx.powerd:getCapacity()
-        local batt_symbol = ctx.powerd:getBatterySymbol(ctx.powerd:isCharged(), ctx.powerd:isCharging(), batt_lvl)
-        default_footer = BD.wrap(default_footer) .. " " .. BD.wrap("⌁") .. BD.wrap(batt_symbol) ..  BD.wrap(batt_lvl .. "%")
-        if ctx.device:hasAuxBattery() and ctx.powerd:isAuxBatteryConnected() then
-            local aux_batt_lvl = ctx.powerd:getAuxCapacity()
-            local aux_batt_symbol = ctx.powerd:getBatterySymbol(ctx.powerd:isAuxCharged(), ctx.powerd:isAuxCharging(), aux_batt_lvl)
-            default_footer = default_footer .. " " .. BD.wrap("+") .. BD.wrap(aux_batt_symbol) ..  BD.wrap(aux_batt_lvl .. "%")
-        end
-    end
-    return default_footer
-end
-
 function Footer.build(ctx)
     -- ctx import
     local config             = ctx.config
@@ -69,6 +54,7 @@ function Footer.build(ctx)
     --   footer[3] = RightContainer {self.device_info=Hgrp{self.time_info=btn}}
 
     -- clear footer slot but don't clear touch_menu.page_info and touch_menu.device_info
+    -- force to clear or btn stay in group
     touch_menu.footer[1][1] = HorizontalGroup:new{}
     touch_menu.footer[2][1] = HorizontalGroup:new{}
     touch_menu.footer[3][1] = HorizontalGroup:new{}
@@ -97,30 +83,14 @@ function Footer.build(ctx)
         callback = function()  touch_menu:backToUpperMenu()
         end,
     }
-
-    -- default footer
+    -- default footer force to rebuild default footer cause force to clear
     if (filemanager and not section.enabled_f) or (reader and not section.enabled_r) then
         -- insert up_button left
         table.insert(touch_menu.footer[1][1], up_button)
-        -- create default footer
-        local default_btn = Button:new{
-            text = default_footer(ctx),
-            text_font_bold = false,
-            callback = function()
-                UIManager:show(InfoMessage:new{
-                    text = datetime.secondsToDateTime(nil, nil, true),
-                })
-            end,
-            hold_callback = function()
-                UIManager:broadcastEvent(Event:new("ShowBatteryStatistics"))
-            end,
-            bordersize = 0,
-            touch_menu.show_parent,
-        }
          -- insert page_info center
         table.insert(touch_menu.footer[2][1], touch_menu.page_info)
         -- insert default_footer right
-        table.insert(touch_menu.footer[3][1], default_btn)
+        table.insert(touch_menu.footer[3][1], touch_menu.time_info)
         -- insert settings_btn
         if section.show_title then table.insert(touch_menu.footer[3][1], settings_btn) end
     -- zenFooter

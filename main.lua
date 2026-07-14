@@ -22,11 +22,12 @@ local config = Config.load()
 -- ============================================================
 local UIManager     = require("ui/uimanager")
 local Geom          = require("ui/geometry")
-local Device        = require("device")
-local Screen        = Device.screen
 local TouchMenu = require("ui/widget/touchmenu")
 local FocusManager = require("ui/widget/focusmanager")
 local GestureRange = require("ui/gesturerange")
+local Device        = require("device")
+local Screen        = Device.screen
+local powerd = Device:getPowerDevice()
 local datetime = require("datetime")
 local BD = require("ui/bidi")
 local QuickMenu = require("quickmenu")
@@ -106,6 +107,21 @@ function TouchMenu:init(...)
     }
 end
 
+local function default_footer()
+    local default_footer = datetime.secondsToHour(os.time(), G_reader_settings:isTrue("twelve_hour_clock"))
+    if Device:hasBattery() then
+        local batt_lvl = powerd:getCapacity()
+        local batt_symbol = powerd:getBatterySymbol(powerd:isCharged(), powerd:isCharging(), batt_lvl)
+        default_footer = BD.wrap(default_footer) .. " " .. BD.wrap("⌁") .. BD.wrap(batt_symbol) ..  BD.wrap(batt_lvl .. "%")
+        if Device:hasAuxBattery() and powerd:isAuxBatteryConnected() then
+            local aux_batt_lvl = powerd:getAuxCapacity()
+            local aux_batt_symbol = powerd:getBatterySymbol(powerd:isAuxCharged(), powerd:isAuxCharging(), aux_batt_lvl)
+            default_footer = default_footer .. " " .. BD.wrap("+") .. BD.wrap(aux_batt_symbol) ..  BD.wrap(aux_batt_lvl .. "%")
+        end
+    end
+    return default_footer
+end
+
 -- Hook updateItems for panel rendering
 local orig_updateItems = TouchMenu.updateItems
 function TouchMenu:updateItems(target_page, target_item_id)
@@ -141,6 +157,7 @@ function TouchMenu:updateItems(target_page, target_item_id)
     self.page_info_right_chev:enableDisable(false)
     self.page_num = 1
     self.page = 1
+    self.time_info:setText(default_footer())
 
      -- Recalculate dimen
     local old_dimen = self.dimen:copy()

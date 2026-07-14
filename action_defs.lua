@@ -64,6 +64,26 @@ function ActionDefs.getMerged(action_list)
     return action_system
 end
 
+
+local function is_localsend_active()
+    local f = io.open("/tmp/localsend_koreader.pid", "r")
+    if f then f:close(); return true end
+    return false
+end
+
+local function is_calibre_active()
+    local CW = package.loaded["wireless"]
+    return CW ~= nil and CW.calibre_socket ~= nil
+end
+
+local function is_filebrowserplus_active()
+    return Util.pathExists("/tmp/filebrowserplus_koreader.pid")
+end
+
+local function is_ssh_active()
+    return Util.pathExists("/tmp/dropbear_koreader.pid")
+end
+
 function ActionDefs.get()
     return {
         wifi = {
@@ -542,7 +562,6 @@ function ActionDefs.get()
                 UIManager:broadcastEvent(Event:new("ShowCollList"))
             end
         },
-        -- core plugin
         cloud = {
             icon = "\u{F0C2}",
             -- icon_func
@@ -573,8 +592,7 @@ function ActionDefs.get()
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("opds") end,
             callback = function(ctx)
                 ctx.touch_menu:closeMenu()
-                if Utils.hasPlugin and Utils.hasPlugin("opds") then UIManager:broadcastEvent(Event:new("ShowOPDSCatalog"))
-                else UIManager:show(InfoMessage:new{ text = "OPDS : " .. _("Plugin not activated.") }) end
+                UIManager:broadcastEvent(Event:new("ShowOPDSCatalog"))
             end,
             hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
@@ -582,146 +600,143 @@ function ActionDefs.get()
             end
         },
         ssh = {
-            icon = "\u{EA17}", -- lan-connect
-            icon_func = function(ctx)
-                if Util.pathExists("/tmp/dropbear_koreader.pid") then return "\u{EA17}" end -- lan-connect
-                return "\u{EA18}" -- lan-disconnect
-            end,
+            icon = "\u{EA17}", -- lan-connect -- lan-disconnect
+            icon_func = function(ctx) return is_ssh_active() and "\u{EA17}" or "\u{EA18}" end,
             label = _("SSH"),
-            label_func = function(ctx)
-                if Util.pathExists("/tmp/dropbear_koreader.pid") then return _("On") end -- lan-connect
-                return _("Off") -- lan-disconnect
-            end,
+            label_func = function(ctx) return is_ssh_active() and _("On") or _("Off") end,
             category = "network",
-            active_func = function(ctx) return Util.pathExists("/tmp/dropbear_koreader.pid") end,
+            active_func = function(ctx) return is_ssh_active() end,
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("SSH") end,
             help_text = _("Tap : Toggle SSH server\nHold : Nothing"),
             callback = function(ctx)
-                if Utils.hasPlugin and Utils.hasPlugin("SSH") then
-                    UIManager:broadcastEvent(Event:new("ToggleSSHServer"))
-                    UIManager:scheduleIn(2, function() ctx.touch_menu:updateItems() end)
-                else UIManager:show(InfoMessage:new{ text = "SSH : " .. _("Plugin not activated.") }) end
+                ctx.touch_menu:closeMenu()
+                UIManager:broadcastEvent(Event:new("ToggleSSHServer"))
             end,
             hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
         },
         calibre = {
-            icon = "\u{EB8C}", -- server-network
-            icon_func = function(ctx)
-                local CW = package.loaded["wireless"]
-                if CW ~= nil and CW.calibre_socket ~= nil then return "\u{EB8C}" end -- server-network
-                return "\u{EB8D}" -- server-network-off
-            end,
+            icon = "\u{EB8C}", -- server-network -- server-network-off
+            icon_func = function(ctx) return is_calibre_active() and "\u{EB8C}" or "\u{EB8D}" end,
             label = "Calibre",
-            label_func = function(ctx)
-                local CW = package.loaded["wireless"]
-                if CW ~= nil and CW.calibre_socket ~= nil then return _("On") end -- server-network
-                return _("Off") -- server-network-off
-            end,
+            label_func = function(ctx) return is_calibre_active() and _("On") or _("Off") end,
             category = "network",
-            active_func = function(ctx)
-                local CW = package.loaded["wireless"]
-                return CW ~= nil and CW.calibre_socket ~= nil
-            end,
+            active_func = function(ctx) return is_calibre_active() end,
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("calibre") end,
             help_text = _("Tap : Toggle Calibre connection\nHold : Nothing"),
             callback = function(ctx)
-                if Utils.hasPlugin and Utils.hasPlugin("calibre") then
-                    local CW = package.loaded["wireless"]
-                    if CW and CW.calibre_socket ~= nil then UIManager:broadcastEvent(Event:new("CloseWirelessConnection"))
-                    else UIManager:broadcastEvent(Event:new("StartWirelessConnection")) end
-                    UIManager:scheduleIn(2, function() ctx.touch_menu:updateItems() end)
-                else UIManager:show(InfoMessage:new{ text = "Calibre : " .. _("Plugin not activated.") }) end
+                ctx.touch_menu:closeMenu()
+                local event = is_calibre_active() and "CloseWirelessConnection" or "StartWirelessConnection"
+                UIManager:broadcastEvent(Event:new(event))
             end,
-            hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
+            hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text = _("Nothing to do") }) end
         },
-        localsend = {
-            icon = "\u{F1D8}",
-            icon_func = function(ctx)
-                local f = io.open("/tmp/localsend_koreader.pid", "r")
-                if f then f:close(); return "\u{F1D9}" end
-                return "\u{F1D8}"
-            end,
-            label = "LocalSend",
-            label_func = function(ctx)
-                local f = io.open("/tmp/localsend_koreader.pid", "r")
-                if f then f:close(); return _("On") end
-                return _("Off")
-            end,
+        kosync = {
+            icon = "\u{ED3E}",
+            -- icon_func
+            label = _("KOSync"),
+            -- label_func
             category = "network",
-            visible_func = function(ctx) return Utils.hasPlugin("localsend") end,
-            help_text = _("Tap : Toggle LocalSend connection\nHold : Nothing"),
-            active_func = function(ctx)
-                local f = io.open("/tmp/localsend_koreader.pid", "r")
-                if f then f:close(); return true end
-                return false
-            end,
+            -- active_func
+            visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("kosync") end,
+            help_text = _("Tap : Push progress to KOSync\nHold : Pull progress from KOSync"),
             callback = function(ctx)
                 ctx.touch_menu:closeMenu()
-                if Utils.hasPlugin and Utils.hasPlugin("localsend") then
-                    local buttons = {
-                    {{
-                        text = "\u{F15C} " ..  _("Send file") .. "\xE2\x80\xA6",
-                        callback = function()
-                            local d = dialog
-                            dialog = nil
-                            UIManager:close(d)
-                            UIManager:broadcastEvent(Event:new("ShowLocalSendFileSendFlow"))
-                        end
-                    }},
-                    {{
-                        text = "\u{F02D} " ..  _("Send current book"),
-                        callback = function()
-                            local d = dialog
-                            dialog = nil
-                            UIManager:close(d)
-                            UIManager:broadcastEvent(Event:new("SendCurrentBookWithLocalSend"))
-                        end
-                    }},
-
-                    }
-                    dialog = ButtonDialog:new{
-                        title        = _("LocalSend") .. " :",
-                        width_factor =  0.5,
-                        buttons      = buttons,
-                    }
-                    UIManager:show(dialog)
-                else UIManager:show(InfoMessage:new{ text = "LocalSend : " .. _("Plugin not activated.") }) end
+                NetworkMgr:runWhenOnline(function() -- check connection once
+                    UIManager:broadcastEvent(Event:new("KOSyncPullProgress"))
+                    -- Push after a short delay to let the pull complete first.
+                    UIManager:scheduleIn(1, function() UIManager:broadcastEvent(Event:new("KOSyncPushProgress")) end)
+                end)
             end,
             hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
-                if Utils.hasPlugin and Utils.hasPlugin("localsend") then
-                    UIManager:broadcastEvent(Event:new("ToggleLocalSend"))
-                else UIManager:show(InfoMessage:new{ text = "LocalSend : " .. _("Plugin not activated.") }) end
-            end
+                local buttons = {
+                {{
+                    text = "\u{F404} " ..  _("Push progress") .. "\xE2\x80\xA6",
+                    callback = function()
+                        local d = dialog
+                        dialog = nil
+                        UIManager:close(d)
+                        UIManager:broadcastEvent(Event:new("KOSyncPushProgress")) -- already check connection
+                    end
+                }},
+                {{
+                    text = "\u{F403} " ..  _("Pull progress") .. "\xE2\x80\xA6",
+                    callback = function()
+                        local d = dialog
+                        dialog = nil
+                        UIManager:close(d)
+                        UIManager:broadcastEvent(Event:new("KOSyncPullProgress"))-- already check connection
+                    end
+                }},
+
+                }
+                dialog = ButtonDialog:new{
+                    title        = _("KOSync") .. " :",
+                    width_factor =  0.5,
+                    buttons      = buttons,
+                }
+                UIManager:show(dialog)
+            end,
+        },
+        localsend = {
+            icon = "\u{F1D8}",
+            icon = "\u{F1D8}",
+            icon_func = function(ctx) return is_localsend_active() and "\u{F1D9}" or "\u{F1D8}" end,
+            label = "LocalSend",
+            label_func = function(ctx) return is_localsend_active() and _("On") or _("Off") end,
+            category = "network",
+            visible_func = function(ctx) return Utils.hasPlugin("localsend") end,
+            help_text = _("Tap : Toggle LocalSend connection\nHold : Show localSend dialog"),
+            active_func = function(ctx) return is_localsend_active() end,
+            callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                UIManager:broadcastEvent(Event:new("ToggleLocalSend"))
+            end,
+            hold_callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                local buttons = {
+                {{
+                    text = "\u{F15C} " ..  _("Send file") .. "\xE2\x80\xA6",
+                    callback = function()
+                        local d = dialog
+                        dialog = nil
+                        UIManager:close(d)
+                        UIManager:broadcastEvent(Event:new("ShowLocalSendFileSendFlow"))
+                    end
+                }},
+                {{
+                    text = "\u{F02D} " ..  _("Send current book"),
+                    callback = function()
+                        local d = dialog
+                        dialog = nil
+                        UIManager:close(d)
+                        UIManager:broadcastEvent(Event:new("SendCurrentBookWithLocalSend"))
+                    end
+                }},
+
+                }
+                dialog = ButtonDialog:new{
+                    title        = _("LocalSend") .. " :",
+                    width_factor =  0.5,
+                    buttons      = buttons,
+                }
+                UIManager:show(dialog)
+            end,
         },
         filebrowserplus = {
-                icon  = "\u{F15C}",
-                icon_func = function(ctx)
-                    local ok, fb = pcall(require, "plugins/filebrowserplus.koplugin.main")
-                    if ok and type(fb.isRunning) == "function" and fb:isRunning() then return "\u{F0F6}" end -- active
-                    return "\u{F15C}" -- inactive
-                end,
-                label = "FileBrowserPlus",
-                label_func = function(ctx)
-                    local ok, fb = pcall(require, "plugins/filebrowserplus.koplugin.main")
-                    if ok and type(fb.isRunning) == "function" and fb:isRunning() then return _("On") end -- active
-                    return _("Off") -- inactive
-                end,
-                category = "network",
-                visible_func = function() return Utils.hasPlugin("filebrowserplus") end,
-                help_text = _("Tap : Toggle FileBrowserPlus connection\nHold : Nothing"),
-                active_func = function(ctx)
-                    local ok, fb = pcall(require, "plugins/filebrowserplus.koplugin.main")
-                    if ok and type(fb.isRunning) == "function" and fb:isRunning() then return true end -- active
-                    return false -- inactive
-                end,
-                callback = function(ctx)
-                    if Utils.hasPlugin and Utils.hasPlugin("filebrowserplus") then
-                        UIManager:broadcastEvent(Event:new("ToggleFilebrowserPlusServer"))
-                        UIManager:scheduleIn(2, function() ctx.touch_menu:updateItems() end)
-                    else UIManager:show(InfoMessage:new{ text = "Filebrowserplus : " .. _("Plugin not activated.") }) end
-                end,
-                hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
+            icon = "\u{F15C}",
+            icon_func = function(ctx) return is_filebrowserplus_active() and "\u{F0F6}" or "\u{F15C}" end,
+            label = "FileBrowserPlus",
+            label_func = function(ctx) return is_filebrowserplus_active() and _("On") or _("Off") end,
+            category = "network",
+            visible_func = function() return Utils.hasPlugin("filebrowserplus") end,
+            help_text = _("Tap : Toggle FileBrowserPlus connection\nHold : Nothing"),
+            active_func = function(ctx) return is_filebrowserplus_active() end,
+            callback = function(ctx)
+                ctx.touch_menu:closeMenu()
+                UIManager:broadcastEvent(Event:new("ToggleFilebrowserPlusServer"))
+            end,
+            hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text = _("Nothing to do") }) end
         },
         search = {
             icon = "\u{F002}",
@@ -753,8 +768,7 @@ function ActionDefs.get()
             help_text = _("Tap : Show Calibre search\nHold : Show file search"),
             callback = function(ctx)
                 ctx.touch_menu:closeMenu()
-                if Utils.hasPlugin and Utils.hasPlugin("calibre") then UIManager:broadcastEvent(Event:new("CalibreSearch"))
-                else UIManager:show(InfoMessage:new{ text = "Calibre : " .. _("Plugin not activated.") }) end
+                UIManager:broadcastEvent(Event:new("CalibreSearch"))
             end,
             hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
@@ -772,13 +786,11 @@ function ActionDefs.get()
             help_text = _("Tap : Show reader statistics\nHold : Show calendar statistics"),
             callback = function(ctx)
                 ctx.touch_menu:closeMenu()
-                if Utils.hasPlugin and Utils.hasPlugin("statistics") then UIManager:broadcastEvent(Event:new("ShowReaderProgress"))
-                else UIManager:show(InfoMessage:new{ text = "Statistics : " .. _("Plugin not activated.") }) end
+                UIManager:broadcastEvent(Event:new("ShowReaderProgress"))
             end,
             hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
-                if Utils.hasPlugin and Utils.hasPlugin("statistics") then UIManager:broadcastEvent(Event:new("ShowCalendarView"))
-                else UIManager:show(InfoMessage:new{ text = "Statistics : " .. _("Plugin not activated.") }) end
+                UIManager:broadcastEvent(Event:new("ShowCalendarView"))
             end
         },
         statisticscalendar = {
@@ -792,38 +804,13 @@ function ActionDefs.get()
             help_text = _("Tap : Show calendar statistics\nHold : Show reader statistics"),
             callback = function(ctx)
                 ctx.touch_menu:closeMenu()
-                if Utils.hasPlugin and Utils.hasPlugin("statistics") then  UIManager:broadcastEvent(Event:new("ShowCalendarView"))
-                else UIManager:show(InfoMessage:new{ text = "Statistics : " .. _("Plugin not activated.") }) end
+                UIManager:broadcastEvent(Event:new("ShowCalendarView"))
             end,
             hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
-                if Utils.hasPlugin and Utils.hasPlugin("statistics") then UIManager:broadcastEvent(Event:new("ShowReaderProgress"))
-                else UIManager:show(InfoMessage:new{ text = "Statistics : " .. _("Plugin not activated.") }) end
+                UIManager:broadcastEvent(Event:new("ShowReaderProgress"))
             end
         },
-        kosync = {
-            icon = "\u{E866}",
-            -- icon_func
-            label = _("KOSync"),
-            -- label_func
-            category = "network",
-            -- active_func
-            visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("kosync") end,
-            help_text = _("Tap : Push progress to KOSync\nHold : Pull progress from KOSync"),
-            callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-                NetworkMgr:runWhenOnline(function()
-                    UIManager:broadcastEvent(Event:new("KOSyncPushProgress"))
-                end)
-            end,
-            hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
-                NetworkMgr:runWhenOnline(function()
-                    UIManager:broadcastEvent(Event:new("KOSyncPullProgress"))
-                end)
-            end,
-        },
-        -- other plugin
         process = {
             icon = "\u{E8F9}", -- engine
             --icon_func
