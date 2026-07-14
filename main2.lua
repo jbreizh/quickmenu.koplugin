@@ -129,7 +129,7 @@ function TouchMenu:updateItems(target_page, target_item_id)
         self._qs_refs = nil -- clear refs when switching away from panel tab
         return orig_updateItems(self, target_page, target_item_id)
     end
-    
+
     -- zenui
     if not self._qs_refs then
         self._qs_slider_locked = true
@@ -312,59 +312,27 @@ end
 local FileManagerMenu = require("apps/filemanager/filemanagermenu")
 local ReaderMenu = require("apps/reader/modules/readermenu")
 local BD = require("ui/bidi")
-local ConfirmBox    = require("ui/widget/confirmbox")
-local _                = require("common/i18n").gettext
-local UIManager     = require("ui/uimanager")
-local Event         = require("ui/event")
-
-function printTableLevel1(t)
-    if type(t) ~= "table" then
-        print("L'argument fourni n'est pas une table.")
-        return
-    end
-
-    print("--- Contenu de la table (niveau 1) ---")
-    for key, value in pairs(t) do
-        -- On vérifie le type pour afficher une représentation lisible
-        local displayValue = (type(value) == "table") and "[Table]" or tostring(value)
-        print(string.format("[%s] => %s", tostring(key), displayValue))
-    end
-end
-
-
 
 local orig_fm_setUpdateItemTable = FileManagerMenu.setUpdateItemTable
-function FileManagerMenu:setUpdateItemTable()
 
-    if config.add_quickmenu_tab then
-        self.menu_items.quick_menu_tab = {
-            text = _("Annotation Sync"),
-            icon = "home",
-            remember = function() return not config.open_on_start end,-- Dynamique : si l'option est décochée, on autorise la mémorisation
-            panel = function(touch_menu) return QuickMenu.createPanel(config, touch_menu) end
-        }
-    end
-    if config.add_exit_tab then
-        self.menu_items.exit_tab = {
-            icon = "exit",
-            remember = false,
-            callback = function()
-                self:onCloseFileManagerMenu()
-            end,
-            hold_callback = function()
-                self:onCloseFileManagerMenu()
-                UIManager:show(ConfirmBox:new{
-                    text = _("Are you sure you want to exit KOReader ?"),
-                    ok_text = _("Exit"),
-                    ok_callback = function() UIManager:broadcastEvent(Event:new("Exit")) end
-                })
-            end
-        }
-    end
-    print("fm : setUpdateItemTable")
-    printTableLevel1(self.menu_items["KOMenu:menu_buttons"])
-    printTableLevel1(self.menu_items)
+function FileManagerMenu:setUpdateItemTable()
+    -- 1. Build the menu item safely
+    local menu_item = QuickMenu.buildSettingsMenu(config, self)
+
+    -- 2. Set structural metadata attributes (REMOVED _() wrapper to prevent crash)
+    menu_item.text = "Quick Menu Settings"
+    menu_item.sorting_hint = "tools"
+
+    -- 3. Map it under the correct functional identification string
+    self.menu_items.quickmenu = menu_item
+
+    -- 4. Execute base setup logic
     orig_fm_setUpdateItemTable(self)
+
+    -- 5. Manage navigation panel assignments
+    if self.tab_item_table then
+        QuickMenu.updateTab(config, self)
+    end
 end
 
 -- don't open last tab when exit_tab is insert
@@ -373,17 +341,13 @@ function FileManagerMenu:_getTabIndexFromLocation(ges)
         self:setUpdateItemTable()
     end
     local last_tab_index = G_reader_settings:readSetting("filemanagermenu_tab_index") or 1
-    -- If exit_tab is present, exclude it from the navigation boundary (-1).
     local nav_limit = config.add_exit_tab and (#self.tab_item_table - 1) or #self.tab_item_table
     if not ges then
         return last_tab_index
-    -- if the start position is far right
     elseif ges.pos.x > Screen:getWidth() * (2/3) then
         return BD.mirroredUILayout() and 1 or nav_limit
-    -- if the start position is far left
     elseif ges.pos.x < Screen:getWidth() * (1/3) then
         return BD.mirroredUILayout() and nav_limit or 1
-    -- if center return the last index
     else
         return last_tab_index
     end
@@ -395,39 +359,23 @@ end
 local orig_reader_setUpdateItemTable = ReaderMenu.setUpdateItemTable
 
 function ReaderMenu:setUpdateItemTable()
+    -- 1. Build the menu item safely
+    local menu_item = QuickMenu.buildSettingsMenu(config, self)
 
-    if config.add_quickmenu_tab then
-        self.menu_items.quick_menu_tab = {
-            icon = "home",
-            remember = function() return not config.open_on_start end,-- Dynamique : si l'option est décochée, on autorise la mémorisation
-            panel = function(touch_menu) return QuickMenu.createPanel(config, touch_menu) end
-        }
-    end
-    if config.add_exit_tab then
-        self.menu_items.exit_tab = {
-            icon = "exit",
-            remember = false,
-            callback = function()
-                self:onTapCloseMenu()
-            end,
-            hold_callback = function()
-                self:onTapCloseMenu()
-                UIManager:show(ConfirmBox:new{
-                    text = _("Are you sure you want to exit book ?"),
-                    ok_text = _("Exit"),
-                    ok_callback = function()
-                        local file = self.ui.document and self.ui.document.file
-                        self.ui:onClose()
-                        if file then self.ui:showFileManager(file) end
-                    end
-                })
-            end
-        }
-    end
-    print("rd : setUpdateItemTable")
-    printTableLevel1(self.menu_items["KOMenu:menu_buttons"])
-    printTableLevel1(self.menu_items)
+    -- 2. Set structural metadata attributes (REMOVED _() wrapper to prevent crash)
+    menu_item.text = "Quick Menu Settings"
+    menu_item.sorting_hint = "tools"
+
+    -- 3. Map it under the correct functional identification string
+    self.menu_items.quickmenu = menu_item
+
+    -- 4. Execute base setup logic
     orig_reader_setUpdateItemTable(self)
+
+    -- 5. Manage navigation panel assignments
+    if self.tab_item_table then
+        QuickMenu.updateTab(config, self)
+    end
 end
 
 -- don't open last tab when exit_tab is insert
@@ -435,56 +383,15 @@ function ReaderMenu:_getTabIndexFromLocation(ges)
     if self.tab_item_table == nil then
         self:setUpdateItemTable()
     end
-    -- If exit_tab is present, exclude it from the navigation boundary (-1).
     local nav_limit = config.add_exit_tab and (#self.tab_item_table - 1) or #self.tab_item_table
     if not ges then
         return self.last_tab_index
-    -- if the start position is far right
     elseif ges.pos.x > Screen:getWidth() * (2/3) then
         return BD.mirroredUILayout() and 1 or nav_limit
-    -- if the start position is far left
     elseif ges.pos.x < Screen:getWidth() * (1/3) then
         return BD.mirroredUILayout() and nav_limit or 1
-    -- if center return the last index
     else
         return self.last_tab_index
-    end
-end
-
-
-local Utils      = require("common/utils")
-local fm_order   = require("ui/elements/filemanager_menu_order")
-local rd_order   = require("ui/elements/reader_menu_order")
-
-
---- Gère l'ajout d'un onglet avec support des index négatifs
---- @param index number|nil La position (1 = début, -1 = fin, -2 = avant-dernière, etc.)
-function manage_tab(order_table, tab_name, enabled, index)
-    local buttons = order_table["KOMenu:menu_buttons"]
-    if enabled then
-        if not Utils.table_contains(buttons, tab_name) then
-            local target_index = nil
-            if index then
-                if index < 0 then
-                    target_index = #buttons + 1 + index
-
-                    if target_index < 1 then target_index = 1 end
-                else
-                    target_index = index
-                end
-            end
-            if target_index and target_index <= #buttons + 1 then
-                table.insert(buttons, target_index, tab_name)
-            else
-                table.insert(buttons, tab_name)
-            end
-        end
-
-        if not order_table[tab_name] then order_table[tab_name] = {} end
-    else
-        if Utils.table_remove(buttons, tab_name) then
-            order_table[tab_name] = nil
-        end
     end
 end
 
@@ -492,27 +399,6 @@ end
 -- Init Plugin
 function QuickMenuPlugin:init()
     self.config = config
-    self.ui.menu:registerToMainMenu(self)
-    -- filemanager
-    manage_tab(fm_order, "quick_menu_tab", config.add_quickmenu_tab, 1)
-    manage_tab(fm_order, "exit_tab", config.add_exit_tab)
-    -- reader
-    manage_tab(rd_order, "quick_menu_tab", config.add_quickmenu_tab, 1)
-    manage_tab(rd_order, "exit_tab", config.add_exit_tab)
-    manage_tab(rd_order, "filemanager", not config.add_exit_tab,-1)
-
-    -- debug
-    print("quickmenu : init fm")
-    printTableLevel1(fm_order["KOMenu:menu_buttons"])
-    printTableLevel1(fm_order)
-    print("quickmenu : init rd")
-    printTableLevel1(rd_order["KOMenu:menu_buttons"])
-    printTableLevel1(rd_order)
-
-end
-
-function QuickMenuPlugin:addToMainMenu(menu_items)
-    menu_items.quick_menu_config = QuickMenu.buildSettingsMenu(config)
 end
 
 function QuickMenuPlugin:onFlushSettings()
