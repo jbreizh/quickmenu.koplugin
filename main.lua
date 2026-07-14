@@ -315,23 +315,63 @@ local ReaderMenu = require("apps/reader/modules/readermenu")
 local ReaderMenuOrder = require("ui/elements/reader_menu_order")
 local BD = require("ui/bidi")
 
+function printTableLevel1(t)
+    if type(t) ~= "table" then
+        print("L'argument fourni n'est pas une table.")
+        return
+    end
+
+    print("--- Contenu de la table (niveau 1) ---")
+    for key, value in pairs(t) do
+        -- On vérifie le type pour afficher une représentation lisible
+        local displayValue = (type(value) == "table") and "[Table]" or tostring(value)
+        print(string.format("[%s] => %s", tostring(key), displayValue))
+    end
+end
+
+
+
 local orig_fm_setUpdateItemTable = FileManagerMenu.setUpdateItemTable
-
 function FileManagerMenu:setUpdateItemTable()
-    -- settings
-    if not is_injected(FileManagerMenuOrder.setting, "quick_menu_config") then
-        table.insert(FileManagerMenuOrder.setting, "----------------------------")
-        table.insert(FileManagerMenuOrder.setting, "quick_menu_config")
-    end
-    self.menu_items.quick_menu_config = QuickMenu.buildSettingsMenu(config, self)
+    local ConfirmBox    = require("ui/widget/confirmbox")
+    local order = require("ui/elements/filemanager_menu_order")
+    local _                = require("common/i18n").gettext
+    local UIManager     = require("ui/uimanager")
+    local Event         = require("ui/event")
 
-    -- orig
+    if config.add_quickmenu_tab then
+        order.quick_menu_tab = {}
+        table.insert(order["KOMenu:menu_buttons"], 1, "quick_menu_tab")
+    end
+
+    if config.add_exit_tab then
+        order.exit_tab = {}
+        table.insert(order["KOMenu:menu_buttons"], "exit_tab")
+    end
+
+    self.menu_items.quick_menu_tab = {
+        icon = "home",
+        remember = function() return not config.open_on_start end,-- Dynamique : si l'option est décochée, on autorise la mémorisation
+        panel = function(touch_menu) return QuickMenu.createPanel(config, touch_menu) end
+    }
+
+    self.menu_items.exit_tab = {
+        icon = "exit",
+        remember = false,
+        callback = function()
+            self:onCloseFileManagerMenu()
+        end,
+        hold_callback = function()
+            self:onCloseFileManagerMenu()
+            UIManager:show(ConfirmBox:new{
+                text = _("Are you sure you want to exit KOReader ?"),
+                ok_text = _("Exit"),
+                ok_callback = function() UIManager:broadcastEvent(Event:new("Exit")) end
+            })
+        end
+    }
+
     orig_fm_setUpdateItemTable(self)
-
-    -- tab
-    if self.tab_item_table then
-        QuickMenu.updateTab(config, self)
-    end
 end
 
 -- don't open last tab when exit_tab is insert
@@ -362,18 +402,54 @@ end
 local orig_reader_setUpdateItemTable = ReaderMenu.setUpdateItemTable
 
 function ReaderMenu:setUpdateItemTable()
-    -- settings
-    if not is_injected(ReaderMenuOrder.setting, "quick_menu_config") then
-        table.insert(ReaderMenuOrder.setting, "quick_menu_config")
-    end
-    self.menu_items.quick_menu_config = QuickMenu.buildSettingsMenu(config, self)
-    -- orig
-    orig_reader_setUpdateItemTable(self)
+    local ConfirmBox    = require("ui/widget/confirmbox")
+    local order         = require("ui/elements/reader_menu_order")
+    local _             = require("common/i18n").gettext
+    local UIManager     = require("ui/uimanager")
+    local Event         = require("ui/event")
 
-    -- tab
-    if self.tab_item_table then
-        QuickMenu.updateTab(config, self)
+    if config.add_quickmenu_tab then
+        order.quick_menu_tab = {}
+        table.insert(order["KOMenu:menu_buttons"], 1, "quick_menu_tab")
     end
+
+    if config.add_exit_tab then
+        order.exit_tab = {}
+        table.insert(order["KOMenu:menu_buttons"], "exit_tab")
+        for i, value in ipairs(order["KOMenu:menu_buttons"]) do
+            if value == "filemanager" then
+                table.remove(order["KOMenu:menu_buttons"], i)
+                break -- On arrête la boucle une fois l'élément trouvé et supprimé
+            end
+        end
+    end
+
+    self.menu_items.quick_menu_tab = {
+        icon = "home",
+        remember = function() return not config.open_on_start end,-- Dynamique : si l'option est décochée, on autorise la mémorisation
+        panel = function(touch_menu) return QuickMenu.createPanel(config, touch_menu) end
+    }
+
+    self.menu_items.exit_tab = {
+        icon = "exit",
+        remember = false,
+        callback = function()
+            self:onTapCloseMenu()
+        end,
+        hold_callback = function()
+            self:onTapCloseMenu()
+            UIManager:show(ConfirmBox:new{
+                text = _("Are you sure you want to exit book ?"),
+                ok_text = _("Exit"),
+                ok_callback = function()
+                    local file = self.ui.document and self.ui.document.file
+                    self.ui:onClose()
+                    if file then self.ui:showFileManager(file) end
+                end
+            })
+        end
+    }
+    orig_reader_setUpdateItemTable(self)
 end
 
 -- don't open last tab when exit_tab is insert
@@ -401,6 +477,11 @@ end
 -- Init Plugin
 function QuickMenuPlugin:init()
     self.config = config
+    self.ui.menu:registerToMainMenu(self)
+end
+
+function QuickMenuPlugin:addToMainMenu(menu_items)
+    menu_items.quick_menu_config = QuickMenu.buildSettingsMenu(config)
 end
 
 function QuickMenuPlugin:onFlushSettings()

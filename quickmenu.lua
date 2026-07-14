@@ -113,90 +113,7 @@ end
 -- ============================================================
 -- Settings Menu Builder
 -- ============================================================
-local function find_tab_index(tab_list, id)
-    for i, tab in ipairs(tab_list) do
-        if tab.id == id then return i end
-    end
-    return nil
-end
-
-function QuickMenu.updateTab(config, menu_instance)
-    if not menu_instance.tab_item_table then return end
-    -- Déterminer le type de menu pour adapter le callback
-    local is_fm = (type(menu_instance.onCloseFileManagerMenu) == "function")
-
-    -- insert/remove quickmenu tab
-    local quick_menu_idx = find_tab_index(menu_instance.tab_item_table, "quick_menu_tab")
-    if config.add_quickmenu_tab and not quick_menu_idx then
-         local quick_menu_tab = {
-            id = "quick_menu_tab",
-            icon = "home",
-            remember = function() return not config.open_on_start end,-- Dynamique : si l'option est décochée, on autorise la mémorisation
-            panel = function(touch_menu) return QuickMenu.createPanel(config, touch_menu) end
-        }
-        table.insert(menu_instance.tab_item_table, 1, quick_menu_tab)
-    elseif not config.add_quickmenu_tab and quick_menu_idx then
-            table.remove(menu_instance.tab_item_table, quick_menu_idx)
-    end
-
-    -- insert/remove exit tab
-    local exit_idx = find_tab_index(menu_instance.tab_item_table, "exit_tab")
-    if config.add_exit_tab and not exit_idx then
-        table.insert(menu_instance.tab_item_table, {
-            id = "exit_tab",
-            icon = "exit",
-            remember = false,
-            callback = function()
-                if is_fm then menu_instance:onCloseFileManagerMenu()
-                else menu_instance:onTapCloseMenu() end
-            end,
-            hold_callback = function()
-                if is_fm then
-                    menu_instance:onCloseFileManagerMenu()
-                    UIManager:show(ConfirmBox:new{
-                        text = _("Are you sure you want to exit KOReader ?"),
-                        ok_text = _("Exit"),
-                        ok_callback = function() UIManager:broadcastEvent(Event:new("Exit")) end
-                    })
-                else
-                    menu_instance:onTapCloseMenu()
-                    UIManager:show(ConfirmBox:new{
-                        text = _("Are you sure you want to exit book ?"),
-                        ok_text = _("Exit"),
-                        ok_callback = function()
-                            local file = menu_instance.ui.document and menu_instance.ui.document.file
-                            menu_instance.ui:onClose()
-                            if file then menu_instance.ui:showFileManager(file) end
-                        end
-                    })
-                end
-            end
-        })
-    elseif not config.add_exit_tab and exit_idx then
-        table.remove(menu_instance.tab_item_table, exit_idx)
-    end
-
-    -- insert/remove filemanager tab
-    local fm_idx = find_tab_index(menu_instance.tab_item_table, "filemanager")
-    if config.add_exit_tab and fm_idx then
-        table.remove(menu_instance.tab_item_table, fm_idx)
-    elseif not config.add_exit_tab and not fm_idx and not is_fm then
-        table.insert(menu_instance.tab_item_table, #menu_instance.tab_item_table ,{
-            id = "filemanager",
-            icon = "appbar.filebrowser",
-            remember = false,
-            callback = function()
-                menu_instance:onTapCloseMenu()
-                local file = menu_instance.ui.document and menu_instance.ui.document.file
-                menu_instance.ui:onClose()
-                if file then menu_instance.ui:showFileManager(file) end
-            end
-        })
-    end
-
-end
-
-function QuickMenu.buildStyleSubMenu(config, menu_instance)
+function QuickMenu.buildStyleSubMenu(config)
     local style_items = {}
 
     -- style
@@ -279,7 +196,7 @@ function QuickMenu.buildStyleSubMenu(config, menu_instance)
     return style_items
 end
 
-function QuickMenu.buildSettingsMenu(config, menu_instance)
+function QuickMenu.buildSettingsMenu(config)
     local menu_items = {}
     local ctx = buildContext(config, nil)
 
@@ -290,7 +207,6 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
         callback = function(touch_menu)
             config.add_exit_tab = not config.add_exit_tab
             Config.save(config)
-            QuickMenu.updateTab(config, menu_instance)
             touch_menu:closeMenu()
         end
     })
@@ -301,7 +217,6 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
         callback = function(touch_menu)
             config.add_quickmenu_tab = not config.add_quickmenu_tab
             Config.save(config)
-            QuickMenu.updateTab(config, menu_instance)
             touch_menu:closeMenu()
         end
     })
@@ -332,7 +247,7 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
     -- style
     table.insert(menu_items, {
         text = _("Style"),
-        sub_item_table = QuickMenu.buildStyleSubMenu(config, menu_instance),
+        sub_item_table = QuickMenu.buildStyleSubMenu(config),
         separator = true,
     })
 
@@ -387,7 +302,6 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
                 -- custom_actions
                 --config.custom_actions = {} --TODO don't reset custom_actions ??????
                 Config.save(config)
-                QuickMenu.updateTab(config, menu_instance)
             end
         })
     end
@@ -395,6 +309,7 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
 
     return {
         text = _("Quick menu"),
+        sorting_hint = "setting",
         sub_item_table = menu_items,
     }
 end
