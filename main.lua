@@ -297,16 +297,6 @@ if orig_onNextPage then
 end
 
 -- ============================================================
--- Inject functions
--- ============================================================
-local function is_injected(list, id)
-    for _, v in ipairs(list) do
-        if v == id then return true end
-    end
-    return false
-end
-
--- ============================================================
 -- Inject FileManagerMenu
 -- ============================================================
 local FileManagerMenu = require("apps/filemanager/filemanagermenu")
@@ -319,19 +309,11 @@ local orig_fm_setUpdateItemTable = FileManagerMenu.setUpdateItemTable
 
 function FileManagerMenu:setUpdateItemTable()
     -- settings
-    if not is_injected(FileManagerMenuOrder.setting, "quick_menu_config") then
-        table.insert(FileManagerMenuOrder.setting, "----------------------------")
-        table.insert(FileManagerMenuOrder.setting, "quick_menu_config")
-    end
     self.menu_items.quick_menu_config = QuickMenu.buildSettingsMenu(config, self)
-
     -- orig
     orig_fm_setUpdateItemTable(self)
-
     -- tab
-    if self.tab_item_table then
-        QuickMenu.updateTab(config, self)
-    end
+    if self.tab_item_table then QuickMenu.updateTab(config, self) end
 end
 
 -- don't open last tab when exit_tab is insert
@@ -363,17 +345,11 @@ local orig_reader_setUpdateItemTable = ReaderMenu.setUpdateItemTable
 
 function ReaderMenu:setUpdateItemTable()
     -- settings
-    if not is_injected(ReaderMenuOrder.setting, "quick_menu_config") then
-        table.insert(ReaderMenuOrder.setting, "quick_menu_config")
-    end
     self.menu_items.quick_menu_config = QuickMenu.buildSettingsMenu(config, self)
     -- orig
     orig_reader_setUpdateItemTable(self)
-
     -- tab
-    if self.tab_item_table then
-        QuickMenu.updateTab(config, self)
-    end
+    if self.tab_item_table then QuickMenu.updateTab(config, self) end
 end
 
 -- don't open last tab when exit_tab is insert

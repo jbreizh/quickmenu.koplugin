@@ -193,7 +193,6 @@ function QuickMenu.updateTab(config, menu_instance)
             end
         })
     end
-
 end
 
 function QuickMenu.buildStyleSubMenu(config, menu_instance)
@@ -313,7 +312,6 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
             config.open_on_start = not config.open_on_start
             Config.save(config)
         end,
-        --separator = true
     })
 
     -- custom actions
@@ -395,6 +393,7 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
 
     return {
         text = _("Quick menu"),
+        sorting_hint = "setting",
         sub_item_table = menu_items,
     }
 end
