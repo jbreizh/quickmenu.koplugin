@@ -213,7 +213,7 @@ function IntensityZenUI.build(ctx, settings_func)
                     x = fl_progress.dimen.x,
                     y = fl_progress.dimen.y,
                     w = fl_progress.dimen.w,
-                    h = fl_progress.dimen.y + fl_progress.dimen.h,
+                    h = fl_progress.dimen.h,
                 })
             end
             -- update touch_menu after dragging

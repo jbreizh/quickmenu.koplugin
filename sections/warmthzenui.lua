@@ -77,8 +77,8 @@ function WarmthZenUI.build(ctx)
         local nl_prefix_text = _("Warmth") .. " : "
         nl_drag_prefix = TextWidget:new{ text = nl_prefix_text, face = medium_font, bold = true }
         nl_drag_prefix_w = nl_drag_prefix:getSize().w
-        nl_drag_num = TextWidget:new{ text = tostring(nl.cur), face = medium_font, bold = true }
-        local nl_max_num_sample = TextWidget:new{ text = tostring(nl.max), face = medium_font, bold = true }
+        nl_drag_num = TextWidget:new{ text = tostring(Utils.get_percentage(nl.cur, nl.min, nl.max)), face = medium_font, bold = true }
+        local nl_max_num_sample = TextWidget:new{ text = tostring(100), face = medium_font, bold = true }
         nl_drag_max_num_w = nl_max_num_sample:getSize().w
         nl_max_num_sample:free()
 
@@ -128,7 +128,7 @@ function WarmthZenUI.build(ctx)
         nl.cur = warmth
         if nl.cur > nl.min then nl.prev_non_min = nl.cur end
         nl_progress:setValue(nl.cur)
-        if section.show_title then nl_drag_num:setText(tostring(nl.cur)) end
+        if section.show_title then nl_drag_num:setText(tostring(Utils.get_percentage(nl.cur, nl.min, nl.max))) end
         UIManager:setDirty(show_parent, "ui", touch_menu.dimen)
     end
 
@@ -156,7 +156,7 @@ function WarmthZenUI.build(ctx)
                 local sw = nl_progress.dimen.w
                 local num_x = sx - h_gap - btn_width + btn_width + nl_drag_prefix_w
                 screen.bb:paintRect(num_x, label_y, nl_drag_max_num_w, lh, Blitbuffer.COLOR_WHITE)
-                nl_drag_num:setText(tostring(nl.cur))
+                nl_drag_num:setText(tostring(Utils.get_percentage(nl.cur, nl.min, nl.max)))
                 nl_drag_num:paintTo(screen.bb, num_x, label_y)
                 -- Single A2 covering label + slider (two back-to-back A2 calls
                 -- can race on Kobo, causing the second refresh to be dropped).
@@ -173,14 +173,14 @@ function WarmthZenUI.build(ctx)
                     x = nl_progress.dimen.x,
                     y = nl_progress.dimen.y,
                     w = nl_progress.dimen.w,
-                    h = nl_progress.dimen.y + nl_progress.dimen.h,
+                    h = nl_progress.dimen.h,
                 })
             end
             -- update touch_menu after dragging
             UIManager:unschedule(update_touch_menu)
             UIManager:scheduleIn(0.5, update_touch_menu)
         else
-            if section.show_title then nl_drag_num:setText(tostring(nl.cur)) end
+            if section.show_title then nl_drag_num:setText(tostring(Utils.get_percentage(nl.cur, nl.min, nl.max))) end
             update_touch_menu()
             --UIManager:setDirty(show_parent, "ui", touch_menu.dimen)
         end

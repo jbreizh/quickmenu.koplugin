@@ -1,5 +1,16 @@
 local M = {}
 
+--- Convertit une valeur native en pourcentage (0-100).
+--- @param val number La valeur actuelle (ex: nl.cur).
+--- @param min number La valeur minimale (ex: nl.min).
+--- @param max number La valeur maximale (ex: nl.max).
+--- @return number Le pourcentage arrondi (0-100).
+function M.get_percentage(val, min, max)
+    if not val or not min or not max or (max - min) == 0 then return 0 end
+    local percent = ((val - min) / (max - min)) * 100
+    return math.floor(percent + 0.5) -- +0.5 pour un arrondi correct
+end
+
 --- Normalizes a string by removing accents for sorting purposes.
 --- @param str string The string to normalize.
 --- @return string     The normalized string.
