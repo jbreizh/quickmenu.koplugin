@@ -57,7 +57,7 @@ end
 --- @param val  any    The value to look for.
 --- @return     boolean True if the value is found, false otherwise.
 function M.table_contains(tbl, val)
-    for _, v in ipairs(tbl) do
+    for i, v in ipairs(tbl) do
         if v == val then return true end
     end
     return false
@@ -75,6 +75,21 @@ function M.table_remove(tbl, val)
         end
     end
     return false
+end
+
+--- Inserts a value into a table only if it does not already exist.
+--- @param tbl   table  The table to modify.
+--- @param val   any    The value to insert.
+--- @return      boolean True if the value was inserted, false if it already existed.
+function M.table_insert_unique(tbl, val)
+    if not tbl then return false end
+    for i, v in ipairs(tbl) do
+        if v == val then
+            return false
+        end
+    end
+    table.insert(tbl, val)
+    return true
 end
 
 --- Wraps each item in a flat list into an individual table.

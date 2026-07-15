@@ -44,7 +44,7 @@ function TouchMenu:init(...)
 
     -- force quick menu first
     if config.open_on_start then
-        self.last_index = 1
+        self.last_index = config.idx_quickmenu_tab
     end
 
     orig_init(self, ...)
@@ -303,13 +303,15 @@ local FileManagerMenu = require("apps/filemanager/filemanagermenu")
 local FileManagerMenuOrder = require("ui/elements/filemanager_menu_order")
 local ReaderMenu = require("apps/reader/modules/readermenu")
 local ReaderMenuOrder = require("ui/elements/reader_menu_order")
+-- local Utils      = require("common/utils")
+
 local BD = require("ui/bidi")
 
 local orig_fm_setUpdateItemTable = FileManagerMenu.setUpdateItemTable
 
 function FileManagerMenu:setUpdateItemTable()
     -- settings
-    self.menu_items.quick_menu_config = QuickMenu.buildSettingsMenu(config, self)
+    self.menu_items.quickmenu = QuickMenu.buildSettingsMenu(config, self)
     -- orig
     orig_fm_setUpdateItemTable(self)
     -- tab
@@ -345,7 +347,7 @@ local orig_reader_setUpdateItemTable = ReaderMenu.setUpdateItemTable
 
 function ReaderMenu:setUpdateItemTable()
     -- settings
-    self.menu_items.quick_menu_config = QuickMenu.buildSettingsMenu(config, self)
+    self.menu_items.quickmenu = QuickMenu.buildSettingsMenu(config, self)
     -- orig
     orig_reader_setUpdateItemTable(self)
     -- tab
@@ -373,10 +375,12 @@ function ReaderMenu:_getTabIndexFromLocation(ges)
     end
 end
 
-
 -- Init Plugin
 function QuickMenuPlugin:init()
     self.config = config
+    config.idx_quickmenu_tab = 1
+--     if FileManagerMenuOrder and FileManagerMenuOrder.setting then print("insert"); Utils.table_insert_unique(FileManagerMenuOrder.setting, "quickmenu") end
+--     if ReaderMenuOrder and ReaderMenuOrder.setting then Utils.table_insert_unique(ReaderMenuOrder.setting, "quickmenu") end
 end
 
 function QuickMenuPlugin:onFlushSettings()

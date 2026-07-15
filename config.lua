@@ -66,6 +66,7 @@ Config.DEFAULTS = {
     open_on_start = true,
     add_exit_tab = true,
     add_quickmenu_tab = true,
+    idx_quickmenu_tab = 1,
 }
 
 local function copyMissing(dst, defaults)
@@ -116,6 +117,7 @@ function Config.load()
     if cfg.open_on_start == nil then cfg.open_on_start = Config.DEFAULTS.open_on_start end
     if cfg.add_exit_tab == nil then cfg.add_exit_tab = Config.DEFAULTS.add_exit_tab end
     if cfg.add_quickmenu_tab == nil then cfg.add_quickmenu_tab = Config.DEFAULTS.add_quickmenu_tab end
+    if cfg.idx_quickmenu_tab == nil then cfg.idx_quickmenu_tab = Config.DEFAULTS.idx_quickmenu_tab end
 
     -- style cleaning
     cfg.style = cfg.style or {}

@@ -104,82 +104,83 @@ local function find_tab_index(tab_list, id)
     return nil
 end
 
-function QuickMenu.updateTab(config, menu_instance)
-    if not menu_instance.tab_item_table then return end
-    -- Déterminer le type de menu pour adapter le callback
-    local is_fm = (type(menu_instance.onCloseFileManagerMenu) == "function")
-
-    -- insert/remove quickmenu tab
-    local quick_menu_idx = find_tab_index(menu_instance.tab_item_table, "quick_menu_tab")
-    if config.add_quickmenu_tab and not quick_menu_idx then
-         local quick_menu_tab = {
-            id = "quick_menu_tab",
-            icon = "home",
-            remember = function() return not config.open_on_start end,-- Dynamique : si l'option est décochée, on autorise la mémorisation
-            panel = function(touch_menu) return QuickMenu.createPanel(config, touch_menu) end
-        }
-        table.insert(menu_instance.tab_item_table, 1, quick_menu_tab)
-    elseif not config.add_quickmenu_tab and quick_menu_idx then
-            table.remove(menu_instance.tab_item_table, quick_menu_idx)
-    end
-
-    -- insert/remove exit tab
-    local exit_idx = find_tab_index(menu_instance.tab_item_table, "exit_tab")
-    if config.add_exit_tab and not exit_idx then
-        table.insert(menu_instance.tab_item_table, {
-            id = "exit_tab",
-            icon = "exit",
-            remember = false,
-            callback = function()
-                if is_fm then menu_instance:onCloseFileManagerMenu()
-                else menu_instance:onTapCloseMenu() end
-            end,
-            hold_callback = function()
-                if is_fm then
-                    menu_instance:onCloseFileManagerMenu()
-                    UIManager:show(ConfirmBox:new{
-                        text = _("Are you sure you want to exit KOReader ?"),
-                        ok_text = _("Exit"),
-                        ok_callback = function() UIManager:broadcastEvent(Event:new("Exit")) end
-                    })
-                else
-                    menu_instance:onTapCloseMenu()
-                    UIManager:show(ConfirmBox:new{
-                        text = _("Are you sure you want to exit book ?"),
-                        ok_text = _("Exit"),
-                        ok_callback = function()
-                            local file = menu_instance.ui.document and menu_instance.ui.document.file
-                            menu_instance.ui:onClose()
-                            if file then menu_instance.ui:showFileManager(file) end
-                        end
-                    })
-                end
-            end
-        })
-    elseif not config.add_exit_tab and exit_idx then
-        table.remove(menu_instance.tab_item_table, exit_idx)
-    end
-
-    -- insert/remove filemanager tab
-    local fm_idx = find_tab_index(menu_instance.tab_item_table, "filemanager")
-    if config.add_exit_tab and fm_idx then
-        table.remove(menu_instance.tab_item_table, fm_idx)
-    elseif not config.add_exit_tab and not fm_idx and not is_fm then
-        table.insert(menu_instance.tab_item_table, #menu_instance.tab_item_table ,{
-            id = "filemanager",
-            icon = "appbar.filebrowser",
-            remember = false,
-            callback = function()
-                menu_instance:onTapCloseMenu()
-                local file = menu_instance.ui.document and menu_instance.ui.document.file
-                menu_instance.ui:onClose()
-                if file then menu_instance.ui:showFileManager(file) end
-            end
-        })
+local function manage_tab(tab_list, tab_id, tab_data, enabled, index)
+    local current_idx = find_tab_index(tab_list, tab_id) -- search if tab is inserted
+    if enabled then
+        if not current_idx then
+            local target = index or (#tab_list + 1)                     -- no index insert at the end
+            if target < 0 then target = #tab_list + 1 + target end      -- begin at the end for neg index
+            if target > #tab_list + 1 then target = #tab_list + 1 end   -- secure big index
+            if target < 1 then target = 1 end                           -- secure small index
+            table.insert(tab_list, target, tab_data)
+        end
+    else
+        if current_idx then
+            table.remove(tab_list, current_idx)
+        end
     end
 end
 
-function QuickMenu.buildStyleSubMenu(config, menu_instance)
+
+function QuickMenu.updateTab(config, menu_instance)
+    if not menu_instance.tab_item_table then return end
+    local tabs = menu_instance.tab_item_table
+    local is_fm = (type(menu_instance.onCloseFileManagerMenu) == "function")
+
+    -- quick_menu_tab
+    manage_tab(tabs, "quick_menu_tab", {
+        id = "quick_menu_tab",
+        icon = "home",
+        remember = function() return not config.open_on_start end,
+        panel = function(touch_menu) return QuickMenu.createPanel(config, touch_menu) end
+    }, config.add_quickmenu_tab, config.idx_quickmenu_tab or 1) -- when add_quickmenu_tab -> first position
+
+    -- exit_tab
+    manage_tab(tabs, "exit_tab", {
+        id = "exit_tab",
+        icon = "exit",
+        remember = false,
+        callback = function()
+            if is_fm then menu_instance:onCloseFileManagerMenu() else menu_instance:onTapCloseMenu() end
+        end,
+        hold_callback = function()
+            if is_fm then
+                menu_instance:onCloseFileManagerMenu()
+                UIManager:show(ConfirmBox:new{
+                    text = _("Are you sure you want to exit KOReader ?"),
+                    ok_text = _("Exit"),
+                    ok_callback = function() UIManager:broadcastEvent(Event:new("Exit")) end
+                })
+            else
+                menu_instance:onTapCloseMenu()
+                UIManager:show(ConfirmBox:new{
+                    text = _("Are you sure you want to exit book ?"),
+                    ok_text = _("Exit"),
+                    ok_callback = function()
+                        local file = menu_instance.ui.document and menu_instance.ui.document.file
+                        menu_instance.ui:onClose()
+                        if file then menu_instance.ui:showFileManager(file) end
+                    end
+                })
+            end
+        end
+    }, config.add_exit_tab) -- when add_exit_tab -> last position
+
+    -- filemanager_tab
+    manage_tab(tabs, "filemanager", {
+        id = "filemanager",
+        icon = "appbar.filebrowser",
+        remember = false,
+        callback = function()
+            menu_instance:onTapCloseMenu()
+            local file = menu_instance.ui.document and menu_instance.ui.document.file
+            menu_instance.ui:onClose()
+            if file then menu_instance.ui:showFileManager(file) end
+        end
+    }, (not config.add_exit_tab and not is_fm), -1) -- not add_exit_tab and not fm -> last position - 1
+end
+
+function QuickMenu.buildStyleSubMenu(config)
     local style_items = {}
 
     -- style
@@ -303,7 +304,7 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
     -- style
     table.insert(menu_items, {
         text = _("Style"),
-        sub_item_table = QuickMenu.buildStyleSubMenu(config, menu_instance),
+        sub_item_table = QuickMenu.buildStyleSubMenu(config),
         separator = true,
     })
 
