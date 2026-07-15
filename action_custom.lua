@@ -72,7 +72,7 @@ function ActionCustom:showActionCustomMenu(ctx)
 
     dialog = ButtonDialog:new{
         -- dismissable = false,
-        title = _("Custom actions") .. " :",
+        title = "\u{E8B6}" .. " " ..  _("Custom actions") .. " :",
         title_align  = "left",
         width_factor = WIDTHFACTOR,
         buttons = buttons,
@@ -139,7 +139,7 @@ function ActionCustom:applyActionCustomDialog(ctx, action)
 
     dialog = ButtonDialog:new{
         -- dismissable = false,
-        title = _("Apply") .. " :",
+        title = "\u{ED67}" .. " " .. _("Apply") .. " :",
         title_align  = "left",
         width_factor = WIDTHFACTOR,
         buttons = buttons,
@@ -212,7 +212,7 @@ function ActionCustom:addActionCustomDialog(ctx)
         },
     }
     dialog = ButtonDialog:new{
-        title        = _("Add new action") .. " :",
+        title        = "\u{E8B6}" .. " " .. _("Add new action") .. " :",
         title_align  = "left",
         width_factor = WIDTHFACTOR,
         buttons      = buttons,
@@ -284,7 +284,7 @@ function ActionCustom:callbackActionCustomDialog(ctx, action, index, is_hold_cal
     }
 
     dialog = ButtonDialog:new{
-        title        = ((is_hold_callback and _("Select hold")) or _("Select tap")) .. " :",
+        title        = "\u{E8B6}" .. " " .. ((is_hold_callback and _("Select hold")) or _("Select tap")) .. " :",
         title_align  = "left",
         width_factor = WIDTHFACTOR,
         buttons      = buttons,
@@ -444,7 +444,7 @@ function ActionCustom:updateActionCustomDialog(ctx, action, index)
     }
 
     dialog = ButtonDialog:new{
-        title = _("Edit") .. " :",
+        title = "\u{F044}" .. " " .. _("Edit") .. " :",
         title_align = "left",
         width_factor = WIDTHFACTOR,
         buttons = buttons,

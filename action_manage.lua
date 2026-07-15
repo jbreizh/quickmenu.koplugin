@@ -220,7 +220,7 @@ function ActionManage:selectActionManageDialog(ctx, section_name, on_close)
     }})
 
     dialog = ButtonDialog:new{
-        title = _("Select actions") .. " :",
+        title = "\u{E8B6}" .. " " ..  _("Select actions") .. " :",
         title_align  = "left",
         width_factor = WIDTHFACTOR,
         buttons = buttons,

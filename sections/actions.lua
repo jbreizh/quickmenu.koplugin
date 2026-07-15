@@ -21,7 +21,8 @@ local _               = require("common/i18n").gettext
 
 local Actions = {
     id = "actions",
-    label = _("Actions")
+    label = _("Actions"),
+    icon  = "\u{E767}" --auto fix
 }
 
 -- ============================================================
@@ -342,7 +343,7 @@ function Actions.showSettings(ctx)
 
     dialog = ButtonDialog:new{
         -- dismissable = false,
-        title = Actions.label .. " :",
+        title = Actions.icon .. " " .. Actions.label .. " :",
         title_align  = "left",
         width_factor = 0.9,
         buttons = buttons,

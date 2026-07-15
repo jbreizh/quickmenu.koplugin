@@ -21,7 +21,8 @@ local _               = require("common/i18n").gettext
 
 local Info = {
     id = "info",
-    label = _("Reading")
+    label = _("Reading"),
+    icon  = "\u{E7BA}" --book-multiple
 }
 
 -- ============================================================
@@ -273,7 +274,7 @@ function Info.showSettings(ctx)
 
     dialog = ButtonDialog:new{
         -- dismissable = false,
-        title = Info.label .. " :",
+        title = Info.icon .. " " .. Info.label .. " :",
         title_align  = "left",
         width_factor = 0.9,
         buttons = buttons,

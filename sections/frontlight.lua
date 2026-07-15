@@ -23,7 +23,8 @@ local _                = require("common/i18n").gettext
 
 local Frontlight = {
     id = "frontlight",
-    label = _("Frontlight")
+    label = _("Frontlight"),
+    icon  = "\u{EA2B}" -- led-on
 }
 
 -- ============================================================
@@ -255,7 +256,7 @@ function Frontlight.showSettings(ctx)
 
     dialog = ButtonDialog:new{
         -- dismissable = false,
-        title = Frontlight.label .. " :",
+        title = Frontlight.icon .. " " .. Frontlight.label .. " :",
         title_align  = "left",
         width_factor = 0.9,
         buttons = buttons,

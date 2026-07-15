@@ -20,8 +20,9 @@ local Utils           = require("common/utils")
 local _               = require("common/i18n").gettext
 
 local Shortcuts = {
-    id = "shortcuts",
-    label = _("Shortcuts")
+    id    = "shortcuts",
+    label = _("Shortcuts"),
+    icon  = "\u{EA38}" -- link
 }
 
 -- ============================================================
@@ -338,7 +339,7 @@ function Shortcuts.showSettings(ctx)
 
     dialog = ButtonDialog:new{
         -- dismissable = false,
-        title = Shortcuts.label .. " :",
+        title = Shortcuts.icon .. " " .. Shortcuts.label .. " :",
         title_align  = "left",
         width_factor = 0.9,
         buttons = buttons,

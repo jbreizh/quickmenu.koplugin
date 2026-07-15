@@ -20,7 +20,8 @@ local _            = require("common/i18n").gettext
 
 local Footer = {
     id = "footer",
-    label = _("Footer")
+    label = _("Footer"),
+    icon  = "\u{EDF9}" -- footer
 }
 
 -- ============================================================
@@ -297,7 +298,7 @@ function Footer.showSettings(ctx)
 
     dialog = ButtonDialog:new{
         -- dismissable = false,
-        title = Footer.label .. " :",
+        title = Footer.icon .. " " .. Footer.label .. " :",
         title_align  = "left",
         width_factor = 0.9,
         buttons = buttons,

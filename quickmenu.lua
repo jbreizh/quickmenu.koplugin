@@ -315,8 +315,9 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
             local sort_sections = {}
             for index, section_id in ipairs(config.section_order) do
                 local ok, section_mod = pcall(require, "sections/" .. section_id)
+                local icon = (ok and section_mod.icon) and (section_mod.icon .. " ") or ""
                 local label = (ok and section_mod.label) and section_mod.label or section_id
-                table.insert(sort_sections, { text = label, id = section_id })
+                table.insert(sort_sections, { text = icon .. " " .. label, id = section_id })
             end
 
             UIManager:show(SortWidget:new{
