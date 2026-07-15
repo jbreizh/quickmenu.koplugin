@@ -27,9 +27,9 @@ local ZenSlider       = require("widgets/zen_slider")
 local Config           = require("config")
 local _               = require("common/i18n").gettext
 
-local IntensityZenUI = {}
-
-local SECTION = "frontlight"
+local IntensityZenUI = {
+    id = "frontlight"
+}
 
 function IntensityZenUI.build(ctx, settings_func)
     local config             = ctx.config
@@ -51,7 +51,7 @@ function IntensityZenUI.build(ctx, settings_func)
     local btn_font_size      = config.style.btn_font_size or 16
     local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
-    local section = Utils.getSection(config, SECTION)
+    local section = Utils.getSection(config, IntensityZenUI.id)
     if not section then return nil end
     --
     local show_parent        = touch_menu.show_parent

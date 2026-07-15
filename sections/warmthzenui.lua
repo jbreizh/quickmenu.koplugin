@@ -26,9 +26,9 @@ local Utils            = require("common/utils")
 local ZenSlider       = require("widgets/zen_slider")
 local _               = require("common/i18n").gettext
 
-local WarmthZenUI = {}
-
-local SECTION = "frontlight"
+local WarmthZenUI = {
+    id = "frontlight"
+}
 
 function WarmthZenUI.build(ctx)
     local config             = ctx.config
@@ -50,7 +50,7 @@ function WarmthZenUI.build(ctx)
     local btn_font_size      = config.style.btn_font_size or 16
     local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
-    local section = Utils.getSection(config, SECTION)
+    local section = Utils.getSection(config, WarmthZenUI.id)
     if not section then return nil end
     --
     local show_parent        = touch_menu.show_parent

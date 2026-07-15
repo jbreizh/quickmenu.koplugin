@@ -40,9 +40,6 @@ msgstr "Tem certeza que deseja sair do KOReader?"
 msgid "Are you sure you want to exit book ?"
 msgstr "Tem certeza que deseja fechar o livro?"
 
-msgid "Are you sure you want to reset to defaults ?"
-msgstr "Tem certeza que deseja restaurar os padrões?"
-
 msgid "Are you sure you want to restart KOReader ?"
 msgstr "Tem certeza que deseja reiniciar o KOReader?"
 
@@ -334,9 +331,6 @@ msgstr "Biblioteca de ícones"
 msgid "Infinity"
 msgstr "Infinito"
 
-msgid "Informations"
-msgstr "Informações"
-
 msgid "Justify controls"
 msgstr "Justificar controles"
 
@@ -529,14 +523,8 @@ msgstr "Redefinir ações para o padrão"
 msgid "Reset quick menu to defaults"
 msgstr "Redefinir menu rápido para o padrão"
 
-msgid "Reset quick menu to defaults ?"
-msgstr "Redefinir menu rápido para o padrão?"
-
 msgid "Reset section to defaults"
 msgstr "Redefinir seção para o padrão"
-
-msgid "Reset to defaults"
-msgstr "Redefinir para o padrão"
 
 msgid "Restart"
 msgstr "Reiniciar"
@@ -585,9 +573,6 @@ msgstr "Selecionar toque"
 
 msgid "Separators"
 msgstr "Separadores"
-
-msgid "Settings"
-msgstr "Configurações"
 
 msgid "Shortcut"
 msgstr "Atalho"
@@ -841,9 +826,6 @@ msgstr "Wikipédia"
 msgid "available"
 msgstr "disponível"
 
-msgid "batterystat)"
-msgstr "estat_bateria)"
-
 msgid "total"
 msgstr "total"
 
@@ -853,23 +835,35 @@ msgstr "usado"
 msgid "Network"
 msgstr ""
 
-msgid "Tap : Toggle FileBrowserPlus connection\nHold : Nothing"
-msgstr ""
+msgid "Network"
+msgstr "Rede"
 
-msgid "LocalSend"
-msgstr ""
+msgid "Tap : Toggle FileBrowserPlus connection\nHold : Nothing"
+msgstr "Toque: Alternar conexão FileBrowserPlus\nManter: Nada"
 
 msgid "Pull progress"
-msgstr ""
+msgstr "Progresso de receção"
 
 msgid "Push progress"
-msgstr ""
+msgstr "Progresso de envio"
 
 msgid "Send current book"
-msgstr ""
+msgstr "Enviar livro atual"
 
 msgid "Send file"
-msgstr ""
+msgstr "Enviar ficheiro"
 
 msgid "Tap : Toggle LocalSend connection\nHold : Show localSend dialog"
-msgstr ""
+msgstr "Toque: Alternar conexão LocalSend\nManter: Mostrar diálogo LocalSend"
+
+msgid "Reset sections order to default"
+msgstr "Repor ordem das secções"
+
+msgid "Reset sections order to defaults"
+msgstr "Repor ordem das secções por defeito"
+
+msgid "Reset style to defaults"
+msgstr "Repor estilo por defeito"
+
+msgid "Sort sections"
+msgstr "Ordenar secções"

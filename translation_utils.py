@@ -3,7 +3,7 @@
 Extract translatable strings from all Lua source files and compare against .po files.
 
 Usage:
-    python3 extract_translatable_strings.py [--update-po] [--locale LOCALE]
+    python3 translation_utils.py [--update-po] [--locale LOCALE]
 
 Flags:
     --update-po     Write missing msgids into all (or specified) locale .po files

@@ -720,7 +720,7 @@ function ActionDefs.get()
 
                 }
                 dialog = ButtonDialog:new{
-                    title        = _("LocalSend") .. " :",
+                    title        = "LocalSend" .. " :",
                     width_factor =  0.5,
                     buttons      = buttons,
                 }
@@ -1086,7 +1086,7 @@ function ActionDefs.get()
             hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("batterystat") then UIManager:broadcastEvent(Event:new("ShowBatteryStatistics"))
-                else UIManager:show(InfoMessage:new{ text = _("batterystat)") .. " : " .. _("Plugin not activated.") }) end
+                else UIManager:show(InfoMessage:new{ text = "Batterystat" .. " : " .. _("Plugin not activated.") }) end
             end
         },
         auxbattery = {
@@ -1113,7 +1113,7 @@ function ActionDefs.get()
             hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
                 if Utils.hasPlugin and Utils.hasPlugin("batterystat") then UIManager:broadcastEvent(Event:new("ShowBatteryStatistics"))
-                else UIManager:show(InfoMessage:new{ text = _("batterystat)") .. " : " .. _("Plugin not activated.") }) end
+                else UIManager:show(InfoMessage:new{ text = "Batterystat" .. " : " .. _("Plugin not activated.") }) end
             end
         }
     }

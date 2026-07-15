@@ -25,9 +25,6 @@ msgstr "Êtes-vous sûr de vouloir quitter KOReader ?"
 msgid "Are you sure you want to exit book ?"
 msgstr "Êtes-vous sûr de vouloir fermer le livre ?"
 
-msgid "Are you sure you want to reset to defaults ?"
-msgstr "Êtes-vous sûr de vouloir réinitialiser aux valeurs par défaut ?"
-
 msgid "Are you sure you want to restart KOReader ?"
 msgstr "Êtes-vous sûr de vouloir redémarrer KOReader ?"
 
@@ -94,9 +91,6 @@ msgstr "Go"
 msgid "History"
 msgstr "Historique"
 
-msgid "Informations"
-msgstr "Informations"
-
 msgid "Justify controls"
 msgstr "Justifier les contrôles"
 
@@ -159,9 +153,6 @@ msgstr "Redémarrer"
 
 msgid "Reset"
 msgstr "Réinitialiser"
-
-msgid "Reset to defaults"
-msgstr "Réinitialiser aux valeurs par défaut"
 
 msgid "Restart"
 msgstr "Relancer"
@@ -303,9 +294,6 @@ msgstr "Wikipédia"
 
 msgid "available"
 msgstr "disponible"
-
-msgid "batterystat)"
-msgstr "stat_batterie)"
 
 msgid "total"
 msgstr "total"
@@ -760,9 +748,6 @@ msgstr "Appui : Basculer le wifi\nMaintien : Afficher la sélection wifi"
 msgid "Edit"
 msgstr "Éditer"
 
-msgid "Settings"
-msgstr "Paramètres"
-
 msgid "Tap : Show time\nHold : Nothing"
 msgstr "Appui : Afficher l'heure\nMaintien : Rien"
 
@@ -814,9 +799,6 @@ msgstr "Réinitialiser les actions par défaut"
 msgid "Reset quick menu to defaults"
 msgstr "Réinitialiser le menu rapide par défaut"
 
-msgid "Reset quick menu to defaults ?"
-msgstr "Réinitialiser le menu rapide par défaut ?"
-
 msgid "Reset section to defaults"
 msgstr "Réinitialiser la section par défaut"
 
@@ -851,25 +833,34 @@ msgid "Use ZenFooter "
 msgstr "Utiliser ZenFooter"
 
 msgid "Network"
-msgstr ""
+msgstr "Réseau"
 
 msgid "Tap : Toggle FileBrowserPlus connection\nHold : Nothing"
-msgstr ""
-
-msgid "LocalSend"
-msgstr ""
+msgstr "Appui : Activer/Désactiver FileBrowserPlus\nMaintien : Rien"
 
 msgid "Pull progress"
-msgstr ""
+msgstr "Progression réception"
 
 msgid "Push progress"
-msgstr ""
+msgstr "Progression envoi"
 
 msgid "Send current book"
-msgstr ""
+msgstr "Envoyer le livre actuel"
 
 msgid "Send file"
-msgstr ""
+msgstr "Envoyer un fichier"
 
 msgid "Tap : Toggle LocalSend connection\nHold : Show localSend dialog"
-msgstr ""
+msgstr "Appui : Activer/Désactiver LocalSend\nMaintien : Afficher la boîte de dialogue LocalSend"
+
+msgid "Reset sections order to default"
+msgstr "Réinitialiser l'ordre des sections"
+
+msgid "Reset sections order to defaults"
+msgstr "Réinitialiser l'ordre des sections par défaut"
+
+msgid "Reset style to defaults"
+msgstr "Réinitialiser le style par défaut"
+
+msgid "Sort sections"
+msgstr "Trier les sections"

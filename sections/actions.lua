@@ -19,9 +19,11 @@ local ActionButton    = require("widgets/actionbutton")
 local Utils           = require("common/utils")
 local _               = require("common/i18n").gettext
 
-local Actions = {}
+local Actions = {
+    id = "actions",
+    label = _("Actions")
+}
 
-local SECTION = "actions"
 -- ============================================================
 -- Actions Builder
 -- ============================================================
@@ -48,7 +50,7 @@ function Actions.build(ctx)
     local btn_font_size      = config.style.btn_font_size or 16
     local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
-    local section = Utils.getSection(config, SECTION)
+    local section = Utils.getSection(config, Actions.id)
 
     if not section then return nil end
 
@@ -101,7 +103,7 @@ function Actions.build(ctx)
         end
         -- section name
         local label_title = TextWidget:new{
-            text = _("Actions") .. " : " .. label_icon,
+            text = Actions.label .. " : " .. label_icon,
             face =  Font:getFace("cfont", btn_font_size), bold = true,
             max_width = inner_width - btn_width*2,
         }
@@ -225,7 +227,7 @@ end
 -- ============================================================
 function Actions.getSettings(ctx, close, refresh, reload)
     local config = ctx.config
-    local section = Utils.getSection(config, SECTION)
+    local section = Utils.getSection(config, Actions.id)
     if not section then return {} end
 
     -- global
@@ -263,7 +265,7 @@ function Actions.getSettings(ctx, close, refresh, reload)
         },
     }
 
-    local action_buttons = ActionManage:btnActionManageMenu(ctx, SECTION, close, refresh)
+    local action_buttons = ActionManage:btnActionManageMenu(ctx, Actions.id, close, refresh)
     -- convert {{...}} in {}
     local flat_buttons = Utils.unwrap_items(action_buttons)
     for i, btn in ipairs(flat_buttons) do
@@ -290,7 +292,7 @@ function Actions.getSettings(ctx, close, refresh, reload)
                 text = _("Reset section to defaults") .. " ?",
                 ok_text = _("Reset"),
                 ok_callback = function()
-                    local defaults = Config.DEFAULTS.sections[SECTION]
+                    local defaults = Config.DEFAULTS.sections[Actions.id]
                     Utils.resetSectionToDefaults(section, defaults)
                     Config.saveAndRefresh(ctx)
                     if refresh then refresh() end
@@ -340,7 +342,7 @@ function Actions.showSettings(ctx)
 
     dialog = ButtonDialog:new{
         -- dismissable = false,
-        title = _("Settings") .. " : " .. SECTION,
+        title = Actions.label .. " :",
         title_align  = "left",
         width_factor = 0.9,
         buttons = buttons,

@@ -39,9 +39,6 @@ msgstr ""
 msgid "Are you sure you want to exit book ?"
 msgstr ""
 
-msgid "Are you sure you want to reset to defaults ?"
-msgstr ""
-
 msgid "Are you sure you want to restart KOReader ?"
 msgstr ""
 
@@ -333,9 +330,6 @@ msgstr ""
 msgid "Infinity"
 msgstr ""
 
-msgid "Informations"
-msgstr ""
-
 msgid "Justify controls"
 msgstr ""
 
@@ -528,13 +522,7 @@ msgstr ""
 msgid "Reset quick menu to defaults"
 msgstr ""
 
-msgid "Reset quick menu to defaults ?"
-msgstr ""
-
 msgid "Reset section to defaults"
-msgstr ""
-
-msgid "Reset to defaults"
 msgstr ""
 
 msgid "Restart"
@@ -583,9 +571,6 @@ msgid "Select tap"
 msgstr ""
 
 msgid "Separators"
-msgstr ""
-
-msgid "Settings"
 msgstr ""
 
 msgid "Shortcut"
@@ -840,9 +825,6 @@ msgstr ""
 msgid "available"
 msgstr ""
 
-msgid "batterystat)"
-msgstr ""
-
 msgid "total"
 msgstr ""
 
@@ -853,9 +835,6 @@ msgid "Network"
 msgstr ""
 
 msgid "Tap : Toggle FileBrowserPlus connection\nHold : Nothing"
-msgstr ""
-
-msgid "LocalSend"
 msgstr ""
 
 msgid "Pull progress"
@@ -871,4 +850,16 @@ msgid "Send file"
 msgstr ""
 
 msgid "Tap : Toggle LocalSend connection\nHold : Show localSend dialog"
+msgstr ""
+
+msgid "Reset sections order to default"
+msgstr ""
+
+msgid "Reset sections order to defaults"
+msgstr ""
+
+msgid "Reset style to defaults"
+msgstr ""
+
+msgid "Sort sections"
 msgstr ""

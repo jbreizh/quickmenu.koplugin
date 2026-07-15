@@ -40,9 +40,6 @@ msgstr "KOReaderを終了してもよろしいですか？"
 msgid "Are you sure you want to exit book ?"
 msgstr "本を閉じてもよろしいですか？"
 
-msgid "Are you sure you want to reset to defaults ?"
-msgstr "デフォルト設定にリセットしてもよろしいですか？"
-
 msgid "Are you sure you want to restart KOReader ?"
 msgstr "KOReaderを再起動してもよろしいですか？"
 
@@ -334,9 +331,6 @@ msgstr "アイコンライブラリ"
 msgid "Infinity"
 msgstr "無限大"
 
-msgid "Informations"
-msgstr "情報"
-
 msgid "Justify controls"
 msgstr "コントロールを両端揃え"
 
@@ -529,14 +523,8 @@ msgstr "アクションをデフォルトにリセット"
 msgid "Reset quick menu to defaults"
 msgstr "クイックメニューをデフォルトにリセット"
 
-msgid "Reset quick menu to defaults ?"
-msgstr "クイックメニューをデフォルトにリセットしますか？"
-
 msgid "Reset section to defaults"
 msgstr "セクションをデフォルトにリセット"
-
-msgid "Reset to defaults"
-msgstr "デフォルトにリセット"
 
 msgid "Restart"
 msgstr "再起動"
@@ -585,9 +573,6 @@ msgstr "タップを選択"
 
 msgid "Separators"
 msgstr "セパレーター"
-
-msgid "Settings"
-msgstr "設定"
 
 msgid "Shortcut"
 msgstr "ショートカット"
@@ -841,9 +826,6 @@ msgstr "Wikipedia"
 msgid "available"
 msgstr "利用可能"
 
-msgid "batterystat)"
-msgstr "バッテリー統計)"
-
 msgid "total"
 msgstr "合計"
 
@@ -851,25 +833,34 @@ msgid "used"
 msgstr "使用済み"
 
 msgid "Network"
-msgstr ""
+msgstr "ネットワーク"
 
 msgid "Tap : Toggle FileBrowserPlus connection\nHold : Nothing"
-msgstr ""
-
-msgid "LocalSend"
-msgstr ""
+msgstr "タップ: FileBrowserPlus接続の切り替え\n長押し: なし"
 
 msgid "Pull progress"
-msgstr ""
+msgstr "受信進捗"
 
 msgid "Push progress"
-msgstr ""
+msgstr "送信進捗"
 
 msgid "Send current book"
-msgstr ""
+msgstr "現在の本を送信"
 
 msgid "Send file"
-msgstr ""
+msgstr "ファイルを送信"
 
 msgid "Tap : Toggle LocalSend connection\nHold : Show localSend dialog"
-msgstr ""
+msgstr "タップ: LocalSend接続の切り替え\n長押し: LocalSendダイアログを表示"
+
+msgid "Reset sections order to default"
+msgstr "セクションの並び順をリセット"
+
+msgid "Reset sections order to defaults"
+msgstr "セクションの並び順をデフォルトに戻しますか"
+
+msgid "Reset style to defaults"
+msgstr "スタイルをデフォルトに戻す"
+
+msgid "Sort sections"
+msgstr "セクションを並び替える"

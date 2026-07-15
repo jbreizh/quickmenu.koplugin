@@ -7,6 +7,7 @@ local _settings = LuaSettings:open(SETTINGS_PATH)
 local Config = {}
 
 Config.DEFAULTS = {
+    section_order = { "actions", "frontlight", "shortcuts", "info", "footer" },
     sections = {
         actions = {
             enabled_f = true,
@@ -49,12 +50,7 @@ Config.DEFAULTS = {
             items = {"memusedp", "storageusedp", "time", "battery", "auxbattery"}
         },
     },
-    frontlight_presets = {
-
-    },
-    custom_actions = {
-
-    },
+    custom_actions = { },
     style = {
         padding = 5,
         h_gap = 4,
@@ -92,6 +88,9 @@ function Config.load()
     local cfg = _settings:readSetting("quick_menu_settings") or {}
     cfg.sections = cfg.sections or {}
 
+    -- section_order
+    if cfg.section_order == nil then cfg.section_order = Config.DEFAULTS.section_order end
+
     -- sections level 1
     for section_id, section_data in pairs(cfg.sections) do
         if not Config.DEFAULTS.sections[section_id] then cfg.sections[section_id] = nil end
@@ -106,22 +105,30 @@ function Config.load()
         copyMissing(cfg.sections[section_id], defaults)
     end
 
-    -- global
+    -- global cleaning
     for key, value in pairs(cfg) do
         if key ~= "sections" then
             if Config.DEFAULTS[key] == nil then cfg[key] = nil end
         end
     end
 
+    -- global populating
     if cfg.open_on_start == nil then cfg.open_on_start = Config.DEFAULTS.open_on_start end
     if cfg.add_exit_tab == nil then cfg.add_exit_tab = Config.DEFAULTS.add_exit_tab end
     if cfg.add_quickmenu_tab == nil then cfg.add_quickmenu_tab = Config.DEFAULTS.add_quickmenu_tab end
+
+    -- style cleaning
     cfg.style = cfg.style or {}
+    for key, value in pairs(cfg.style) do
+        if Config.DEFAULTS.style[key] == nil then cfg.style[key] = nil end
+    end
+
+    -- style populating
     for key, value in pairs(Config.DEFAULTS.style) do
         if cfg.style[key] == nil then cfg.style[key] = value end
     end
 
-    cfg.frontlight_presets = cfg.frontlight_presets or {}
+    --
     cfg.custom_actions = cfg.custom_actions or {}
 
     return cfg

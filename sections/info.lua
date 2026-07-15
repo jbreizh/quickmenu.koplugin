@@ -19,9 +19,11 @@ local CoverButton     = require("widgets/coverbutton")
 local Utils           = require("common/utils")
 local _               = require("common/i18n").gettext
 
-local Info = {}
+local Info = {
+    id = "info",
+    label = _("Reading")
+}
 
-local SECTION = "info"
 -- ============================================================
 -- Info Builder
 -- ============================================================
@@ -46,7 +48,7 @@ function Info.build(ctx)
     local btn_font_size      = config.style.btn_font_size or 16
     local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
-    local section      = Utils.getSection(config, SECTION)
+    local section      = Utils.getSection(config, Info.id)
 
     if not section or not section.enabled_r or not reader then return nil end
     local refs = { buttons = {}, sliders = {}, widgets = {} }
@@ -87,7 +89,7 @@ function Info.build(ctx)
         end
         -- section name
         local label_title = TextWidget:new{
-            text = _("Reading") .. " : " .. label_info,
+            text = Info.label .. " : " .. label_info,
             face =  Font:getFace("cfont", btn_font_size), bold = true,
             max_width = inner_width - btn_width*2,
         }
@@ -187,7 +189,7 @@ end
 function Info.getSettings(ctx, close, refresh, reload)
     -- ctx import
     local config  = ctx.config
-    local section = Utils.getSection(config, SECTION)
+    local section = Utils.getSection(config, Info.id)
 
     if not section then return {} end
 
@@ -222,7 +224,7 @@ function Info.getSettings(ctx, close, refresh, reload)
                 text = _("Reset section to defaults") .. " ?",
                 ok_text = _("Reset"),
                 ok_callback = function()
-                    local defaults = Config.DEFAULTS.sections[SECTION]
+                    local defaults = Config.DEFAULTS.sections[Info.id]
                     Utils.resetSectionToDefaults(section, defaults)
                     Config.saveAndRefresh(ctx)
                     if refresh then refresh() end
@@ -271,7 +273,7 @@ function Info.showSettings(ctx)
 
     dialog = ButtonDialog:new{
         -- dismissable = false,
-        title = _("Settings") .. " : " .. SECTION,
+        title = Info.label .. " :",
         title_align  = "left",
         width_factor = 0.9,
         buttons = buttons,

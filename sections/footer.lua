@@ -18,9 +18,11 @@ local Config       = require("config")
 local Utils        = require("common/utils")
 local _            = require("common/i18n").gettext
 
-local Footer = {}
+local Footer = {
+    id = "footer",
+    label = _("Footer")
+}
 
-local SECTION = "footer"
 -- ============================================================
 -- Footer Builder
 -- ============================================================
@@ -44,7 +46,7 @@ function Footer.build(ctx)
     local btn_bordersize     = screen:scaleBySize(config.style.btn_bordersize or 1.5)
     local btn_font_size      = config.style.btn_font_size or 16
     local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
-    local section            = Utils.getSection(config, SECTION)
+    local section            = Utils.getSection(config, Footer.id)
 
     if not section then return nil end
 
@@ -190,7 +192,7 @@ end
 -- ============================================================
 function Footer.getSettings(ctx, close, refresh, reload)
     local config = ctx.config
-    local section = Utils.getSection(config, SECTION)
+    local section = Utils.getSection(config, Footer.id)
 
     if not section then return {} end
 
@@ -218,7 +220,7 @@ function Footer.getSettings(ctx, close, refresh, reload)
         }
     }
 
-    local action_buttons = ActionManage:btnActionManageMenu(ctx, SECTION, close, refresh)
+    local action_buttons = ActionManage:btnActionManageMenu(ctx, Footer.id, close, refresh)
     -- convert {{...}} in {}
     local flat_buttons = Utils.unwrap_items(action_buttons)
     for i, btn in ipairs(flat_buttons) do
@@ -245,7 +247,7 @@ function Footer.getSettings(ctx, close, refresh, reload)
                 text = _("Reset section to defaults") .. " ?",
                 ok_text = _("Reset"),
                 ok_callback = function()
-                    local defaults = Config.DEFAULTS.sections[SECTION]
+                    local defaults = Config.DEFAULTS.sections[Footer.id]
                     Utils.resetSectionToDefaults(section, defaults)
                     Config.saveAndRefresh(ctx)
                     if refresh then refresh() end
@@ -295,7 +297,7 @@ function Footer.showSettings(ctx)
 
     dialog = ButtonDialog:new{
         -- dismissable = false,
-        title = _("Settings") .. " : " .. SECTION,
+        title = Footer.label .. " :",
         title_align  = "left",
         width_factor = 0.9,
         buttons = buttons,

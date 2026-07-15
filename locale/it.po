@@ -40,9 +40,6 @@ msgstr "Sei sicuro di voler uscire da KOReader?"
 msgid "Are you sure you want to exit book ?"
 msgstr "Sei sicuro di voler chiudere il libro?"
 
-msgid "Are you sure you want to reset to defaults ?"
-msgstr "Sei sicuro di voler ripristinare le impostazioni predefinite?"
-
 msgid "Are you sure you want to restart KOReader ?"
 msgstr "Sei sicuro di voler riavviare KOReader?"
 
@@ -334,9 +331,6 @@ msgstr "Libreria icone"
 msgid "Infinity"
 msgstr "Infinito"
 
-msgid "Informations"
-msgstr "Informazioni"
-
 msgid "Justify controls"
 msgstr "Giustifica controlli"
 
@@ -529,14 +523,8 @@ msgstr "Ripristina azioni predefinite"
 msgid "Reset quick menu to defaults"
 msgstr "Ripristina menu rapido predefinito"
 
-msgid "Reset quick menu to defaults ?"
-msgstr "Ripristina menu rapido predefinito?"
-
 msgid "Reset section to defaults"
 msgstr "Ripristina sezione predefinita"
-
-msgid "Reset to defaults"
-msgstr "Ripristina predefiniti"
 
 msgid "Restart"
 msgstr "Riavvia"
@@ -585,9 +573,6 @@ msgstr "Seleziona tocco"
 
 msgid "Separators"
 msgstr "Separatori"
-
-msgid "Settings"
-msgstr "Impostazioni"
 
 msgid "Shortcut"
 msgstr "Scorciatoia"
@@ -841,9 +826,6 @@ msgstr "Wikipedia"
 msgid "available"
 msgstr "disponibile"
 
-msgid "batterystat)"
-msgstr "statistichebatteria)"
-
 msgid "total"
 msgstr "totale"
 
@@ -851,25 +833,34 @@ msgid "used"
 msgstr "utilizzato"
 
 msgid "Network"
-msgstr ""
+msgstr "Rete"
 
 msgid "Tap : Toggle FileBrowserPlus connection\nHold : Nothing"
-msgstr ""
-
-msgid "LocalSend"
-msgstr ""
+msgstr "Tocca: Attiva/Disattiva connessione FileBrowserPlus\nTieni premuto: Nulla"
 
 msgid "Pull progress"
-msgstr ""
+msgstr "Progresso ricezione"
 
 msgid "Push progress"
-msgstr ""
+msgstr "Progresso invio"
 
 msgid "Send current book"
-msgstr ""
+msgstr "Invia libro corrente"
 
 msgid "Send file"
-msgstr ""
+msgstr "Invia file"
 
 msgid "Tap : Toggle LocalSend connection\nHold : Show localSend dialog"
-msgstr ""
+msgstr "Tocca: Attiva/Disattiva connessione LocalSend\nTieni premuto: Mostra dialogo LocalSend"
+
+msgid "Reset sections order to default"
+msgstr "Ripristina ordine sezioni"
+
+msgid "Reset sections order to defaults"
+msgstr "Ripristinare l'ordine delle sezioni ai valori predefiniti"
+
+msgid "Reset style to defaults"
+msgstr "Ripristina stile ai valori predefiniti"
+
+msgid "Sort sections"
+msgstr "Ordina sezioni"

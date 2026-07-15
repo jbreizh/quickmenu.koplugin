@@ -40,9 +40,6 @@ msgstr "¿Está seguro de que desea salir de KOReader?"
 msgid "Are you sure you want to exit book ?"
 msgstr "¿Está seguro de que desea cerrar el libro?"
 
-msgid "Are you sure you want to reset to defaults ?"
-msgstr "¿Está seguro de que desea restablecer los valores predeterminados?"
-
 msgid "Are you sure you want to restart KOReader ?"
 msgstr "¿Está seguro de que desea reiniciar KOReader?"
 
@@ -334,9 +331,6 @@ msgstr "Biblioteca de iconos"
 msgid "Infinity"
 msgstr "Infinito"
 
-msgid "Informations"
-msgstr "Información"
-
 msgid "Justify controls"
 msgstr "Justificar controles"
 
@@ -529,14 +523,8 @@ msgstr "Restablecer acciones a valores predeterminados"
 msgid "Reset quick menu to defaults"
 msgstr "Restablecer menú rápido a valores predeterminados"
 
-msgid "Reset quick menu to defaults ?"
-msgstr "¿Restablecer menú rápido a valores predeterminados?"
-
 msgid "Reset section to defaults"
 msgstr "Restablecer sección a valores predeterminados"
-
-msgid "Reset to defaults"
-msgstr "Restablecer valores predeterminados"
 
 msgid "Restart"
 msgstr "Reiniciar"
@@ -585,9 +573,6 @@ msgstr "Seleccionar tocar"
 
 msgid "Separators"
 msgstr "Separadores"
-
-msgid "Settings"
-msgstr "Ajustes"
 
 msgid "Shortcut"
 msgstr "Acceso directo"
@@ -841,9 +826,6 @@ msgstr "Wikipedia"
 msgid "available"
 msgstr "disponible"
 
-msgid "batterystat)"
-msgstr "estadísticasbatería)"
-
 msgid "total"
 msgstr "total"
 
@@ -851,25 +833,34 @@ msgid "used"
 msgstr "usado"
 
 msgid "Network"
-msgstr ""
+msgstr "Red"
 
 msgid "Tap : Toggle FileBrowserPlus connection\nHold : Nothing"
-msgstr ""
-
-msgid "LocalSend"
-msgstr ""
+msgstr "Tocar: Alternar conexión FileBrowserPlus\nMantener: Nada"
 
 msgid "Pull progress"
-msgstr ""
+msgstr "Progreso de recepción"
 
 msgid "Push progress"
-msgstr ""
+msgstr "Progreso de envío"
 
 msgid "Send current book"
-msgstr ""
+msgstr "Enviar libro actual"
 
 msgid "Send file"
-msgstr ""
+msgstr "Enviar archivo"
 
 msgid "Tap : Toggle LocalSend connection\nHold : Show localSend dialog"
-msgstr ""
+msgstr "Tocar: Alternar conexión LocalSend\nMantener: Mostrar diálogo LocalSend"
+
+msgid "Reset sections order to default"
+msgstr "Restablecer orden de secciones"
+
+msgid "Reset sections order to defaults"
+msgstr "Restablecer orden de secciones a valores predeterminados"
+
+msgid "Reset style to defaults"
+msgstr "Restablecer estilo a valores predeterminados"
+
+msgid "Sort sections"
+msgstr "Ordenar secciones"

@@ -1,7 +1,9 @@
 local Math          = require("optmath")
 local SliderSection = require("sections/slidersection")
 
-local IntensitySection = {}
+local IntensitySection = {
+    id = "frontlight"
+}
 
 function IntensitySection.build(ctx)
     -- ctx import

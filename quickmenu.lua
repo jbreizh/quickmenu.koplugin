@@ -11,34 +11,19 @@ local Datetime      = require("datetime")
 local ConfirmBox    = require("ui/widget/confirmbox")
 local InputDialog   = require("ui/widget/inputdialog")
 local ButtonDialog  = require("ui/widget/buttondialog")
+local SortWidget    = require("ui/widget/sortwidget")
 
 local UIManager     = require("ui/uimanager")
 local Event         = require("ui/event")
 
-local ActionCustom     = require("action_custom")
-local Config           = require("config")
-local Utils            = require("common/utils")
-local _                = require("common/i18n").gettext
+local ActionCustom  = require("action_custom")
+local Config        = require("config")
+local Utils         = require("common/utils")
+local _             = require("common/i18n").gettext
 
 
-local QuickMenu = {}
-
-local ORDER = { "actions", "frontlight", "shortcuts", "info", "footer" }
-
-local SECTIONS = {
-    actions    = require("sections/actions"),
-    frontlight = require("sections/frontlight"),
-    shortcuts  = require("sections/shortcuts"),
-    info       = require("sections/info"),
-    footer     = require("sections/footer")
-}
-
-local SECTION_LABELS = {
-    actions    = _("Actions"),
-    frontlight = _("Frontlight"),
-    shortcuts  = _("Shortcuts"),
-    info       = _("Informations"),
-    footer     = _("Footer")
+local QuickMenu = {
+    label = _("Quick menu")
 }
 
 -- ============================================================
@@ -89,16 +74,15 @@ function QuickMenu.createPanel(config, touch_menu)
     }
 
     local added_count = 0
-
-    for idx, id in ipairs(ORDER) do
-        local section_mod = SECTIONS[id]
-        if section_mod and type(section_mod.build) == "function" then
-            local ok, result = pcall(section_mod.build, ctx)
-            if ok and result and result.widget then
+    -- Utilisation de l'ordre défini dans le fichier de config
+    for idx, id in ipairs(config.section_order) do
+        local ok, section_mod = pcall(require, "sections/" .. id)
+        if ok and section_mod and type(section_mod.build) == "function" then
+            local ok_build, result = pcall(section_mod.build, ctx)
+            if ok_build and result and result.widget then
                 if added_count > 0 then
                     table.insert(panel, VerticalSpan:new{ width = Screen:scaleBySize(config.style.v_gap or 4) })
                 end
-
                 table.insert(panel, result.widget)
                 mergeRefs(refs, result.refs)
                 added_count = added_count + 1
@@ -256,11 +240,11 @@ function QuickMenu.buildStyleSubMenu(config, menu_instance)
 
     -- reset
     table.insert(style_items, {
-        text = _("Reset to defaults"),
+        text = _("Reset style to defaults"),
         keep_menu_open = true,
         callback = function(touch_menu)
             UIManager:show(ConfirmBox:new{
-                text = _("Are you sure you want to reset to defaults ?"),
+                text = _("Reset style to defaults") .. " ?",
                 ok_text = _("Reset"),
                 ok_callback = function()
                     config.style = {}
@@ -288,6 +272,7 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
         checked_func = function() return config.add_exit_tab end,
         callback = function(touch_menu)
             config.add_exit_tab = not config.add_exit_tab
+            -- save and refresh need to force close touch_menu
             Config.save(config)
             QuickMenu.updateTab(config, menu_instance)
             touch_menu:closeMenu()
@@ -299,6 +284,7 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
         checked_func = function() return config.add_quickmenu_tab end,
         callback = function(touch_menu)
             config.add_quickmenu_tab = not config.add_quickmenu_tab
+            -- save and refresh need to force close touch_menu
             Config.save(config)
             QuickMenu.updateTab(config, menu_instance)
             touch_menu:closeMenu()
@@ -314,6 +300,59 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
         end,
     })
 
+    -- style
+    table.insert(menu_items, {
+        text = _("Style"),
+        sub_item_table = QuickMenu.buildStyleSubMenu(config, menu_instance),
+        separator = true,
+    })
+
+    -- sections order
+    table.insert(menu_items, {
+        text = _("Sort sections") .. "\xE2\x80\xA6",
+        keep_menu_open = true,
+        callback = function()
+            local sort_sections = {}
+            for index, section_id in ipairs(config.section_order) do
+                local ok, section_mod = pcall(require, "sections/" .. section_id)
+                local label = (ok and section_mod.label) and section_mod.label or section_id
+                table.insert(sort_sections, { text = label, id = section_id })
+            end
+
+            UIManager:show(SortWidget:new{
+                title = _("Sort sections") .. " :",
+                item_table = sort_sections,
+                callback = function()
+                    config.section_order = {}
+                    for index, section in ipairs(sort_sections) do
+                        table.insert(config.section_order, section.id)
+                    end
+                    Config.save(config)
+                end
+            })
+        end,
+    })
+
+    -- reset sections order
+    table.insert(menu_items, {
+        text = _("Reset sections order to default") .. "\xE2\x80\xA6",
+        keep_menu_open = true,
+        callback = function()
+            UIManager:show(ConfirmBox:new{
+                text = _("Reset sections order to defaults") .. " ?",
+                ok_text = _("Reset"),
+                ok_callback = function()
+                    config.section_order = {}
+                    for position, section_id in ipairs(Config.DEFAULTS.section_order) do
+                        table.insert(config.section_order, section_id)
+                    end
+                    Config.save(config)
+                end
+            })
+        end,
+        separator = true
+    })
+
     -- custom actions
     table.insert(menu_items, {
         text_func = function()
@@ -327,72 +366,82 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
         end
     })
 
-    -- style
-    table.insert(menu_items, {
-        text = _("Style"),
-        sub_item_table = QuickMenu.buildStyleSubMenu(config, menu_instance),
-        separator = true,
-    })
+    --sections :grab sections list, sort it and build menu
+    local sort_sections = {}
+    for section_id, section_data in pairs(config.sections) do
+        local ok, section_mod = pcall(require, "sections/" .. section_id)
+        if ok and section_mod then
+            table.insert(sort_sections, {id = section_id, label = section_mod.label or section_id})
+        end
+    end
+    Utils.sort_by_field(sort_sections, "label", true, true) --natural sort taking care of accent
 
-    --sections
-    for idx, id in ipairs(ORDER) do
-        local section_mod = SECTIONS[id]
-        if section_mod and section_mod.getSettings then
-            -- for settings in touch_menu all noop function
+    for idx, section in ipairs(sort_sections) do
+        local ok, section_mod = pcall(require, "sections/" .. section.id)
+
+        if ok and section_mod and section_mod.getSettings then
             local items = section_mod.getSettings(ctx,
                 function(fn) return fn end, -- noop_close
                 function() end,             -- noop_refresh
-                function() end             -- noop_reload
+                function() end              -- noop_reload
             )
 
             if items and #items > 0 then
-                local is_last = (idx == #ORDER)
                 table.insert(menu_items, {
-                    text = SECTION_LABELS[id] or id,
+                    text = section.label,
                     sub_item_table = items,
-                    separator = is_last,
+                    separator = (idx == #sort_sections),
                 })
             end
         end
     end
 
-    -- reset
+    -- reset quickmenu
     table.insert(menu_items, {
-    text = _("Reset quick menu to defaults") .. "\xE2\x80\xA6",
-    callback = function()
-        UIManager:show(ConfirmBox:new{
-            text = _("Reset quick menu to defaults ?"),
-            ok_text = _("Reset"),
-            ok_callback = function()
-                -- global
-                config.add_exit_tab = Config.DEFAULTS.add_exit_tab
-                config.add_quickmenu_tab = Config.DEFAULTS.add_quickmenu_tab
-                config.open_on_start = Config.DEFAULTS.open_on_start
-                -- sections
-                for index, section_id in ipairs(ORDER) do
-                    if Config.DEFAULTS.sections[section_id] then
-                        Utils.resetSectionToDefaults(
-                            Utils.getSection(config, section_id),
-                            Config.DEFAULTS.sections[section_id]
-                        )
+        text = _("Reset quick menu to defaults") .. "\xE2\x80\xA6",
+        keep_menu_open = true,
+        callback = function()
+            UIManager:show(ConfirmBox:new{
+                text = _("Reset quick menu to defaults") .. " ?",
+                ok_text = _("Reset"),
+                ok_callback = function()
+                    -- global
+                    config.add_exit_tab = Config.DEFAULTS.add_exit_tab
+                    config.add_quickmenu_tab = Config.DEFAULTS.add_quickmenu_tab
+                    config.open_on_start = Config.DEFAULTS.open_on_start
+
+                    -- section order
+                    config.section_order = {}
+                    for index, section_id in ipairs(Config.DEFAULTS.section_order) do
+                        table.insert(config.section_order, section_id)
                     end
+
+                    -- sections
+                    for section_id, section_default in pairs(Config.DEFAULTS.sections) do
+                        local section_config = Utils.getSection(config, section_id)
+                        if section_config then
+                            Utils.resetSectionToDefaults(section_config, section_default)
+                        end
+                    end
+
+                    -- style
+                    config.style = {}
+                    for key, value in pairs(Config.DEFAULTS.style) do
+                        config.style[key] = value
+                    end
+                    -- custom_actions
+                    --config.custom_actions = {} --TODO don't reset custom_actions ??????
+                    -- save and refresh need to force close touch_menu
+                    Config.save(config)
+                    QuickMenu.updateTab(config, menu_instance)
+                    touch_menu:closeMenu()
                 end
-                -- style
-                config.style = {}
-                for key, value in pairs(Config.DEFAULTS.style) do
-                    config.style[key] = value
-                end
-                -- custom_actions
-                --config.custom_actions = {} --TODO don't reset custom_actions ??????
-                Config.save(config)
-                QuickMenu.updateTab(config, menu_instance)
-            end
-        })
-    end
+            })
+        end
     })
 
     return {
-        text = _("Quick menu"),
+        text = QuickMenu.label,
         sorting_hint = "setting",
         sub_item_table = menu_items,
     }

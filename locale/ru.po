@@ -40,9 +40,6 @@ msgstr "Вы уверены, что хотите выйти из KOReader?"
 msgid "Are you sure you want to exit book ?"
 msgstr "Вы уверены, что хотите закрыть книгу?"
 
-msgid "Are you sure you want to reset to defaults ?"
-msgstr "Вы уверены, что хотите сбросить настройки до значений по умолчанию?"
-
 msgid "Are you sure you want to restart KOReader ?"
 msgstr "Вы уверены, что хотите перезапустить KOReader?"
 
@@ -334,9 +331,6 @@ msgstr "Библиотека иконок"
 msgid "Infinity"
 msgstr "Бесконечность"
 
-msgid "Informations"
-msgstr "Информация"
-
 msgid "Justify controls"
 msgstr "Выровнять элементы управления"
 
@@ -529,14 +523,8 @@ msgstr "Сбросить действия по умолчанию"
 msgid "Reset quick menu to defaults"
 msgstr "Сбросить быстрое меню по умолчанию"
 
-msgid "Reset quick menu to defaults ?"
-msgstr "Сбросить быстрое меню по умолчанию?"
-
 msgid "Reset section to defaults"
 msgstr "Сбросить раздел по умолчанию"
-
-msgid "Reset to defaults"
-msgstr "Сбросить до значений по умолчанию"
 
 msgid "Restart"
 msgstr "Перезапуск"
@@ -585,9 +573,6 @@ msgstr "Выбрать нажатие"
 
 msgid "Separators"
 msgstr "Разделители"
-
-msgid "Settings"
-msgstr "Настройки"
 
 msgid "Shortcut"
 msgstr "Ярлык"
@@ -841,9 +826,6 @@ msgstr "Википедия"
 msgid "available"
 msgstr "доступно"
 
-msgid "batterystat)"
-msgstr "стат_батареи)"
-
 msgid "total"
 msgstr "всего"
 
@@ -851,25 +833,34 @@ msgid "used"
 msgstr "использовано"
 
 msgid "Network"
-msgstr ""
+msgstr "Сеть"
 
 msgid "Tap : Toggle FileBrowserPlus connection\nHold : Nothing"
-msgstr ""
-
-msgid "LocalSend"
-msgstr ""
+msgstr "Нажатие: Переключить соединение FileBrowserPlus\nУдержание: Ничего"
 
 msgid "Pull progress"
-msgstr ""
+msgstr "Прогресс получения"
 
 msgid "Push progress"
-msgstr ""
+msgstr "Прогресс отправки"
 
 msgid "Send current book"
-msgstr ""
+msgstr "Отправить текущую книгу"
 
 msgid "Send file"
-msgstr ""
+msgstr "Отправить файл"
 
 msgid "Tap : Toggle LocalSend connection\nHold : Show localSend dialog"
-msgstr ""
+msgstr "Нажатие: Переключить соединение LocalSend\nУдержание: Показать диалог LocalSend"
+
+msgid "Reset sections order to default"
+msgstr "Сбросить порядок разделов"
+
+msgid "Reset sections order to defaults"
+msgstr "Сбросить порядок разделов по умолчанию"
+
+msgid "Reset style to defaults"
+msgstr "Сбросить стиль по умолчанию"
+
+msgid "Sort sections"
+msgstr "Сортировать разделы"

@@ -40,9 +40,6 @@ msgstr "Sind Sie sicher, dass Sie KOReader beenden möchten?"
 msgid "Are you sure you want to exit book ?"
 msgstr "Sind Sie sicher, dass Sie das Buch schließen möchten?"
 
-msgid "Are you sure you want to reset to defaults ?"
-msgstr "Sind Sie sicher, dass Sie auf die Standardeinstellungen zurücksetzen möchten?"
-
 msgid "Are you sure you want to restart KOReader ?"
 msgstr "Sind Sie sicher, dass Sie KOReader neu starten möchten?"
 
@@ -334,9 +331,6 @@ msgstr "Symbolbibliothek"
 msgid "Infinity"
 msgstr "Unendlich"
 
-msgid "Informations"
-msgstr "Informationen"
-
 msgid "Justify controls"
 msgstr "Steuerelemente ausrichten"
 
@@ -529,14 +523,8 @@ msgstr "Aktionen auf Standard zurücksetzen"
 msgid "Reset quick menu to defaults"
 msgstr "Quick-Menü auf Standard zurücksetzen"
 
-msgid "Reset quick menu to defaults ?"
-msgstr "Quick-Menü auf Standard zurücksetzen?"
-
 msgid "Reset section to defaults"
 msgstr "Abschnitt auf Standard zurücksetzen"
-
-msgid "Reset to defaults"
-msgstr "Auf Standard zurücksetzen"
 
 msgid "Restart"
 msgstr "Neu starten"
@@ -585,9 +573,6 @@ msgstr "Tippen auswählen"
 
 msgid "Separators"
 msgstr "Trennlinien"
-
-msgid "Settings"
-msgstr "Einstellungen"
 
 msgid "Shortcut"
 msgstr "Verknüpfung"
@@ -841,9 +826,6 @@ msgstr "Wikipedia"
 msgid "available"
 msgstr "verfügbar"
 
-msgid "batterystat)"
-msgstr "batteriestat)"
-
 msgid "total"
 msgstr "gesamt"
 
@@ -851,25 +833,34 @@ msgid "used"
 msgstr "benutzt"
 
 msgid "Network"
-msgstr ""
+msgstr "Netzwerk"
 
 msgid "Tap : Toggle FileBrowserPlus connection\nHold : Nothing"
-msgstr ""
-
-msgid "LocalSend"
-msgstr ""
+msgstr "Kurzes Tippen: FileBrowserPlus Verbindung umschalten\nLanges Tippen: Nichts"
 
 msgid "Pull progress"
-msgstr ""
+msgstr "Empfangsfortschritt"
 
 msgid "Push progress"
-msgstr ""
+msgstr "Sendefortschritt"
 
 msgid "Send current book"
-msgstr ""
+msgstr "Aktuelles Buch senden"
 
 msgid "Send file"
-msgstr ""
+msgstr "Datei senden"
 
 msgid "Tap : Toggle LocalSend connection\nHold : Show localSend dialog"
-msgstr ""
+msgstr "Kurzes Tippen: LocalSend Verbindung umschalten\nLanges Tippen: LocalSend-Dialog anzeigen"
+
+msgid "Reset sections order to default"
+msgstr "Abschnittsreihenfolge zurücksetzen"
+
+msgid "Reset sections order to defaults"
+msgstr "Abschnittsreihenfolge auf Standard zurücksetzen"
+
+msgid "Reset style to defaults"
+msgstr "Stil auf Standard zurücksetzen"
+
+msgid "Sort sections"
+msgstr "Abschnitte sortieren"
