@@ -16,6 +16,8 @@ local SortWidget    = require("ui/widget/sortwidget")
 local UIManager     = require("ui/uimanager")
 local Event         = require("ui/event")
 
+local logger        = require("logger")
+
 local ActionCustom  = require("action_custom")
 local Config        = require("config")
 local Utils         = require("common/utils")
@@ -68,6 +70,11 @@ function QuickMenu.createPanel(config, touch_menu)
     local refs = { buttons = {}, sliders = {}, widgets = {} }
     local ctx = buildContext(config, touch_menu)
 
+    if not config.section_order or type(config.section_order) ~= "table" then
+        logger.err("[QuickMenu] config.section_order is missing or invalid in QuickMenu.createPanel.")
+        return VerticalGroup:new{}
+    end
+
     local panel = VerticalGroup:new{
         align = "center",
         VerticalSpan:new{ width = Screen:scaleBySize( 2 ) } -- to not cover tab menu underline
@@ -79,14 +86,20 @@ function QuickMenu.createPanel(config, touch_menu)
         local ok, section_mod = pcall(require, "sections/" .. id)
         if ok and section_mod and type(section_mod.build) == "function" then
             local ok_build, result = pcall(section_mod.build, ctx)
-            if ok_build and result and result.widget then
-                if added_count > 0 then
-                    table.insert(panel, VerticalSpan:new{ width = Screen:scaleBySize(config.style.v_gap or 4) })
+            if ok_build then
+                if result and result.widget then
+                    if added_count > 0 then
+                        table.insert(panel, VerticalSpan:new{ width = Screen:scaleBySize(config.style.v_gap or 4) })
+                    end
+                    table.insert(panel, result.widget)
+                    mergeRefs(refs, result.refs)
+                    added_count = added_count + 1
                 end
-                table.insert(panel, result.widget)
-                mergeRefs(refs, result.refs)
-                added_count = added_count + 1
+            else
+                logger.err("[QuickMenu] Failed building section panel in section [" .. tostring(id) .. "]: " .. tostring(result))
             end
+        else
+            logger.err("[QuickMenu] Failed to load section module or missing 'build' method: " .. tostring(id))
         end
     end
 
@@ -122,17 +135,24 @@ local function manage_tab(tab_list, tab_id, tab_data, enabled, index)
 end
 
 
-function QuickMenu.updateTab(config, menu_instance)
-    if not menu_instance.tab_item_table then return end
+function QuickMenu.updateTab(config, menu_instance, is_filemanager)
+    if not (menu_instance and menu_instance.tab_item_table)  then return end
     local tabs = menu_instance.tab_item_table
-    local is_fm = (type(menu_instance.onCloseFileManagerMenu) == "function")
+    --local is_filemanager = (type(menu_instance.onCloseFileManagerMenu) == "function")
 
     -- quick_menu_tab
     manage_tab(tabs, "quick_menu_tab", {
         id = "quick_menu_tab",
         icon = "home",
         remember = function() return not config.open_on_start end,
-        panel = function(touch_menu) return QuickMenu.createPanel(config, touch_menu) end
+        callback = function()
+            print("callback")
+        end,
+        hold_callback = function()
+            menu_instance:onCloseFileManagerMenu()
+            print("hold_callback")
+        end,
+        panel = function(touch_menu) print("panel"); return QuickMenu.createPanel(config, touch_menu) end,
     }, config.add_quickmenu_tab, config.idx_quickmenu_tab or 1) -- when add_quickmenu_tab -> first position
 
     -- exit_tab
@@ -141,10 +161,10 @@ function QuickMenu.updateTab(config, menu_instance)
         icon = "exit",
         remember = false,
         callback = function()
-            if is_fm then menu_instance:onCloseFileManagerMenu() else menu_instance:onTapCloseMenu() end
+            if is_filemanager then menu_instance:onCloseFileManagerMenu() else menu_instance:onTapCloseMenu() end
         end,
         hold_callback = function()
-            if is_fm then
+            if is_filemanager then
                 menu_instance:onCloseFileManagerMenu()
                 UIManager:show(ConfirmBox:new{
                     text = _("Are you sure you want to exit KOReader ?"),
@@ -177,7 +197,7 @@ function QuickMenu.updateTab(config, menu_instance)
             menu_instance.ui:onClose()
             if file then menu_instance.ui:showFileManager(file) end
         end
-    }, (not config.add_exit_tab and not is_fm), -1) -- not add_exit_tab and not fm -> last position - 1
+    }, (not config.add_exit_tab and not is_filemanager), -1) -- not add_exit_tab and not fm -> last position - 1
 end
 
 function QuickMenu.buildStyleSubMenu(config)
@@ -263,8 +283,13 @@ function QuickMenu.buildStyleSubMenu(config)
     return style_items
 end
 
-function QuickMenu.buildSettingsMenu(config, menu_instance)
+function QuickMenu.buildSettingsMenu(config, menu_instance, is_filemanager)
     local menu_items = {}
+    if not config.sections or type(config.sections) ~= "table" then
+        logger.err("[QuickMenu] config.sections is missing or invalid in QuickMenu.buildSettingsMenu.")
+        return { text = QuickMenu.label, sub_item_table = {} }
+    end
+
     local ctx = buildContext(config, nil)
 
     -- global
@@ -275,7 +300,7 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
             config.add_exit_tab = not config.add_exit_tab
             -- save and refresh need to force close touch_menu
             Config.save(config)
-            QuickMenu.updateTab(config, menu_instance)
+            QuickMenu.updateTab(config, menu_instance, is_filemanager)
             touch_menu:closeMenu()
         end
     })
@@ -287,7 +312,7 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
             config.add_quickmenu_tab = not config.add_quickmenu_tab
             -- save and refresh need to force close touch_menu
             Config.save(config)
-            QuickMenu.updateTab(config, menu_instance)
+            QuickMenu.updateTab(config, menu_instance, is_filemanager)
             touch_menu:closeMenu()
         end
     })
@@ -374,6 +399,8 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
         local ok, section_mod = pcall(require, "sections/" .. section_id)
         if ok and section_mod then
             table.insert(sort_sections, {id = section_id, label = section_mod.label or section_id})
+        else
+            logger.err("[QuickMenu] Failed to load section : " .. tostring(section_id))
         end
     end
     Utils.sort_by_field(sort_sections, "label", true, true) --natural sort taking care of accent
@@ -382,19 +409,27 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
         local ok, section_mod = pcall(require, "sections/" .. section.id)
 
         if ok and section_mod and section_mod.getSettings then
-            local items = section_mod.getSettings(ctx,
-                function(fn) return fn end, -- noop_close
-                function() end,             -- noop_refresh
-                function() end              -- noop_reload
-            )
+            local success, items = pcall(function()
+                return section_mod.getSettings(ctx,
+                    function(fn) return fn end, -- noop_close
+                    function() end,             -- noop_refresh
+                    function() end              -- noop_reload
+                )
+            end)
 
-            if items and #items > 0 then
-                table.insert(menu_items, {
-                    text = section.label,
-                    sub_item_table = items,
-                    separator = (idx == #sort_sections),
-                })
+            if success then
+                if items and #items > 0 then
+                    table.insert(menu_items, {
+                        text = section.label,
+                        sub_item_table = items,
+                        separator = (idx == #sort_sections),
+                    })
+                end
+            elseif not success then
+                logger.err("[QuickMenu] Failed building settings in section [" .. tostring(section.id) .. "]: " .. tostring(items))
             end
+        else
+            logger.err("[QuickMenu] Failed to load section : " .. tostring(section.id))
         end
     end
 
@@ -402,7 +437,7 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
     table.insert(menu_items, {
         text = _("Reset quick menu to defaults") .. "\xE2\x80\xA6",
         keep_menu_open = true,
-        callback = function()
+        callback = function(touch_menu)
             UIManager:show(ConfirmBox:new{
                 text = _("Reset quick menu to defaults") .. " ?",
                 ok_text = _("Reset"),
@@ -435,7 +470,7 @@ function QuickMenu.buildSettingsMenu(config, menu_instance)
                     --config.custom_actions = {} --TODO don't reset custom_actions ??????
                     -- save and refresh need to force close touch_menu
                     Config.save(config)
-                    QuickMenu.updateTab(config, menu_instance)
+                    QuickMenu.updateTab(config, menu_instance, is_filemanager)
                     touch_menu:closeMenu()
                 end
             })
