@@ -15,10 +15,7 @@ local QuickMenuPlugin = WidgetContainer:extend{
     is_filemanager = nil,
 }
 
--- ============================================================
--- Hook TouchMenu to support panel tabs
--- ============================================================
---
+-- touch_menu default_footer
 local function default_footer()
     local BD = require("ui/bidi")
     local Device        = require("device")
@@ -85,12 +82,12 @@ end
 -- Hook TouchMenu to support panel tabs
 -- ============================================================
 local function patchTouchMenu(plugin)
-    local TouchMenu = require("ui/widget/touchmenu")
-    local UIManager     = require("ui/uimanager")
-    local Geom          = require("ui/geometry")
+    local TouchMenu    = require("ui/widget/touchmenu")
+    local UIManager    = require("ui/uimanager")
+    local Geom         = require("ui/geometry")
     local FocusManager = require("ui/widget/focusmanager")
     local GestureRange = require("ui/gesturerange")
-    local config        = plugin.config
+    local config       = plugin.config
 
     -- Hook init to
     local orig_init = TouchMenu.init
@@ -359,7 +356,7 @@ local function patchReaderMenu(plugin)
 end
 
 -- ============================================================
--- Inject ReaderMenu
+-- Init
 -- ============================================================
 local logger = require("logger")
 --logger:setLevel(logger.levels.info)

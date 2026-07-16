@@ -190,7 +190,7 @@ end
 -- ============================================================
 -- Settings Menu Builder
 -- ============================================================
-function Shortcuts.getSettings(ctx, close, refresh, reload)
+function Shortcuts.getSettings(ctx, close, refresh)
     local config  = ctx.config
     local section = Utils.getSection(config, Shortcuts.id)
 
@@ -200,22 +200,22 @@ function Shortcuts.getSettings(ctx, close, refresh, reload)
     local menu_items = {
         {
             text = _("Enabled in filemanager"),
-            checked_func = function() if reload then reload() end return section.enabled_f end,
+            checked_func = function() return section.enabled_f end,
             callback = function() section.enabled_f = not section.enabled_f; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Enabled in reader"),
-            checked_func = function() if reload then reload() end return section.enabled_r end,
+            checked_func = function() return section.enabled_r end,
             callback = function() section.enabled_r = not section.enabled_r; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Show title"),
-            checked_func = function() if reload then reload() end return section.show_title end,
+            checked_func = function() return section.show_title end,
             callback = function() section.show_title = not section.show_title; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Show labels"),
-            checked_func = function() if reload then reload() end return section.show_label end,
+            checked_func = function() return section.show_label end,
             callback = function() section.show_label = not section.show_label; Config.saveAndRefresh(ctx) end
         },
         {
@@ -317,17 +317,8 @@ function Shortcuts.showSettings(ctx)
     local function refresh()
         Shortcuts.showSettings(ctx)
     end
-    -- use to refresh under check btn when dialog is transparent
-    -- cost perf so block at openig as dialog never open transparent
-    -- only from the dialog from the touch_menu itself it crash koreader
-    local is_initializing = true
-    local function reload()
-        if is_initializing then return end
-        local touch_menu = ctx.touch_menu
-        if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end
-    end
 
-    local buttons = Utils.wrap_items(Shortcuts.getSettings(ctx, close, refresh, reload))
+    local buttons = Utils.wrap_items(Shortcuts.getSettings(ctx, close, refresh))
     if not buttons or #buttons==0 then return end
 
     table.insert(buttons, {}) -- separator
@@ -345,7 +336,6 @@ function Shortcuts.showSettings(ctx)
         buttons = buttons,
     }
     UIManager:show(dialog)
-    is_initializing = false -- allow reload after opening
 end
 
 return Shortcuts

@@ -1,5 +1,6 @@
 local DataStorage = require("datastorage")
 local LuaSettings = require("luasettings")
+local UIManager     = require("ui/uimanager")
 
 local SETTINGS_PATH = DataStorage:getSettingsDir() .. "/quick_menu_settings.lua"
 local _settings = LuaSettings:open(SETTINGS_PATH)
@@ -147,7 +148,11 @@ function Config.saveAndRefresh(ctx, no_flush)
     if config then Config.save(config, no_flush) end
     -- refresh
     local touch_menu = ctx.touch_menu
-    if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end
+    if touch_menu and touch_menu.updateItems then
+        UIManager:nextTick(function()
+            touch_menu:updateItems()
+        end)
+    end
 end
 
 return Config

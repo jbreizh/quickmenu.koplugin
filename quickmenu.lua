@@ -206,7 +206,7 @@ function QuickMenu.updateTab(plugin)
 end
 
 
-function QuickMenu.buildGlobalSubmenu(plugin)
+function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
     --
     local config         = plugin.config
     local menu_instance  = plugin.menu_instance
@@ -216,29 +216,38 @@ function QuickMenu.buildGlobalSubmenu(plugin)
     table.insert(global_items, {
         text = _("Add exit tab"),
         checked_func = function() return config.add_exit_tab end,
-        callback = function()
+        callback = close(function()
             config.add_exit_tab = not config.add_exit_tab
             Config.save(config)
             QuickMenu.updateTab(plugin)
+            -- close touch_menu
             if plugin.is_filemanager then  plugin.menu_instance:onCloseFileManagerMenu()
             else plugin.menu_instance:onCloseReaderMenu() end
+            -- open touch_menu
             UIManager:nextTick(function()
-            plugin.menu_instance:onShowMenu() end)
-        end
+                plugin.menu_instance:onShowMenu()
+                if refresh then refresh() end
+            end)
+        end),
     })
 
     table.insert(global_items, {
         text = _("Add quick menu tab"),
         checked_func = function() return config.add_quickmenu_tab end,
-        callback = function(touch_menu)
+        callback = close(function()
             config.add_quickmenu_tab = not config.add_quickmenu_tab
             Config.save(config)
             QuickMenu.updateTab(plugin)
+            -- close touch_menu
             if plugin.is_filemanager then  plugin.menu_instance:onCloseFileManagerMenu()
             else plugin.menu_instance:onCloseReaderMenu() end
+            -- open touch_menu
             UIManager:nextTick(function()
-            plugin.menu_instance:onShowMenu() end)
-        end
+                plugin.menu_instance:onShowMenu()
+                if refresh then refresh() end
+            end)
+
+        end),
     })
 
     table.insert(global_items, {
@@ -246,8 +255,115 @@ function QuickMenu.buildGlobalSubmenu(plugin)
         checked_func = function() return config.open_on_start end,
         callback = function()
             config.open_on_start = not config.open_on_start
-            Config.save(config)
+            --Config.save(config)
+            Config.saveAndRefresh(plugin) -- HACK
         end,
+    })
+
+        -- sections order
+    table.insert(global_items, {
+        text = _("Sort sections") .. "\xE2\x80\xA6",
+        keep_menu_open = true,
+        callback = function()
+            local sort_sections = {}
+            for index, section_id in ipairs(config.section_order) do
+                local ok, section_mod = pcall(require, "sections/" .. section_id)
+                local icon = (ok and section_mod.icon) and (section_mod.icon .. " ") or ""
+                local label = (ok and section_mod.label) and section_mod.label or section_id
+                table.insert(sort_sections, { text = icon .. " " .. label, id = section_id })
+            end
+
+            UIManager:show(SortWidget:new{
+                title = _("Sort sections") .. " :",
+                item_table = sort_sections,
+                callback = function()
+                    config.section_order = {}
+                    for index, section in ipairs(sort_sections) do
+                        table.insert(config.section_order, section.id)
+                    end
+                    -- Config.save(config)
+                    Config.saveAndRefresh(plugin) -- HACK
+                end
+            })
+        end,
+    })
+
+    -- reset sections order
+    table.insert(global_items, {
+        text = _("Reset sections order to default") .. "\xE2\x80\xA6",
+        keep_menu_open = true,
+        callback = close(function()
+            UIManager:show(ConfirmBox:new{
+                text = _("Reset sections order to defaults") .. " ?",
+                ok_text = _("Reset"),
+                ok_callback = function()
+                    config.section_order = {}
+                    for position, section_id in ipairs(Config.DEFAULTS.section_order) do
+                        table.insert(config.section_order, section_id)
+                    end
+                    --Config.save(config)
+                    Config.saveAndRefresh(plugin) -- HACK
+                    if refresh then refresh() end
+                end,
+                cancel_callback = function()
+                    if refresh then refresh() end
+                end,
+            })
+        end),
+        separator = true,
+    })
+
+        -- reset quickmenu
+    table.insert(global_items, {
+        text = _("Reset quick menu to defaults") .. "\xE2\x80\xA6",
+        keep_menu_open = true,
+        callback = close(function()
+            UIManager:show(ConfirmBox:new{
+                text = _("Reset quick menu to defaults") .. " ?",
+                ok_text = _("Reset"),
+                ok_callback = function()
+                    -- global
+                    config.add_exit_tab = Config.DEFAULTS.add_exit_tab
+                    config.add_quickmenu_tab = Config.DEFAULTS.add_quickmenu_tab
+                    config.open_on_start = Config.DEFAULTS.open_on_start
+
+                    -- section order
+                    config.section_order = {}
+                    for index, section_id in ipairs(Config.DEFAULTS.section_order) do
+                        table.insert(config.section_order, section_id)
+                    end
+
+                    -- sections
+                    for section_id, section_default in pairs(Config.DEFAULTS.sections) do
+                        local section_config = Utils.getSection(config, section_id)
+                        if section_config then
+                            Utils.resetSectionToDefaults(section_config, section_default)
+                        end
+                    end
+
+                    -- style
+                    config.style = {}
+                    for key, value in pairs(Config.DEFAULTS.style) do
+                        config.style[key] = value
+                    end
+                    -- custom_actions
+                    --config.custom_actions = {} --TODO don't reset custom_actions ??????
+                    Config.save(config)
+                    QuickMenu.updateTab(plugin)
+                    -- close touch_menu
+                    if plugin.is_filemanager then  plugin.menu_instance:onCloseFileManagerMenu()
+                    else plugin.menu_instance:onCloseReaderMenu() end
+                    -- open touch_menu
+                    UIManager:nextTick(function()
+                        plugin.menu_instance:onShowMenu()
+                        if refresh then refresh() end
+                    end)
+                end,
+                cancel_callback = function()
+                    if refresh then refresh() end
+                end,
+            })
+        end),
     })
 
     return global_items
@@ -356,7 +472,10 @@ function QuickMenu.buildSettingsMenu(plugin)
     local menu_items = {}
     table.insert(menu_items, {
         text = _("Global"), -- Ou tout autre intitulé
-        sub_item_table = QuickMenu.buildGlobalSubmenu(plugin),
+        sub_item_table = QuickMenu.buildGlobalSubmenu(plugin,
+            function(fn) return fn end, -- noop_close
+            function() end             -- noop_refresh
+        ),
     })
 
     -- style
@@ -364,53 +483,6 @@ function QuickMenu.buildSettingsMenu(plugin)
         text = _("Style"),
         sub_item_table = QuickMenu.buildStyleSubMenu(plugin),
         separator = true,
-    })
-
-    -- sections order
-    table.insert(menu_items, {
-        text = _("Sort sections") .. "\xE2\x80\xA6",
-        keep_menu_open = true,
-        callback = function()
-            local sort_sections = {}
-            for index, section_id in ipairs(config.section_order) do
-                local ok, section_mod = pcall(require, "sections/" .. section_id)
-                local icon = (ok and section_mod.icon) and (section_mod.icon .. " ") or ""
-                local label = (ok and section_mod.label) and section_mod.label or section_id
-                table.insert(sort_sections, { text = icon .. " " .. label, id = section_id })
-            end
-
-            UIManager:show(SortWidget:new{
-                title = _("Sort sections") .. " :",
-                item_table = sort_sections,
-                callback = function()
-                    config.section_order = {}
-                    for index, section in ipairs(sort_sections) do
-                        table.insert(config.section_order, section.id)
-                    end
-                    Config.save(config)
-                end
-            })
-        end,
-    })
-
-    -- reset sections order
-    table.insert(menu_items, {
-        text = _("Reset sections order to default") .. "\xE2\x80\xA6",
-        keep_menu_open = true,
-        callback = function()
-            UIManager:show(ConfirmBox:new{
-                text = _("Reset sections order to defaults") .. " ?",
-                ok_text = _("Reset"),
-                ok_callback = function()
-                    config.section_order = {}
-                    for position, section_id in ipairs(Config.DEFAULTS.section_order) do
-                        table.insert(config.section_order, section_id)
-                    end
-                    Config.save(config)
-                end
-            })
-        end,
-        separator = true
     })
 
     -- custom actions
@@ -447,8 +519,7 @@ function QuickMenu.buildSettingsMenu(plugin)
                 local ctx = buildContext(config, nil)
                 return section_mod.getSettings(ctx,
                     function(fn) return fn end, -- noop_close
-                    function() end,             -- noop_refresh
-                    function() end              -- noop_reload
+                    function() end             -- noop_refresh
                 )
             end)
 
@@ -467,50 +538,6 @@ function QuickMenu.buildSettingsMenu(plugin)
             logger.err("[QuickMenu] Failed to load section : " .. tostring(section.id))
         end
     end
-
-    -- reset quickmenu
-    table.insert(menu_items, {
-        text = _("Reset quick menu to defaults") .. "\xE2\x80\xA6",
-        keep_menu_open = true,
-        callback = function(touch_menu)
-            UIManager:show(ConfirmBox:new{
-                text = _("Reset quick menu to defaults") .. " ?",
-                ok_text = _("Reset"),
-                ok_callback = function()
-                    -- global
-                    config.add_exit_tab = Config.DEFAULTS.add_exit_tab
-                    config.add_quickmenu_tab = Config.DEFAULTS.add_quickmenu_tab
-                    config.open_on_start = Config.DEFAULTS.open_on_start
-
-                    -- section order
-                    config.section_order = {}
-                    for index, section_id in ipairs(Config.DEFAULTS.section_order) do
-                        table.insert(config.section_order, section_id)
-                    end
-
-                    -- sections
-                    for section_id, section_default in pairs(Config.DEFAULTS.sections) do
-                        local section_config = Utils.getSection(config, section_id)
-                        if section_config then
-                            Utils.resetSectionToDefaults(section_config, section_default)
-                        end
-                    end
-
-                    -- style
-                    config.style = {}
-                    for key, value in pairs(Config.DEFAULTS.style) do
-                        config.style[key] = value
-                    end
-                    -- custom_actions
-                    --config.custom_actions = {} --TODO don't reset custom_actions ??????
-                    -- save and refresh need to force close touch_menu
-                    Config.save(config)
-                    QuickMenu.updateTab(plugin)
-                    touch_menu:closeMenu()
-                end
-            })
-        end
-    })
 
     return {
         text = QuickMenu.label,
@@ -534,12 +561,11 @@ function QuickMenu.showSettings(plugin)
         end
     end
 
-    -- Construction des boutons via buildGlobalSubmenu
-    -- On appelle directement votre sous-menu global
-    local global_items = QuickMenu.buildGlobalSubmenu(plugin)
+    local function refresh()
+        QuickMenu.showSettings(plugin)
+    end
 
-    -- Transformation pour ButtonDialog via wrap_items
-    local buttons = Utils.wrap_items(global_items)
+    local buttons = Utils.wrap_items(QuickMenu.buildGlobalSubmenu(plugin, close, refresh))
 
     -- Ajout du bouton de sortie en bas
     table.insert(buttons, {}) -- séparateur

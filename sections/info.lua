@@ -187,7 +187,7 @@ end
 -- ============================================================
 -- Settings Menu Builder
 -- ============================================================
-function Info.getSettings(ctx, close, refresh, reload)
+function Info.getSettings(ctx, close, refresh)
     -- ctx import
     local config  = ctx.config
     local section = Utils.getSection(config, Info.id)
@@ -197,22 +197,22 @@ function Info.getSettings(ctx, close, refresh, reload)
     return {
         {
             text = _("Enabled in reader"),
-            checked_func = function() if reload then reload() end return section.enabled_r end,
+            checked_func = function() return section.enabled_r end,
             callback = function() section.enabled_r = not section.enabled_r; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Show title"),
-            checked_func = function() if reload then reload() end return section.show_title end,
+            checked_func = function() return section.show_title end,
             callback = function() section.show_title = not section.show_title; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Show thumbnail"),
-            checked_func = function() if reload then reload() end return section.show_thumbnail end,
+            checked_func = function() return section.show_thumbnail end,
             callback = function() section.show_thumbnail = not section.show_thumbnail; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Show skim"),
-            checked_func = function() if reload then reload() end return section.show_skim end,
+            checked_func = function() return section.show_skim end,
             callback = function() section.show_skim = not section.show_skim; Config.saveAndRefresh(ctx) end,
             separator = true
         },
@@ -252,17 +252,8 @@ function Info.showSettings(ctx)
     local function refresh()
         Info.showSettings(ctx)
     end
-    -- use to refresh under check btn when dialog is transparent
-    -- cost perf so block at openig as dialog never open transparent
-    -- only from the dialog from the touch_menu itself it crash koreader
-    local is_initializing = true
-    local function reload()
-        if is_initializing then return end
-        local touch_menu = ctx.touch_menu
-        if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end
-    end
 
-    local buttons = Utils.wrap_items(Info.getSettings(ctx, close, refresh, reload))
+    local buttons = Utils.wrap_items(Info.getSettings(ctx, close, refresh))
     if not buttons or #buttons==0 then return end
 
     table.insert(buttons, {}) -- separator
@@ -280,7 +271,6 @@ function Info.showSettings(ctx)
         buttons = buttons,
     }
     UIManager:show(dialog)
-    is_initializing = false -- allow reload after opening
 end
 
 return Info

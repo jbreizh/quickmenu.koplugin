@@ -135,15 +135,6 @@ function ActionManage:selectActionManageDialog(ctx, section_name, on_close)
     local section = config.sections[section_name]
     if not section or not section.items then return end
 
-    -- use to refresh under check btn when dialog is transparent
-    -- cost perf so block at openig as dialog never open transparent
-    local is_initializing = true
-    local function reload()
-        if is_initializing then return end
-        local touch_menu = ctx.touch_menu
-        if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end
-    end
-
     local all_actions = ActionDefs.getSorted(ActionDefs.getMerged(config.custom_actions))
     local categorized = {}
 
@@ -194,7 +185,6 @@ function ActionManage:selectActionManageDialog(ctx, section_name, on_close)
                 table.insert(buttons, {{
                     text = "      " .. label,
                     checked_func = function()
-                        reload() --  use to refresh under check btn when dialog is transparent
                         return Utils.table_contains(section.items, action.id)
                     end,
                     align = "left",
@@ -230,8 +220,6 @@ function ActionManage:selectActionManageDialog(ctx, section_name, on_close)
         end,
     }
     UIManager:show(dialog)
-
-    is_initializing = false -- allow reload after opening
 end
 
 -- ============================================================
