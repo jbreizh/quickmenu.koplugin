@@ -9,10 +9,10 @@
 local WidgetContainer = require("ui/widget/container/widgetcontainer")
 
 local QuickMenuPlugin = WidgetContainer:extend{
-    name = "quickmenu_plugin",
     config = nil,
+    touch_menu = nil,
     menu_instance = nil,
-    is_filmanager = nil
+    is_filemanager = nil,
 }
 
 -- ============================================================
@@ -95,6 +95,9 @@ local function patchTouchMenu(plugin)
     -- Hook init to
     local orig_init = TouchMenu.init
     function TouchMenu:init(...)
+        --
+        plugin.touch_menu = self
+
         -- increase menu size to 20
         self.max_per_page_default = config.items_per_page or 20
 
@@ -312,9 +315,9 @@ local function patchFileManagerMenu(plugin)
     local orig_fm_setUpdateItemTable = FileManagerMenu.setUpdateItemTable
     function FileManagerMenu:setUpdateItemTable()
         plugin.menu_instance = self -- critical : need to be before orig or addToMainMenu will get nil
-        plugin.is_filmanager = true -- critical : need to be before orig or addToMainMenu will get nil
+        plugin.is_filemanager = true -- critical : need to be before orig or addToMainMenu will get nil
         orig_fm_setUpdateItemTable(self) -- orig
-        QuickMenu.updateTab(config, self, true)-- tab
+        QuickMenu.updateTab(plugin)-- tab
     end
 
     -- don't open last tab when exit_tab is insert
@@ -339,9 +342,9 @@ local function patchReaderMenu(plugin)
     local orig_reader_setUpdateItemTable = ReaderMenu.setUpdateItemTable
     function ReaderMenu:setUpdateItemTable()
         plugin.menu_instance = self -- critical : need to be before orig or addToMainMenu will get nil
-        plugin.is_filmanager = false -- critical : need to be before orig or addToMainMenu will get nil
+        plugin.is_filemanager = false -- critical : need to be before orig or addToMainMenu will get nil
         orig_reader_setUpdateItemTable(self) -- orig
-        QuickMenu.updateTab(config, self, false) -- tab
+        QuickMenu.updateTab(plugin) -- tab
     end
 
     -- don't open last tab when exit_tab is insert
@@ -381,7 +384,7 @@ end
 function QuickMenuPlugin:addToMainMenu(menu_items)
     local QuickMenu = require("quickmenu")
     local status, result = pcall(function()
-        return QuickMenu.buildSettingsMenu(self.config, self.menu_instance, self.is_filmanager)
+        return QuickMenu.buildSettingsMenu(self)
     end)
 
     if status and result then  menu_items.quick_menu = result

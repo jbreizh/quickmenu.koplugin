@@ -25,7 +25,8 @@ local _             = require("common/i18n").gettext
 
 
 local QuickMenu = {
-    label = _("Quick menu")
+    id    = "quickmenu",
+    label = _("Quick menu"),
 }
 
 -- ============================================================
@@ -67,6 +68,7 @@ local function mergeRefs(dst, src)
 end
 
 function QuickMenu.createPanel(config, touch_menu)
+
     local refs = { buttons = {}, sliders = {}, widgets = {} }
     local ctx = buildContext(config, touch_menu)
 
@@ -135,24 +137,27 @@ local function manage_tab(tab_list, tab_id, tab_data, enabled, index)
 end
 
 
-function QuickMenu.updateTab(config, menu_instance, is_filemanager)
-    if not (menu_instance and menu_instance.tab_item_table)  then return end
+function QuickMenu.updateTab(plugin)
+    --
+    local config         = plugin.config
+    local menu_instance  = plugin.menu_instance
+    local is_filemanager = plugin.is_filemanager
+    --
+    if not (menu_instance and menu_instance.tab_item_table)  then
+        logger.err("[QuickMenu] updateTab: menu_instance or tab_item_table not ready yet.")
+        return
+    end
     local tabs = menu_instance.tab_item_table
-    --local is_filemanager = (type(menu_instance.onCloseFileManagerMenu) == "function")
-
     -- quick_menu_tab
     manage_tab(tabs, "quick_menu_tab", {
         id = "quick_menu_tab",
         icon = "home",
         remember = function() return not config.open_on_start end,
-        callback = function()
-            print("callback")
-        end,
+        -- callback
         hold_callback = function()
-            menu_instance:onCloseFileManagerMenu()
-            print("hold_callback")
+             QuickMenu.showSettings(plugin)
         end,
-        panel = function(touch_menu) print("panel"); return QuickMenu.createPanel(config, touch_menu) end,
+        panel = function(touch_menu) return QuickMenu.createPanel(config, touch_menu) end,
     }, config.add_quickmenu_tab, config.idx_quickmenu_tab or 1) -- when add_quickmenu_tab -> first position
 
     -- exit_tab
@@ -200,16 +205,68 @@ function QuickMenu.updateTab(config, menu_instance, is_filemanager)
     }, (not config.add_exit_tab and not is_filemanager), -1) -- not add_exit_tab and not fm -> last position - 1
 end
 
-function QuickMenu.buildStyleSubMenu(config)
-    local style_items = {}
 
+function QuickMenu.buildGlobalSubmenu(plugin)
+    --
+    local config         = plugin.config
+    local menu_instance  = plugin.menu_instance
+    local is_filemanager = plugin.is_filemanager
+    --
+    local global_items = {}
+    table.insert(global_items, {
+        text = _("Add exit tab"),
+        checked_func = function() return config.add_exit_tab end,
+        callback = function()
+            config.add_exit_tab = not config.add_exit_tab
+            Config.save(config)
+            QuickMenu.updateTab(plugin)
+            if plugin.is_filemanager then  plugin.menu_instance:onCloseFileManagerMenu()
+            else plugin.menu_instance:onCloseReaderMenu() end
+            UIManager:nextTick(function()
+            plugin.menu_instance:onShowMenu() end)
+        end
+    })
+
+    table.insert(global_items, {
+        text = _("Add quick menu tab"),
+        checked_func = function() return config.add_quickmenu_tab end,
+        callback = function(touch_menu)
+            config.add_quickmenu_tab = not config.add_quickmenu_tab
+            Config.save(config)
+            QuickMenu.updateTab(plugin)
+            if plugin.is_filemanager then  plugin.menu_instance:onCloseFileManagerMenu()
+            else plugin.menu_instance:onCloseReaderMenu() end
+            UIManager:nextTick(function()
+            plugin.menu_instance:onShowMenu() end)
+        end
+    })
+
+    table.insert(global_items, {
+        text = _("Always start on quick menu tab"),
+        checked_func = function() return config.open_on_start end,
+        callback = function()
+            config.open_on_start = not config.open_on_start
+            Config.save(config)
+        end,
+    })
+
+    return global_items
+end
+
+
+function QuickMenu.buildStyleSubMenu(plugin)
+    --
+    local config = plugin.config
+    local menu_instance = plugin.menu_instance
+    local is_filemanager = plugin.is_filemanager
     -- style
     local style_keys = {}
     for key in pairs(Config.DEFAULTS.style) do
         table.insert(style_keys, key)
     end
     table.sort(style_keys)
-
+    --
+    local style_items = {}
     for i, key in ipairs(style_keys) do
         table.insert(style_items, {
             text_func = function() return key .. " (" .. tostring(config.style[key]) .. ")"  end,
@@ -279,57 +336,33 @@ function QuickMenu.buildStyleSubMenu(config)
         end,
     })
 
-
     return style_items
 end
 
-function QuickMenu.buildSettingsMenu(config, menu_instance, is_filemanager)
-    local menu_items = {}
+function QuickMenu.buildSettingsMenu(plugin)
+    --
+    local config         = plugin.config
+    local menu_instance  = plugin.menu_instance
+    local is_filemanager = plugin.is_filemanager
+    --
     if not config.sections or type(config.sections) ~= "table" then
         logger.err("[QuickMenu] config.sections is missing or invalid in QuickMenu.buildSettingsMenu.")
         return { text = QuickMenu.label, sub_item_table = {} }
     end
 
-    local ctx = buildContext(config, nil)
+
 
     -- global
+    local menu_items = {}
     table.insert(menu_items, {
-        text = _("Add exit tab"),
-        checked_func = function() return config.add_exit_tab end,
-        callback = function(touch_menu)
-            config.add_exit_tab = not config.add_exit_tab
-            -- save and refresh need to force close touch_menu
-            Config.save(config)
-            QuickMenu.updateTab(config, menu_instance, is_filemanager)
-            touch_menu:closeMenu()
-        end
-    })
-
-    table.insert(menu_items, {
-        text = _("Add quick menu tab"),
-        checked_func = function() return config.add_quickmenu_tab end,
-        callback = function(touch_menu)
-            config.add_quickmenu_tab = not config.add_quickmenu_tab
-            -- save and refresh need to force close touch_menu
-            Config.save(config)
-            QuickMenu.updateTab(config, menu_instance, is_filemanager)
-            touch_menu:closeMenu()
-        end
-    })
-
-    table.insert(menu_items, {
-        text = _("Always start on quick menu tab"),
-        checked_func = function() return config.open_on_start end,
-        callback = function()
-            config.open_on_start = not config.open_on_start
-            Config.save(config)
-        end,
+        text = _("Global"), -- Ou tout autre intitulé
+        sub_item_table = QuickMenu.buildGlobalSubmenu(plugin),
     })
 
     -- style
     table.insert(menu_items, {
         text = _("Style"),
-        sub_item_table = QuickMenu.buildStyleSubMenu(config),
+        sub_item_table = QuickMenu.buildStyleSubMenu(plugin),
         separator = true,
     })
 
@@ -388,7 +421,8 @@ function QuickMenu.buildSettingsMenu(config, menu_instance, is_filemanager)
         end,
         keep_menu_open = true,
         callback = function(touch_menu)
-            if touch_menu then ctx.touch_menu = touch_menu end
+            local ctx = buildContext(config, touch_menu)
+            --if touch_menu then ctx.touch_menu = touch_menu end
             ActionCustom:showActionCustomMenu(ctx)
         end
     })
@@ -410,6 +444,7 @@ function QuickMenu.buildSettingsMenu(config, menu_instance, is_filemanager)
 
         if ok and section_mod and section_mod.getSettings then
             local success, items = pcall(function()
+                local ctx = buildContext(config, nil)
                 return section_mod.getSettings(ctx,
                     function(fn) return fn end, -- noop_close
                     function() end,             -- noop_refresh
@@ -470,7 +505,7 @@ function QuickMenu.buildSettingsMenu(config, menu_instance, is_filemanager)
                     --config.custom_actions = {} --TODO don't reset custom_actions ??????
                     -- save and refresh need to force close touch_menu
                     Config.save(config)
-                    QuickMenu.updateTab(config, menu_instance, is_filemanager)
+                    QuickMenu.updateTab(plugin)
                     touch_menu:closeMenu()
                 end
             })
@@ -482,6 +517,46 @@ function QuickMenu.buildSettingsMenu(config, menu_instance, is_filemanager)
         sorting_hint = "setting",
         sub_item_table = menu_items,
     }
+end
+
+function QuickMenu.showSettings(plugin)
+    --
+    local config         = plugin.config
+    local menu_instance  = plugin.menu_instance
+    local is_filemanager = plugin.is_filemanager
+    --
+    local dialog
+
+    local function close(fn)
+        return function()
+            if dialog then UIManager:close(dialog) end
+            if fn then fn() end
+        end
+    end
+
+    -- Construction des boutons via buildGlobalSubmenu
+    -- On appelle directement votre sous-menu global
+    local global_items = QuickMenu.buildGlobalSubmenu(plugin)
+
+    -- Transformation pour ButtonDialog via wrap_items
+    local buttons = Utils.wrap_items(global_items)
+
+    -- Ajout du bouton de sortie en bas
+    table.insert(buttons, {}) -- séparateur
+    table.insert(buttons, {{
+        text = _("Exit"),
+        callback = close()
+    }})
+
+    dialog = ButtonDialog:new{
+        title = "⚡ " .. QuickMenu.label .. " :",
+        title_align  = "left",
+        width_factor = 0.9,
+        buttons = buttons,
+        tap_close_callback = close()
+    }
+
+    UIManager:show(dialog)
 end
 
 return QuickMenu
