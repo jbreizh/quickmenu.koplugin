@@ -5,6 +5,7 @@
 
 -- TODO TODO TODO patch readermenu and filemanagermenu last_tab_index instead of TouchMenu last_index
 -- TODO in this can use readermenu:onShowMenu(tab_index, do_not_show) to reopen
+-- TODO use self.config.idx_quickmenu_tab
 
 -- ============================================================
 -- Definition

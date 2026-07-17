@@ -864,6 +864,3 @@ msgstr "Stil auf Standard zurücksetzen"
 
 msgid "Sort sections"
 msgstr "Abschnitte sortieren"
-
-msgid "Global"
-msgstr ""

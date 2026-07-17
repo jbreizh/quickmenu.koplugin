@@ -864,6 +864,3 @@ msgstr "スタイルをデフォルトに戻す"
 
 msgid "Sort sections"
 msgstr "セクションを並び替える"
-
-msgid "Global"
-msgstr ""

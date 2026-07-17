@@ -864,6 +864,3 @@ msgstr "Réinitialiser le style par défaut"
 
 msgid "Sort sections"
 msgstr "Trier les sections"
-
-msgid "Global"
-msgstr ""

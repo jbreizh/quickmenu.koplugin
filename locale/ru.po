@@ -864,6 +864,3 @@ msgstr "Сбросить стиль по умолчанию"
 
 msgid "Sort sections"
 msgstr "Сортировать разделы"
-
-msgid "Global"
-msgstr ""

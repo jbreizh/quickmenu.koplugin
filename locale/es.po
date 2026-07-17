@@ -864,6 +864,3 @@ msgstr "Restablecer estilo a valores predeterminados"
 
 msgid "Sort sections"
 msgstr "Ordenar secciones"
-
-msgid "Global"
-msgstr ""

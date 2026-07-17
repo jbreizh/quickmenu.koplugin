@@ -18,6 +18,7 @@ local Event         = require("ui/event")
 
 local logger        = require("logger")
 
+local StyleManage   = require("style_manage")
 local ActionCustom  = require("action_custom")
 local Config        = require("config")
 local Utils         = require("common/utils")
@@ -27,12 +28,13 @@ local _             = require("common/i18n").gettext
 local QuickMenu = {
     id    = "quickmenu",
     label = _("Quick menu"),
+    icon  = "\u{ED9F}" -- home-outline
 }
 
 -- ============================================================
 -- Shared Context Builder
 -- ============================================================
-function QuickMenu.updateContext(plugin)
+function QuickMenu.updatePlugin(plugin)
     plugin.reader      = ReaderUi.instance
     plugin.filemanager = FileManager.instance
     plugin.device      = Device
@@ -63,7 +65,7 @@ end
 
 function QuickMenu.createPanel(plugin)
     local refs = { buttons = {}, sliders = {}, widgets = {} }
-    QuickMenu.updateContext(plugin) -- update plugin = ctx in section
+    QuickMenu.updatePlugin(plugin) -- update plugin = ctx in section
     --
     local config = plugin.config
     local touch_menu = plugin.touch_menu
@@ -132,7 +134,6 @@ local function manage_tab(tab_list, tab_id, tab_data, enabled, index)
     end
 end
 
-
 function QuickMenu.updateTab(plugin)
     --
     local config         = plugin.config
@@ -199,7 +200,6 @@ function QuickMenu.updateTab(plugin)
     }, (not config.add_exit_tab and not is_filemanager), -1) -- not add_exit_tab and not fm -> last position - 1
 end
 
-
 function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
     --
     local config         = plugin.config
@@ -252,6 +252,15 @@ function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
             --Config.save(config)
             Config.saveAndRefresh(plugin) -- WARNING plugin remplace ctx
         end,
+    })
+
+    -- style
+    table.insert(global_items, {
+        text = _("Style") .. "\xE2\x80\xA6",
+        keep_menu_open = true,
+        callback = close(function()
+            StyleManage:showStyleDialog(plugin, refresh) -- WARNING plugin remplace ctx
+        end),
     })
 
     -- custom actions
@@ -376,92 +385,6 @@ function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
     return global_items
 end
 
-
-function QuickMenu.buildStyleSubMenu(plugin)
-    --
-    local config = plugin.config
-    local menu_instance = plugin.menu_instance
-    local is_filemanager = plugin.is_filemanager
-    -- style
-    local style_keys = {}
-    for key in pairs(Config.DEFAULTS.style) do
-        table.insert(style_keys, key)
-    end
-    table.sort(style_keys)
-    --
-    local style_items = {}
-    for i, key in ipairs(style_keys) do
-        table.insert(style_items, {
-            text_func = function() return key .. " (" .. tostring(config.style[key]) .. ")"  end,
-            keep_menu_open = true,
-            callback = function(touch_menu)
-                local original = config.style[key]
-                local function getValue() return config.style[key] end
-                local function setValue(v) config.style[key] = math.max(0, math.min(150, v)); Config.save(config) end
-                local function rebuild() if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end end
-
-                local dialog
-                local function nudge(delta)
-                    local newVal = getValue() + delta
-                    newVal = math.floor(newVal * 10 + 0.5) / 10
-                    setValue(newVal)
-                    rebuild()
-                    dialog:reinit()
-                end
-
-                local function close() UIManager:close(dialog) end
-                local function revert() setValue(original); rebuild() end
-
-                dialog = ButtonDialog:new{
-                    dismissable = false,
-                    title = key,
-                    buttons = {
-                        {
-                            { text = "-10",  callback = function() nudge(-10) end },
-                            { text = "-1",   callback = function() nudge(-1)  end },
-                            { text = "-0.1", callback = function() nudge(-0.1) end },
-                            { text_func = function() return tostring(getValue()) end, enabled = false },
-                            { text = "+0.1", callback = function() nudge(0.1)   end },
-                            { text = "+1",   callback = function() nudge(1)   end },
-                            { text = "+10",  callback = function() nudge(10)  end },
-                        },
-                        {
-                            { text = _("Cancel"), callback = function() revert(); close() end },
-                            { text = _("Default"),callback = function() setValue(Config.DEFAULTS.style[key]); rebuild(); dialog:reinit() end },
-                            { text = _("Apply"), is_enter_default = true, callback = close },
-                        },
-                    },
-                    tap_close_callback = revert
-                }
-                UIManager:show(dialog)
-            end,
-            separator = (i == #style_keys),
-        })
-    end
-
-    -- reset
-    table.insert(style_items, {
-        text = _("Reset style to defaults"),
-        keep_menu_open = true,
-        callback = function(touch_menu)
-            UIManager:show(ConfirmBox:new{
-                text = _("Reset style to defaults") .. " ?",
-                ok_text = _("Reset"),
-                ok_callback = function()
-                    config.style = {}
-                    for key, value in pairs(Config.DEFAULTS.style) do
-                        config.style[key] = value
-                    end
-                    Config.save(config)
-                    if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end
-                end
-            })
-        end,
-    })
-
-    return style_items
-end
-
 function QuickMenu.buildSettingsMenu(plugin)
     --
     local config         = plugin.config
@@ -473,25 +396,15 @@ function QuickMenu.buildSettingsMenu(plugin)
         return { text = QuickMenu.label, sub_item_table = {} }
     end
 
-
-
     -- global
     local menu_items = {}
     table.insert(menu_items, {
-        text = _("Global"), -- Ou tout autre intitulé
+        text = QuickMenu.label,
         sub_item_table = QuickMenu.buildGlobalSubmenu(plugin,
             function(fn) return fn end, -- noop_close
             function() end             -- noop_refresh
         ),
     })
-
-    -- style
-    table.insert(menu_items, {
-        text = _("Style"),
-        sub_item_table = QuickMenu.buildStyleSubMenu(plugin),
-        separator = true,
-    })
-
 
     --sections :grab sections list, sort it and build menu
     local sort_sections = {}
@@ -510,8 +423,8 @@ function QuickMenu.buildSettingsMenu(plugin)
 
         if ok and section_mod and section_mod.getSettings then
             local success, items = pcall(function()
-                QuickMenu.updateContext(plugin) -- need to update or device won't be set for frontlight
-                return section_mod.getSettings(plugin, -- WARNING need complete ctx
+                QuickMenu.updatePlugin(plugin) -- need to update or device won't be set for frontlight
+                return section_mod.getSettings(plugin, -- WARNING need complete plugin/ctx
                     function(fn) return fn end, -- noop_close
                     function() end             -- noop_refresh
                 )
@@ -569,7 +482,7 @@ function QuickMenu.showSettings(plugin)
     }})
 
     dialog = ButtonDialog:new{
-        title = "⚡ " .. QuickMenu.label .. " :",
+        title = QuickMenu.icon .. " " .. QuickMenu.label .. " :",
         title_align  = "left",
         width_factor = 0.9,
         buttons = buttons,
