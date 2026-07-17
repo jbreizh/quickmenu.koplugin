@@ -32,7 +32,11 @@ local QuickMenu = {
 -- ============================================================
 -- Shared Context Builder
 -- ============================================================
-local function buildContext(config, touch_menu)
+local function buildContext(plugin)
+    --
+    local config = plugin.config
+    local touch_menu = plugin.touch_menu
+    --
     local panel_width = touch_menu and touch_menu.item_width or 0
     local padding = Screen:scaleBySize(config.style.padding or 10)
     local inner_width = panel_width - padding * 2
@@ -67,10 +71,13 @@ local function mergeRefs(dst, src)
     end
 end
 
-function QuickMenu.createPanel(config, touch_menu)
+function QuickMenu.createPanel(plugin)
 
     local refs = { buttons = {}, sliders = {}, widgets = {} }
-    local ctx = buildContext(config, touch_menu)
+    local ctx = buildContext(plugin)
+    --
+    local config = ctx.config
+    local touch_menu = ctx.touch_menu
 
     if not config.section_order or type(config.section_order) ~= "table" then
         logger.err("[QuickMenu] config.section_order is missing or invalid in QuickMenu.createPanel.")
@@ -154,10 +161,8 @@ function QuickMenu.updateTab(plugin)
         icon = "home",
         remember = function() return not config.open_on_start end,
         -- callback
-        hold_callback = function()
-             QuickMenu.showSettings(plugin)
-        end,
-        panel = function(touch_menu) return QuickMenu.createPanel(config, touch_menu) end,
+        hold_callback = function() QuickMenu.showSettings(plugin) end,
+        panel = function() return QuickMenu.createPanel(plugin) end,
     }, config.add_quickmenu_tab, config.idx_quickmenu_tab or 1) -- when add_quickmenu_tab -> first position
 
     -- exit_tab
@@ -256,11 +261,24 @@ function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
         callback = function()
             config.open_on_start = not config.open_on_start
             --Config.save(config)
-            Config.saveAndRefresh(plugin) -- HACK
+            Config.saveAndRefresh(plugin) -- WARNING plugin remplace ctx
         end,
     })
 
-        -- sections order
+    -- custom actions
+    table.insert(global_items, {
+        text_func = function()
+            local count = #(config.custom_actions or {})
+            return _("Custom actions") .. " (" .. count .. ")\xE2\x80\xA6"
+        end,
+        keep_menu_open = true,
+        callback = close(function()
+            ActionCustom:showActionCustomMenu(plugin, refresh) -- WARNING plugin remplace ctx
+        end),
+
+    })
+
+    -- sections order
     table.insert(global_items, {
         text = _("Sort sections") .. "\xE2\x80\xA6",
         keep_menu_open = true,
@@ -282,7 +300,7 @@ function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
                         table.insert(config.section_order, section.id)
                     end
                     -- Config.save(config)
-                    Config.saveAndRefresh(plugin) -- HACK
+                    Config.saveAndRefresh(plugin) -- WARNING plugin remplace ctx
                 end
             })
         end,
@@ -302,7 +320,7 @@ function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
                         table.insert(config.section_order, section_id)
                     end
                     --Config.save(config)
-                    Config.saveAndRefresh(plugin) -- HACK
+                    Config.saveAndRefresh(plugin) -- WARNING plugin remplace ctx
                     if refresh then refresh() end
                 end,
                 cancel_callback = function()
@@ -485,19 +503,6 @@ function QuickMenu.buildSettingsMenu(plugin)
         separator = true,
     })
 
-    -- custom actions
-    table.insert(menu_items, {
-        text_func = function()
-            local count = #(config.custom_actions or {})
-            return _("Custom actions") .. " (" .. count .. ")\xE2\x80\xA6"
-        end,
-        keep_menu_open = true,
-        callback = function(touch_menu)
-            local ctx = buildContext(config, touch_menu)
-            --if touch_menu then ctx.touch_menu = touch_menu end
-            ActionCustom:showActionCustomMenu(ctx)
-        end
-    })
 
     --sections :grab sections list, sort it and build menu
     local sort_sections = {}
@@ -516,8 +521,8 @@ function QuickMenu.buildSettingsMenu(plugin)
 
         if ok and section_mod and section_mod.getSettings then
             local success, items = pcall(function()
-                local ctx = buildContext(config, nil)
-                return section_mod.getSettings(ctx,
+                --local ctx = buildContext(config, nil)
+                return section_mod.getSettings(plugin,
                     function(fn) return fn end, -- noop_close
                     function() end             -- noop_refresh
                 )
