@@ -201,8 +201,7 @@ function Frontlight.getSettings(ctx, close, refresh)
         {
         text = _("Reset section to defaults") .. "\xE2\x80\xA6",
         keep_menu_open = true,
-        callback = close(function(touch_menu)
-            if touch_menu then ctx.touch_menu = touch_menu end
+        callback = close(function()
             UIManager:show(ConfirmBox:new{
                 text = _("Reset section to defaults") .. " ?",
                 ok_text = _("Reset"),

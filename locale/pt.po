@@ -833,9 +833,6 @@ msgid "used"
 msgstr "usado"
 
 msgid "Network"
-msgstr ""
-
-msgid "Network"
 msgstr "Rede"
 
 msgid "Tap : Toggle FileBrowserPlus connection\nHold : Nothing"
@@ -867,3 +864,6 @@ msgstr "Repor estilo por defeito"
 
 msgid "Sort sections"
 msgstr "Ordenar secções"
+
+msgid "Global"
+msgstr ""

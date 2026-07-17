@@ -3,6 +3,9 @@
 -- Works in both File Manager and Book Reader views.
 -- require("common/inject_icons") can be use to inject svg icon (not use now)
 
+-- TODO TODO TODO patch readermenu and filemanagermenu last_tab_index instead of TouchMenu last_index
+-- TODO in this can use readermenu:onShowMenu(tab_index, do_not_show) to reopen
+
 -- ============================================================
 -- Definition
 -- ============================================================
@@ -13,6 +16,15 @@ local QuickMenuPlugin = WidgetContainer:extend{
     touch_menu = nil,
     menu_instance = nil,
     is_filemanager = nil,
+    reader = nil,
+    filemanager = nil,
+    device = nil,
+    powerd = nil,
+    screen = nil,
+    datetime = nil,
+    stat = nil,
+    panel_width = 0,
+    inner_width = 0,
 }
 
 -- touch_menu default_footer

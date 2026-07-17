@@ -32,29 +32,19 @@ local QuickMenu = {
 -- ============================================================
 -- Shared Context Builder
 -- ============================================================
-local function buildContext(plugin)
-    --
-    local config = plugin.config
-    local touch_menu = plugin.touch_menu
-    --
-    local panel_width = touch_menu and touch_menu.item_width or 0
-    local padding = Screen:scaleBySize(config.style.padding or 10)
-    local inner_width = panel_width - padding * 2
-
-    return {
-        config      = config,
-        touch_menu  = touch_menu,
-        reader      = ReaderUi.instance,
-        filemanager = FileManager.instance,
-        device      = Device,
-        powerd      = Powerd,
-        screen      = Screen,
-        datetime    = Datetime,
-        stat        = Utils.systemInfo(),
-        panel_width = panel_width,
-        inner_width = inner_width,
-    }
+function QuickMenu.updateContext(plugin)
+    plugin.reader      = ReaderUi.instance
+    plugin.filemanager = FileManager.instance
+    plugin.device      = Device
+    plugin.powerd      = Device:getPowerDevice()
+    plugin.screen      = Screen
+    plugin.datetime    = Datetime
+    plugin.stat        = Utils.systemInfo()
+    plugin.panel_width = (plugin.touch_menu and plugin.touch_menu.item_width) or 0
+    local padding      = Screen:scaleBySize(plugin.config.style.padding or 10)
+    plugin.inner_width = plugin.panel_width - padding * 2
 end
+
 
 -- ============================================================
 -- Panel Builder
@@ -72,12 +62,11 @@ local function mergeRefs(dst, src)
 end
 
 function QuickMenu.createPanel(plugin)
-
     local refs = { buttons = {}, sliders = {}, widgets = {} }
-    local ctx = buildContext(plugin)
+    QuickMenu.updateContext(plugin) -- update plugin = ctx in section
     --
-    local config = ctx.config
-    local touch_menu = ctx.touch_menu
+    local config = plugin.config
+    local touch_menu = plugin.touch_menu
 
     if not config.section_order or type(config.section_order) ~= "table" then
         logger.err("[QuickMenu] config.section_order is missing or invalid in QuickMenu.createPanel.")
@@ -94,7 +83,7 @@ function QuickMenu.createPanel(plugin)
     for idx, id in ipairs(config.section_order) do
         local ok, section_mod = pcall(require, "sections/" .. id)
         if ok and section_mod and type(section_mod.build) == "function" then
-            local ok_build, result = pcall(section_mod.build, ctx)
+            local ok_build, result = pcall(section_mod.build, plugin)
             if ok_build then
                 if result and result.widget then
                     if added_count > 0 then
@@ -521,8 +510,8 @@ function QuickMenu.buildSettingsMenu(plugin)
 
         if ok and section_mod and section_mod.getSettings then
             local success, items = pcall(function()
-                --local ctx = buildContext(config, nil)
-                return section_mod.getSettings(plugin,
+                QuickMenu.updateContext(plugin) -- need to update or device won't be set for frontlight
+                return section_mod.getSettings(plugin, -- WARNING need complete ctx
                     function(fn) return fn end, -- noop_close
                     function() end             -- noop_refresh
                 )

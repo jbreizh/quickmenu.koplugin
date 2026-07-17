@@ -863,3 +863,6 @@ msgstr ""
 
 msgid "Sort sections"
 msgstr ""
+
+msgid "Global"
+msgstr ""

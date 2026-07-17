@@ -227,12 +227,6 @@ function Footer.getSettings(ctx, close, refresh)
     for i, btn in ipairs(flat_buttons) do
         -- keep_menu_open
         btn.keep_menu_open = true
-        -- add touch_menu to ctx
-        local original_callback = btn.callback
-        btn.callback = function(touch_menu)
-            if touch_menu then ctx.touch_menu = touch_menu end
-            if original_callback then return original_callback() end
-        end
         -- add separator for last item
         btn.separator = (i == #flat_buttons)
         table.insert(menu_items, btn)
@@ -242,8 +236,7 @@ function Footer.getSettings(ctx, close, refresh)
     table.insert(menu_items, {
         text = _("Reset section to defaults") .. "\xE2\x80\xA6",
         keep_menu_open = true,
-        callback = close(function(touch_menu)
-            if touch_menu then ctx.touch_menu = touch_menu end
+        callback = close(function()
             UIManager:show(ConfirmBox:new{
                 text = _("Reset section to defaults") .. " ?",
                 ok_text = _("Reset"),
