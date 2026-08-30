@@ -39,7 +39,7 @@ function InfoSection.build(ctx)
 
     if not reader then return nil end
     -- text
-    local txt_w = inner_width - 2 * h_gap -- WARNING (h_gap*2) for padding clickable_text_container
+    local txt_w = inner_width - 2 * h_gap - 2 * btn_bordersize -- WARNING padding and bordersize of clickable_text_container
     local info_title = TextWidget:new{
         text = (reader.doc_props or {}).display_title or reader.props.title or _("Unknown title"),
         max_width = txt_w,

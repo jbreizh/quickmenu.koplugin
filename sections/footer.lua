@@ -217,7 +217,8 @@ function Footer.getSettings(ctx, close, refresh)
         {
             text = _("Use ZenFooter "),
             checked_func = function() return section.use_zenfooter end,
-            callback = function() section.use_zenfooter = not section.use_zenfooter; Config.saveAndRefresh(ctx) end
+            callback = function() section.use_zenfooter = not section.use_zenfooter; Config.saveAndRefresh(ctx) end,
+            separator = true,
         }
     }
 

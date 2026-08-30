@@ -216,7 +216,8 @@ function Shortcuts.getSettings(ctx, close, refresh)
         {
             text = _("Show labels"),
             checked_func = function() return section.show_label end,
-            callback = function() section.show_label = not section.show_label; Config.saveAndRefresh(ctx) end
+            callback = function() section.show_label = not section.show_label; Config.saveAndRefresh(ctx) end,
+            separator = true,
         },
         {
             text_func = function() return _("Columns") .. " (" .. section.max_cols .. ")\xE2\x80\xA6" end,
@@ -236,12 +237,13 @@ function Shortcuts.getSettings(ctx, close, refresh)
                     rebuild()
                 end
 
-                local function close() UIManager:close(dialog); refresh() end
+                local function close() UIManager:close(dialog); if refresh then refresh() end end
                 local function revert() setValue(original); rebuild() end
 
                 dialog = ButtonDialog:new{
-                    dismissable = false,
-                    title = _("Columns"),
+                    --dismissable = false,
+                    title = "\u{EC6C}" .. " " .. _("Columns") .. " :",
+                    title_align  = "left",
                     buttons = {
                         {
                             { text = "-1",   callback = function() nudge(-1)  end },
@@ -254,7 +256,7 @@ function Shortcuts.getSettings(ctx, close, refresh)
                             { text = _("Apply"), is_enter_default = true, callback = close },
                         },
                     },
-                    tap_close_callback = revert
+                    tap_close_callback = function() revert(); close() end
                 }
                 UIManager:show(dialog)
             end),

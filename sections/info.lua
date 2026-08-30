@@ -4,7 +4,7 @@ local VerticalSpan    = require("ui/widget/verticalspan")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
 local TextWidget      = require("ui/widget/textwidget")
-local ConfirmBox       = require("ui/widget/confirmbox")
+local ConfirmBox      = require("ui/widget/confirmbox")
 local ButtonDialog    = require("ui/widget/buttondialog")
 
 local Font            = require("ui/font")
@@ -120,6 +120,10 @@ function Info.build(ctx)
         if section.collapse then  return { widget = group , refs = refs} end
     end
 
+    --
+    local row = HorizontalGroup:new{ align = "center" }
+
+    --
     local info_col = VerticalGroup:new{ align = "center" }
     local infoSection = InfoSection.build(ctx)
     table.insert(info_col, infoSection.widget)
@@ -132,49 +136,76 @@ function Info.build(ctx)
     end
 
     --
-    local row = HorizontalGroup:new{ align = "center" }
-
     if section.show_thumbnail then -- TODO more test
-        local cover_h = info_col:getSize().h
+        local cover_h = info_col:getSize().h - 2 * btn_bordersize -- WARNING padding and bordersize of info_thumbnail
         local cover_w = math.floor(2 * cover_h / 3 + 0.5)
-        local ok, thumbnail = pcall(function() return reader.bookinfo:getCoverImage(reader.document) end)
-        if ok then
-            ok, thumbnail = pcall(function() return RenderImage:scaleBlitBuffer(thumbnail, cover_w, cover_h, true) end)
-            if ok then
-                info_thumbnail = CoverButton:new{
-                    image = thumbnail,
-                    width = cover_w,
-                    height = cover_h,
-                    radius = btn_radius,
-                    bordersize = btn_bordersize,
-                    padding = 0, --h_gap,
-                    callback = function()
-                        touch_menu:closeMenu()
-                        reader.bookinfo:onShowBookCover(reader.document.file)
-                    end,
-                    hold_callback = function()
-                        touch_menu:closeMenu()
-                        reader.bookinfo:onShowBookDescription(false, reader.document.file)
-                    end
-                }
-                table.insert(row, info_thumbnail)
-                table.insert(row, HorizontalSpan:new{ width = h_gap })
 
-                local opts = {}
-                for k, v in pairs(ctx) do opts[k] = v end
-                opts.inner_width = inner_width - cover_w - 2 * h_gap
-
-                info_col = VerticalGroup:new{ align = "left" }
-                local infoSection = InfoSection.build(opts)
-                table.insert(info_col, infoSection.widget)
-
-                if section.show_skim then
-                    local skimSection = SkimSection.build(opts)
-                    table.insert(info_col, VerticalSpan:new{ width = v_gap })
-                    table.insert(info_col, skimSection.widget)
-                    table.insert(refs.sliders, skimSection.refs.sliders[1])
-                end
+        -- try to get and resize cover
+        local thumbnail
+        local ok = false
+        if reader.bookinfo and reader.document then
+            ok, thumbnail = pcall(function() return reader.bookinfo:getCoverImage(reader.document) end)
+            if ok and thumbnail then
+                ok, thumbnail = pcall(function() return RenderImage:scaleBlitBuffer(thumbnail, cover_w, cover_h, true) end)
             end
+        end
+
+        --
+        local info_thumbnail
+        if ok and thumbnail then
+            info_thumbnail = CoverButton:new{
+                image         = thumbnail,
+                width         = cover_w,
+                height        = cover_h,
+                radius        = btn_radius,
+                bordersize    = btn_bordersize,
+                padding       = 0, --h_gap,
+                callback      = function()
+                    touch_menu:closeMenu()
+                    reader.bookinfo:onShowBookCover(reader.document.file)
+                end,
+                hold_callback = function()
+                    touch_menu:closeMenu()
+                    reader.bookinfo:onShowBookDescription(false, reader.document.file)
+                end
+            }
+        else
+            info_thumbnail = Button:new{
+                text           = "\u{E908}",
+                width          = cover_w,
+                height         = cover_h,
+                radius         = btn_radius,
+                padding        = 0, --h_gap,
+                bordersize     = btn_bordersize,
+                text_font_size = btn_font_size * 2,
+                show_parent    = touch_menu.show_parent,
+                callback       = function()
+                    touch_menu:closeMenu()
+                    reader.bookinfo:onShowBookCover(reader.document.file)
+                end,
+                hold_callback  = function()
+                    touch_menu:closeMenu()
+                    reader.bookinfo:onShowBookDescription(false, reader.document.file)
+                end
+            }
+        end
+
+        table.insert(row, info_thumbnail)
+        table.insert(row, HorizontalSpan:new{ width = h_gap })
+
+        local opts = {}
+        for k, v in pairs(ctx) do opts[k] = v end
+        opts.inner_width = inner_width - info_thumbnail:getSize().w - h_gap
+
+        info_col = VerticalGroup:new{ align = "left" }
+        local infoSection = InfoSection.build(opts)
+        table.insert(info_col, infoSection.widget)
+
+        if section.show_skim then
+            local skimSection = SkimSection.build(opts)
+            table.insert(info_col, VerticalSpan:new{ width = v_gap })
+            table.insert(info_col, skimSection.widget)
+            table.insert(refs.sliders, skimSection.refs.sliders[1])
         end
     end
 

@@ -34,7 +34,6 @@ function ActionDefs.getCategoryLabel(category)
     return category_label[category] or _("Other")
 end
 
-
 function ActionDefs.getSorted(action_list)
     local sorted_list = {}
 
@@ -53,7 +52,6 @@ function ActionDefs.getSorted(action_list)
     return sorted_list
 end
 
-
 function ActionDefs.getMerged(action_list)
     local action_system = ActionDefs.get()
     if action_list then
@@ -63,7 +61,6 @@ function ActionDefs.getMerged(action_list)
     end
     return action_system
 end
-
 
 local function is_localsend_active()
     local f = io.open("/tmp/localsend_koreader.pid", "r")
@@ -380,75 +377,79 @@ function ActionDefs.get()
             help_text = _("Tap : Show power dialog\nHold : Nothing"),
             callback = function(ctx)
                 ctx.touch_menu:closeMenu()
+                local dialog
+
+                local function close(fn)
+                    return function()
+                        if dialog then UIManager:close(dialog) end
+                        if fn then fn() end
+                    end
+                end
+
                 local buttons = {}
+
                 if ctx.device:canRestart() then
-                    buttons[#buttons + 1] = {{
-                        text = "\u{F021}" .. " " ..  _("Restart") .. " " .. "KOReader",
-                        callback = function()
-                            local d = power_dialog
-                            power_dialog = nil
-                            UIManager:close(d)
+                    table.insert(buttons, {{
+                        text = _("Restart") .. " " .. "KOReader" .. "\xE2\x80\xA6",
+                        callback = close(function()
                             UIManager:show(ConfirmBox:new{
                                 text = _("Are you sure you want to restart KOReader ?"),
                                 ok_text = _("Restart"),
                                 ok_callback = function() UIManager:broadcastEvent(Event:new("Restart")) end
                             })
-                        end
-                    }}
+                        end)
+                    }})
                 end
-                buttons[#buttons + 1] = {{
-                    text = "\u{274C}" .. " " ..  _("Exit") .. " " .. "KOreader",
-                    callback = function()
-                        local d = power_dialog
-                        power_dialog = nil
-                        UIManager:close(d)
+                table.insert(buttons, {{
+                    text = _("Exit") .. " " .. "KOreader" .. "\xE2\x80\xA6",
+                    callback = close(function()
                         UIManager:show(ConfirmBox:new{
                             text = _("Are you sure you want to exit KOReader ?"),
                             ok_text = _("Exit"),
                             ok_callback = function() UIManager:broadcastEvent(Event:new("Exit")) end
                         })
-                    end
-                }}
+                    end)
+                }})
                 if ctx.device:canReboot() then
-                    buttons[#buttons + 1] = {{
-                        text = "\u{F01E}" .. " " ..  _("Reboot"),
-                        callback = function()
-                            local d = power_dialog
-                            power_dialog = nil
-                            UIManager:close(d)
+                    table.insert(buttons, {{
+                        text = _("Reboot") .. "\xE2\x80\xA6",
+                        callback = close(function()
                             UIManager:askForReboot()
-                        end
-                    }}
+                        end)
+                    }})
                 end
                 if ctx.device:canSuspend() then
-                    buttons[#buttons + 1] = {{
-                        text = "\u{EBB1}" .. " " ..  _("Sleep"),
-                        callback = function()
-                            local d = power_dialog
-                            power_dialog = nil
-                            UIManager:close(d)
+                    table.insert(buttons, {{
+                        text = _("Sleep"),
+                        callback = close(function()
                             UIManager:suspend()
-                        end
-                    }}
+                        end)
+                    }})
                 end
                 if ctx.device:canPowerOff() then
-                    buttons[#buttons + 1] = {{
-                        text = "\u{F011}" .. " " ..  _("Power off"),
-                        callback = function()
-                            local d = power_dialog
-                            power_dialog = nil
-                            UIManager:close(d)
+                    table.insert(buttons, {{
+                        text = _("Power off") .. "\xE2\x80\xA6",
+                        callback = close(function()
                             UIManager:askForPowerOff()
-                        end
-                    }}
+                        end)
+                    }})
                 end
 
-                power_dialog = ButtonDialog:new{
-                    title        = _("Power"),
+                table.insert(buttons, {}) -- separator
+
+                table.insert(buttons, {{
+                    text = _("Exit"),
+                    callback = close()
+                }})
+
+                dialog = ButtonDialog:new{
+                    title        = "\u{F011}" .. " " .. _("Power") .. " :",
+                    title_align  = "left",
                     width_factor =  0.5,
                     buttons      = buttons,
+                    tap_close_callback = close()
                 }
-                UIManager:show(power_dialog)
+                UIManager:show(dialog)
             end,
             hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
         },
@@ -510,9 +511,7 @@ function ActionDefs.get()
             icon = "\u{F04B}",
             -- icon_func
             label = _("Resume"),
-            label_func = function(ctx)
-                return G_reader_settings:readSetting("lastfile") --TODO find title
-            end,
+            --  label_func
             category = "shortcut",
             -- active_func
             -- visible_func
@@ -651,37 +650,46 @@ function ActionDefs.get()
             end,
             hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
+                local dialog
+
+                local function close(fn)
+                    return function()
+                        if dialog then UIManager:close(dialog) end
+                        if fn then fn() end
+                    end
+                end
+
                 local buttons = {
                 {{
-                    text = "\u{F404} " ..  _("Push progress") .. "\xE2\x80\xA6",
-                    callback = function()
-                        local d = dialog
-                        dialog = nil
-                        UIManager:close(d)
+                    text = _("Push progress") .. "\xE2\x80\xA6",
+                    callback = close(function()
                         UIManager:broadcastEvent(Event:new("KOSyncPushProgress")) -- already check connection
-                    end
+                    end)
                 }},
                 {{
-                    text = "\u{F403} " ..  _("Pull progress") .. "\xE2\x80\xA6",
-                    callback = function()
-                        local d = dialog
-                        dialog = nil
-                        UIManager:close(d)
+                    text = _("Pull progress") .. "\xE2\x80\xA6",
+                    callback = close(function()
                         UIManager:broadcastEvent(Event:new("KOSyncPullProgress"))-- already check connection
-                    end
+                    end)
                 }},
-
+                {}, -- separator
+                {{
+                    text = _("Exit"),
+                    callback = close()
+                }},
                 }
+
                 dialog = ButtonDialog:new{
-                    title        = _("KOSync") .. " :",
+                    title        = "\u{ED3E}" .. " " .. _("KOSync") .. " :",
+                    title_align  = "left",
                     width_factor =  0.5,
                     buttons      = buttons,
+                    tap_close_callback = close()
                 }
                 UIManager:show(dialog)
             end,
         },
         localsend = {
-            icon = "\u{F1D8}",
             icon = "\u{F1D8}",
             icon_func = function(ctx) return is_localsend_active() and "\u{F1D9}" or "\u{F1D8}" end,
             label = "LocalSend",
@@ -698,31 +706,41 @@ function ActionDefs.get()
             end,
             hold_callback = function(ctx)
                 ctx.touch_menu:closeMenu()
+                local dialog
+
+                local function close(fn)
+                    return function()
+                        if dialog then UIManager:close(dialog) end
+                        if fn then fn() end
+                    end
+                end
+
                 local buttons = {
                 {{
-                    text = "\u{F15C} " ..  _("Send file") .. "\xE2\x80\xA6",
-                    callback = function()
-                        local d = dialog
-                        dialog = nil
-                        UIManager:close(d)
+                    text = _("Send file") .. "\xE2\x80\xA6",
+                    callback = close(function()
                         UIManager:broadcastEvent(Event:new("ShowLocalSendFileSendFlow"))
-                    end
+                    end)
                 }},
                 {{
-                    text = "\u{F02D} " ..  _("Send current book"),
-                    callback = function()
-                        local d = dialog
-                        dialog = nil
-                        UIManager:close(d)
+                    text = _("Send current book"),
+                    callback = close(function()
                         UIManager:broadcastEvent(Event:new("SendCurrentBookWithLocalSend"))
-                    end
+                    end)
                 }},
-
+                {}, -- separator
+                {{
+                    text = _("Exit"),
+                    callback = close()
+                }},
                 }
+
                 dialog = ButtonDialog:new{
-                    title        = "LocalSend" .. " :",
+                    title        = "\u{F1D8}" .. " " .. "LocalSend" .. " :",
+                    title_align  = "left",
                     width_factor =  0.5,
                     buttons      = buttons,
+                    tap_close_callback = close()
                 }
                 UIManager:show(dialog)
             end,

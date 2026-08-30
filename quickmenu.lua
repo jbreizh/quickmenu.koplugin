@@ -252,6 +252,7 @@ function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
             --Config.save(config)
             Config.saveAndRefresh(plugin) -- WARNING plugin remplace ctx
         end,
+        separator = true,
     })
 
     -- style
@@ -363,7 +364,7 @@ function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
                         config.style[key] = value
                     end
                     -- custom_actions
-                    --config.custom_actions = {} --TODO don't reset custom_actions ??????
+                    --config.custom_actions = {} --WARNING don't reset custom_actions ??????
                     Config.save(config)
                     QuickMenu.updateTab(plugin)
                     -- close touch_menu

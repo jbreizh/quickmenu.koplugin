@@ -1,11 +1,11 @@
 -- style_manage.lua
-local UIManager = require("ui/uimanager")
+local UIManager    = require("ui/uimanager")
 local ButtonDialog = require("ui/widget/buttondialog")
-local ConfirmBox = require("ui/widget/confirmbox")
+local ConfirmBox   = require("ui/widget/confirmbox")
 
-local Utils      = require("common/utils")
-local Config  = require("config")
-local _ = require("common/i18n").gettext
+local Utils       = require("common/utils")
+local Config      = require("config")
+local _           = require("common/i18n").gettext
 
 local StyleManage = {}
 
@@ -24,7 +24,7 @@ function StyleManage:buildStyleSubMenu(plugin, on_close, on_refresh)
     local style_items = {}
     for i, key in ipairs(style_keys) do
         table.insert(style_items, {
-            text_func = function() return key .. " (" .. tostring(config.style[key]) .. ")"  end,
+            text_func = function() return key .. " (" .. tostring(config.style[key]) .. ")"  .. "\xE2\x80\xA6" end,
             keep_menu_open = true,
             callback = on_close(function()
                 local original = config.style[key]
@@ -47,8 +47,9 @@ function StyleManage:buildStyleSubMenu(plugin, on_close, on_refresh)
                 local function revert() setValue(original); rebuild() end
 
                 dialog = ButtonDialog:new{
-                    dismissable = false,
-                    title = key,
+                    --dismissable = false,
+                    title = "\u{F044}" .. " " .. key .. " :",
+                    title_align  = "left",
                     buttons = {
                         {
                             { text = "-10",  callback = function() nudge(-10) end },
@@ -65,7 +66,7 @@ function StyleManage:buildStyleSubMenu(plugin, on_close, on_refresh)
                             { text = _("Apply"), is_enter_default = true, callback = close },
                         },
                     },
-                    tap_close_callback = revert
+                    tap_close_callback = function() revert(); close() end
                 }
                 UIManager:show(dialog)
             end),
@@ -75,7 +76,7 @@ function StyleManage:buildStyleSubMenu(plugin, on_close, on_refresh)
 
     -- reset
     table.insert(style_items, {
-        text = _("Reset style to defaults"),
+        text = _("Reset style to defaults")  .. "\xE2\x80\xA6",
         keep_menu_open = true,
         callback = on_close(function(touch_menu)
             UIManager:show(ConfirmBox:new{
@@ -120,7 +121,7 @@ function StyleManage:showStyleDialog(plugin, refresh)
     -- Bouton de fermeture
     table.insert(buttons, {})
     table.insert(buttons, {{
-        text = _("Close"),
+        text = _("Exit"),
         callback = function()
             UIManager:close(dialog)
             if refresh then refresh() end

@@ -197,6 +197,7 @@ function Frontlight.getSettings(ctx, close, refresh)
             checked_func = function() return section.use_zenslider end,
             callback = function() section.use_zenslider = not section.use_zenslider; Config.saveAndRefresh(ctx) end,
             help_text = _("Author : Anthony Gress\nProjet : Zen UI\nhttps://github.com/AnthonyGress/zen_ui.koplugin"),
+            separator = true,
         },
         {
         text = _("Reset section to defaults") .. "\xE2\x80\xA6",
