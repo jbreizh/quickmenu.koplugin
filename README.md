@@ -20,7 +20,7 @@
 </p>
   
 > [!WARNING]
- > The Exit tab remplaces the native button normally used to quit the reader and return to the Filemanager. To disable it, uncheck **Settings > Quick menu > Quick menu > Add exit tab**.
+ > The Exit tab replaces the native button normally used to quit the reader and return to the Filemanager. To disable it, uncheck **Settings > Quick menu > Quick menu > Add exit tab**.
 
 * **Actions:** This section provides quick-access toggles for essential device functions, such as Wi-Fi, orientation lock, power, and USB connection. It allows you to toggle system states instantly with a single tap. For details, see [Actions list](#actions-list).
 
