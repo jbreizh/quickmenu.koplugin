@@ -20,15 +20,13 @@
 </p>
   
 > [!WARNING]
- > The Exit tab replaces the native button normally used to quit the reader and return to the Filemanager. To disable it, uncheck **Settings > Quick menu > Quick menu > Add exit tab**.
+ > The Exit tab remplaces the native button normally used to quit the reader and return to the Filemanager. To disable it, uncheck **Settings > Quick menu > Quick menu > Add exit tab**.
 
-* **Actions:** This section provides quick-access toggles for essential device functions, such as Wi-Fi, orientation lock, power, and USB connection. It allows you to toggle system states instantly with a single tap.
+* **Actions:** This section provides quick-access toggles for essential device functions, such as Wi-Fi, orientation lock, power, and USB connection. It allows you to toggle system states instantly with a single tap. For details, see [Actions list](#actions-list).
 
 <p align="center">
   <img src="assets/action1.png" width="80%" alt="Actions" />
 </p>
-
-For details, see [Actions list](#actions-list)
 
 * **Frontlight:** Easily manage your visual comfort with dedicated controls for both intensity and warmth. This section offers granular adjustments to ensure your screen brightness and color temperature are perfectly suited to your environment.
 
@@ -47,13 +45,11 @@ For details, see [Actions list](#actions-list)
 
 </div>
 
-* **Shortcuts:** A customizable grid of buttons providing direct access to key features like your Library, Collections, Search, Dictionary, and Cloud services, helping you jump to your preferred areas with ease.
+* **Shortcuts:** A customizable grid of buttons providing direct access to key features like your Library, Collections, Search, Dictionary, and Cloud services, helping you jump to your preferred areas with ease. For details, see [Actions list](#actions-list).
 
 <p align="center">
   <img src="assets/shortcuts1.png" width="80%" alt="Shortcuts" />
 </p>
-
-For details, see [Actions list](#actions-list)
 
 * **Reading:** Designed for in-reading utility, this section provides quick tools to manage your current book or document session, ensuring common reading-related tasks are always one tap away.
 
@@ -77,13 +73,11 @@ For details, see [Actions list](#actions-list)
 
 </div>
 
-* **Footer:** The status bar at the bottom acts as a summary panel, displaying real-time system information including CPU usage, storage availability, current time, and battery level, keeping you informed at a glance.
+* **Footer:** The status bar at the bottom acts as a summary panel, displaying real-time system information including CPU usage, storage availability, current time, and battery level, keeping you informed at a glance. For details, see [Actions list](#actions-list).
 
 <p align="center">
   <img src="assets/footer1.png" width="90%" alt="Footer" />
 </p>
-
-For details, see [Actions list](#actions-list)
 
 ## Settings
 The settings interface allows you to tailor the Quick menu to your specific workflow with real-time updates:
@@ -110,7 +104,7 @@ The settings interface allows you to tailor the Quick menu to your specific work
 > If you uncheck "Show title" for a section or disable it completely, you will no longer be able to access its gear icon. To re-enable it, navigate to **Settings > Quick menu > [Section Name]**.
 
 ## Custom Actions
-The plugin features a robust custom actions engine. Users can define their own menu items, assign custom icons from an extensive internal library, and map specific triggers to actions like "Tap" or "Hold." This flexibility allows you to integrate plugins, system commands, or specific menu navigation directly into your personalized dashboard.
+A custom actions engine can be find in **global settings**. Users can define their own menu items, assign custom icons from an extensive internal library, and map specific actions for "Tap" or "Hold." This flexibility allows you to integrate plugins, system commands, or specific menu navigation directly into your personalized dashboard.
 
 <p align="center">
   <img src="assets/custom1.png" width="23%" alt="Custom action 1" />
@@ -126,7 +120,7 @@ This plugin has been built by building upon the work and ideas of several commun
 * **[qewer33](https://github.com/qewer33)** for the original idea behind the [quick-settings patch](https://github.com/qewer33/koreader-patches).
 * **[AndyHazz](https://github.com/AndyHazz)** for the icon and action selectors implemented in [bookshelf.koplugin](https://github.com/AndyHazz/bookshelf.koplugin).
 * **[doctorhetfield-cmd](https://github.com/doctorhetfield-cmd)** for the power menu implementation from [simpleui.koplugin](https://github.com/doctorhetfield-cmd/simpleui.koplugin).
-* **[AnthonyGress](https://github.com/AnthonyGress)** for the sliders and `touch_menu` hooks inspired by [zen_ui.koplugin](https://github.com/AnthonyGress/zen_ui.koplugin).
+* **[AnthonyGress](https://github.com/AnthonyGress)** for the sliders and `touch_menu` hooks inspired by [zenos.koplugin](https://github.com/xZenLabs/zen-os).
 
 ## Installation
 
