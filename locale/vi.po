@@ -1,0 +1,1018 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: vi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+msgid "%s of %s"
+msgstr "%s / %s"
+
+msgid "Actions"
+msgstr "Thao tác"
+
+msgid "Add"
+msgstr "Thêm"
+
+msgid "Add as shortcut"
+msgstr "Thêm làm lối tắt"
+
+msgid "Add exit tab"
+msgstr "Thêm thẻ thoát"
+
+msgid "Add new action"
+msgstr "Thêm thao tác mới"
+
+msgid "Add quick menu tab"
+msgstr "Thêm thẻ menu nhanh"
+
+msgid "Add this menu page"
+msgstr "Thêm trang menu này"
+
+msgid "All"
+msgstr "Tất cả"
+
+msgid "Always start on quick menu tab"
+msgstr "Luôn khởi động tại thẻ menu nhanh"
+
+msgid "Apply"
+msgstr "Áp dụng"
+
+msgid "Are you sure you want to exit KOReader ?"
+msgstr "Bạn có chắc chắn muốn thoát KOReader không?"
+
+msgid "Are you sure you want to exit book ?"
+msgstr "Bạn có chắc chắn muốn đóng sách không?"
+
+msgid "Are you sure you want to restart KOReader ?"
+msgstr "Bạn có chắc chắn muốn khởi động lại KOReader không?"
+
+msgid "Arrow down"
+msgstr "Mũi tên xuống"
+
+msgid "Arrow down then left"
+msgstr "Mũi tên xuống rồi sang trái"
+
+msgid "Arrow down then right"
+msgstr "Mũi tên xuống rồi sang phải"
+
+msgid "Arrow left"
+msgstr "Mũi tên trái"
+
+msgid "Arrow left hooked"
+msgstr "Mũi tên trái có móc"
+
+msgid "Arrow left to bar"
+msgstr "Mũi tên trái chạm vạch"
+
+msgid "Arrow left with tail"
+msgstr "Mũi tên trái có đuôi"
+
+msgid "Arrow right"
+msgstr "Mũi tên phải"
+
+msgid "Arrow right hooked"
+msgstr "Mũi tên phải có móc"
+
+msgid "Arrow right then down"
+msgstr "Mũi tên phải rồi xuống"
+
+msgid "Arrow right then up"
+msgstr "Mũi tên phải rồi lên"
+
+msgid "Arrow right to bar"
+msgstr "Mũi tên phải chạm vạch"
+
+msgid "Arrow right with tail"
+msgstr "Mũi tên phải có đuôi"
+
+msgid "Arrow up"
+msgstr "Mũi tên lên"
+
+msgid "Arrow up then left"
+msgstr "Mũi tên lên rồi sang trái"
+
+msgid "Arrow up then right"
+msgstr "Mũi tên lên rồi sang phải"
+
+msgid "Arrowhead right"
+msgstr "Đầu mũi tên phải"
+
+msgid "Arrows"
+msgstr "Mũi tên"
+
+msgid "Arrows left-right"
+msgstr "Mũi tên trái-phải"
+
+msgid ""
+"Author : Anthony Gress\n"
+"Projet : Zen UI\n"
+"https://github.com/AnthonyGress/zen_ui.koplugin"
+msgstr ""
+"Tác giả: Anthony Gress\n"
+"Dự án: Zen UI\n"
+"https://github.com/AnthonyGress/zen_ui.koplugin"
+
+msgid "Back"
+msgstr "Quay lại"
+
+msgid "Battery"
+msgstr "Pin"
+
+msgid "Block (dark)"
+msgstr "Khối (tối)"
+
+msgid "Block (full)"
+msgstr "Khối (đặc)"
+
+msgid "Block (light)"
+msgstr "Khối (sáng)"
+
+msgid "Block (medium)"
+msgstr "Khối (vừa)"
+
+msgid "Blocks"
+msgstr "Các khối"
+
+msgid "Bullet"
+msgstr "Dấu đầu dòng"
+
+msgid "CPU"
+msgstr "CPU"
+
+msgid "CPU used %d%%"
+msgstr "CPU đã dùng %d%%"
+
+msgid "Calendar"
+msgstr "Lịch"
+
+msgid "Cancel"
+msgstr "Hủy"
+
+msgid "Choose a plugin"
+msgstr "Chọn một plugin"
+
+msgid "Choose an action"
+msgstr "Chọn một thao tác"
+
+msgid "Circle (empty)"
+msgstr "Hình tròn (rỗng)"
+
+msgid "Circle (filled)"
+msgstr "Hình tròn (đặc)"
+
+msgid "Circle (left half)"
+msgstr "Hình tròn (nửa trái)"
+
+msgid "Circle (lower half)"
+msgstr "Hình tròn (nửa dưới)"
+
+msgid "Circle (right half)"
+msgstr "Hình tròn (nửa phải)"
+
+msgid "Circle (upper half)"
+msgstr "Hình tròn (nửa trên)"
+
+msgid "Circle arrow left"
+msgstr "Mũi tên tròn sang trái"
+
+msgid "Circle arrow right"
+msgstr "Mũi tên tròn sang phải"
+
+msgid "Close"
+msgstr "Đóng"
+
+msgid "Cloud"
+msgstr "Đám mây"
+
+msgid "Club"
+msgstr "Tép (nhép)"
+
+msgid "Collections"
+msgstr "Bộ sưu tập"
+
+msgid "Columns"
+msgstr "Cột"
+
+msgid "Curved back arrow"
+msgstr "Mũi tên cong quay lại"
+
+msgid "Custom"
+msgstr "Tùy chỉnh"
+
+msgid "Custom actions"
+msgstr "Thao tác tùy chỉnh"
+
+msgid "Dagger"
+msgstr "Dấu dao găm"
+
+msgid "Day"
+msgstr "Light mode"
+
+msgid "Default"
+msgstr "Mặc định"
+
+msgid "Delete"
+msgstr "Xóa"
+
+msgid "Device"
+msgstr "Thiết bị"
+
+msgid "Diamond (empty)"
+msgstr "Hình thoi (rỗng)"
+
+msgid "Diamond (filled)"
+msgstr "Hình thoi (đặc)"
+
+msgid "Diamond suit"
+msgstr "Rô"
+
+msgid "Dictionary"
+msgstr "Từ điển"
+
+msgid "Division slash"
+msgstr "Gạch chéo phép chia"
+
+msgid "Double angle left"
+msgstr "Góc kép trái"
+
+msgid "Double angle right"
+msgstr "Góc kép phải"
+
+msgid "Double arrow down"
+msgstr "Mũi tên kép xuống"
+
+msgid "Double arrow left"
+msgstr "Mũi tên kép trái"
+
+msgid "Double arrow right"
+msgstr "Mũi tên kép phải"
+
+msgid "Double arrow up"
+msgstr "Mũi tên kép lên"
+
+msgid "Double arrows right"
+msgstr "Mũi tên đôi sang phải"
+
+msgid "Double dagger"
+msgstr "Dấu dao găm đôi"
+
+msgid "Double fraction slash"
+msgstr "Dấu gạch phân số đôi"
+
+msgid "Drop .svg or .png files in koreader/icons/"
+msgstr "Thả các tệp .svg hoặc .png vào thư mục koreader/icons/"
+
+msgid "Dynamic"
+msgstr "Động"
+
+msgid "Edit"
+msgstr "Chỉnh sửa"
+
+msgid "Em dash"
+msgstr "Gạch ngang dài (Em dash)"
+
+msgid "En dash"
+msgstr "Gạch ngang ngắn (En dash)"
+
+msgid "Enabled in filemanager"
+msgstr "Bật trong trình quản lý tệp"
+
+msgid "Enabled in reader"
+msgstr "Bật trong trình đọc sách"
+
+msgid "Exit"
+msgstr "Thoát"
+
+msgid "Favorites"
+msgstr "Yêu thích"
+
+msgid "Fit controls"
+msgstr "Vừa khít các nút điều khiển"
+
+msgid "Footer"
+msgstr "Chân trang"
+
+msgid ""
+"Footer overflow !!!!\n"
+"Hidden actions :\n"
+msgstr ""
+"Chân trang bị tràn viền !!!!\n"
+"Các thao tác bị ẩn:\n"
+
+msgid "Fraction slash"
+msgstr "Gạch chéo phân số"
+
+msgid "Frontlight"
+msgstr "Đèn nền"
+
+msgid "GB"
+msgstr "GB"
+
+msgid "Heart"
+msgstr "Cơ"
+
+msgid "Heavy arrow right"
+msgstr "Mũi tên phải đậm"
+
+msgid "Heavy round arrow right"
+msgstr "Mũi tên tròn phải đậm"
+
+msgid "Heavy triangle right"
+msgstr "Tam giác phải đậm"
+
+msgid "High voltage"
+msgstr "Điện áp cao"
+
+msgid "History"
+msgstr "Lịch sử"
+
+msgid "Hold"
+msgstr "Nhấn giữ"
+
+msgid "Horizontal ellipsis"
+msgstr "Dấu ba chấm ngang"
+
+msgid "Hot springs / warmth"
+msgstr "Suối nước nóng / độ ấm"
+
+msgid "Icon"
+msgstr "Biểu tượng"
+
+msgid "Icons library"
+msgstr "Thư viện biểu tượng"
+
+msgid "Infinity"
+msgstr "Vô cực"
+
+msgid "Justify controls"
+msgstr "Căn đều các nút điều khiển"
+
+msgid "KOSync"
+msgstr "KOSync"
+
+msgid "Label"
+msgstr "Nhãn"
+
+msgid "Left 1/8 block"
+msgstr "Khối 1/8 bên trái"
+
+msgid "Left 2/8 block"
+msgstr "Khối 2/8 bên trái"
+
+msgid "Left 3/8 block"
+msgstr "Khối 3/8 bên trái"
+
+msgid "Left 4/8 block"
+msgstr "Khối 4/8 bên trái"
+
+msgid "Left 5/8 block"
+msgstr "Khối 5/8 bên trái"
+
+msgid "Left 6/8 block"
+msgstr "Khối 6/8 bên trái"
+
+msgid "Left 7/8 block"
+msgstr "Khối 7/8 bên trái"
+
+msgid "Left harpoon with right arrow"
+msgstr "Móc trái với mũi tên phải"
+
+msgid "Light"
+msgstr "Đèn nền"
+
+msgid "Lock"
+msgstr "Khóa"
+
+msgid "Long arrow left"
+msgstr "Mũi tên dài sang trái"
+
+msgid "Long arrow right"
+msgstr "Mũi tên dài sang phải"
+
+msgid "Lower 1/8 block"
+msgstr "Khối 1/8 bên dưới"
+
+msgid "Lower 2/8 block"
+msgstr "Khối 2/8 bên dưới"
+
+msgid "Lower 3/8 block"
+msgstr "Khối 3/8 bên dưới"
+
+msgid "Lower 4/8 block"
+msgstr "Khối 4/8 bên dưới"
+
+msgid "Lower 5/8 block"
+msgstr "Khối 5/8 bên dưới"
+
+msgid "Lower 6/8 block"
+msgstr "Khối 6/8 bên dưới"
+
+msgid "Lower 7/8 block"
+msgstr "Khối 7/8 bên dưới"
+
+msgid "MB"
+msgstr "MB"
+
+msgid "Manage actions"
+msgstr "Quản lý thao tác"
+
+msgid "Memory"
+msgstr "Bộ nhớ"
+
+msgid "Memory available %d MB"
+msgstr "Bộ nhớ khả dụng %d MB"
+
+msgid "Memory available %d%%"
+msgstr "Bộ nhớ khả dụng %d%%"
+
+msgid "Memory total %d MB"
+msgstr "Tổng bộ nhớ %d MB"
+
+msgid "Memory used %d MB"
+msgstr "Bộ nhớ đã dùng %d MB"
+
+msgid "Memory used %d%%"
+msgstr "Bộ nhớ đã dùng %d%%"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "Menu action"
+msgstr "Thao tác menu"
+
+msgid "Menu unavailable"
+msgstr "Menu không khả dụng"
+
+msgid "Middle dot"
+msgstr "Dấu chấm giữa"
+
+msgid "Night"
+msgstr "Dark mode"
+
+msgid "Night mode"
+msgstr "Chế độ ban đêm"
+
+msgid "No custom action"
+msgstr "Không có thao tác tùy chỉnh"
+
+msgid "No launchable plugins found"
+msgstr "Không tìm thấy plugin nào có thể khởi chạy"
+
+msgid "None"
+msgstr "Không có"
+
+msgid "Not possible"
+msgstr "Không khả thi"
+
+msgid "Nothing to do"
+msgstr "Không có gì để thực hiện"
+
+msgid "Numero"
+msgstr "Ký hiệu số (№)"
+
+msgid "OPDS"
+msgstr "OPDS"
+
+msgid "Off"
+msgstr "Tắt"
+
+msgid "On"
+msgstr "Bật"
+
+msgid "Other"
+msgstr "Khác"
+
+msgid "Page %1 of %2"
+msgstr "Trang %1 / %2"
+
+msgid "Pilcrow / paragraph"
+msgstr "Dấu đoạn văn (¶)"
+
+msgid "Plugin"
+msgstr "Plugin"
+
+msgid "Plugin not activated."
+msgstr "Plugin chưa được kích hoạt."
+
+msgid "Power"
+msgstr "Nguồn"
+
+msgid "Power off"
+msgstr "Tắt nguồn"
+
+msgid "Process"
+msgstr "Tiến trình"
+
+msgid "Process memory %s MB"
+msgstr "Bộ nhớ tiến trình %s MB"
+
+msgid "Quick Menu"
+msgstr "Menu nhanh"
+
+msgid "Quick Menu for settings and actions."
+msgstr "Menu nhanh cho các cài đặt và thao tác."
+
+msgid "Quick menu"
+msgstr "Menu nhanh"
+
+msgid "Reading"
+msgstr "Đang đọc"
+
+msgid "Reboot"
+msgstr "Khởi động lại máy"
+
+msgid "Rectangle (empty)"
+msgstr "Hình chữ nhật (rỗng)"
+
+msgid "Rectangle (filled)"
+msgstr "Hình chữ nhật (đặc)"
+
+msgid "Reset"
+msgstr "Đặt lại"
+
+msgid "Reset actions to defaults"
+msgstr "Đặt lại các thao tác về mặc định"
+
+msgid "Reset quick menu to defaults"
+msgstr "Đặt lại menu nhanh về mặc định"
+
+msgid "Reset section to defaults"
+msgstr "Đặt lại phần này về mặc định"
+
+msgid "Restart"
+msgstr "Khởi động lại"
+
+msgid "Resume"
+msgstr "Tiếp tục"
+
+msgid "Right half block"
+msgstr "Khối nửa bên phải"
+
+msgid "Rotate"
+msgstr "Xoay"
+
+msgid "SSH"
+msgstr "SSH"
+
+msgid "SVG icon folder"
+msgstr "Thư mục biểu tượng SVG"
+
+msgid "Save"
+msgstr "Lưu"
+
+msgid "Search"
+msgstr "Tìm kiếm"
+
+msgid "Search %1 icons by name…"
+msgstr "Tìm %1 biểu tượng theo tên…"
+
+msgid "Search…"
+msgstr "Tìm kiếm…"
+
+msgid "Section sign"
+msgstr "Dấu mục (§)"
+
+msgid "Select actions"
+msgstr "Chọn thao tác"
+
+msgid "Select hold"
+msgstr "Chọn hành động khi nhấn giữ"
+
+msgid "Select label"
+msgstr "Chọn nhãn"
+
+msgid "Select tap"
+msgstr "Chọn hành động khi chạm"
+
+msgid "Separators"
+msgstr "Dấu phân cách"
+
+msgid "Shortcut"
+msgstr "Lối tắt"
+
+msgid "Shortcuts"
+msgstr "Lối tắt"
+
+msgid "Show labels"
+msgstr "Hiển thị nhãn"
+
+msgid "Show skim"
+msgstr "Hiển thị xem lướt (skim)"
+
+msgid "Show thumbnail"
+msgstr "Hiển thị hình thu nhỏ"
+
+msgid "Show title"
+msgstr "Hiển thị tiêu đề"
+
+msgid "Single angle left"
+msgstr "Góc đơn trái"
+
+msgid "Single angle right"
+msgstr "Góc đơn phải"
+
+msgid "Slant block"
+msgstr "Khối xiên"
+
+msgid "Slant block (empty)"
+msgstr "Khối xiên (rỗng)"
+
+msgid "Slash"
+msgstr "Dấu gạch chéo"
+
+msgid "Sleep"
+msgstr "Ngủ"
+
+msgid "Sort actions"
+msgstr "Sắp xếp thao tác"
+
+msgid "Spade"
+msgstr "Bích"
+
+msgid "Square (empty)"
+msgstr "Hình vuông (rỗng)"
+
+msgid "Square (filled)"
+msgstr "Hình vuông (đặc)"
+
+msgid "Star (filled)"
+msgstr "Ngôi sao (đặc)"
+
+msgid "Star (outline)"
+msgstr "Ngôi sao (viền)"
+
+msgid "Statistics"
+msgstr "Thống kê"
+
+msgid "Storage"
+msgstr "Bộ nhớ lưu trữ"
+
+msgid "Storage available %d GB"
+msgstr "Bộ nhớ trống %d GB"
+
+msgid "Storage available %d%%"
+msgstr "Bộ nhớ trống %d%%"
+
+msgid "Storage total %d GB"
+msgstr "Tổng dung lượng %d GB"
+
+msgid "Storage used %d GB"
+msgstr "Dung lượng đã dùng %d GB"
+
+msgid "Storage used %d%%"
+msgstr "Dung lượng đã dùng %d%%"
+
+msgid "Style"
+msgstr "Kiểu dáng"
+
+msgid "Sun (outline)"
+msgstr "Mặt trời (viền)"
+
+msgid "Symbols"
+msgstr "Ký hiệu"
+
+msgid "System"
+msgstr "Hệ thống"
+
+msgid "System action"
+msgstr "Thao tác hệ thống"
+
+msgid "Tap"
+msgstr "Chạm"
+
+msgid ""
+"Tap : Ask for exit KOreader\n"
+"Hold : Ask for restart KOreader"
+msgstr ""
+"Chạm: Hỏi để thoát KOReader\n"
+"Giữ: Hỏi để khởi động lại KOReader"
+
+msgid ""
+"Tap : Ask for power off system\n"
+"Hold : Ask for reboot system"
+msgstr ""
+"Chạm: Hỏi để tắt nguồn hệ thống\n"
+"Giữ: Hỏi để khởi động lại hệ thống"
+
+msgid ""
+"Tap : Ask for reboot system\n"
+"Hold : Ask for power off system"
+msgstr ""
+"Chạm: Hỏi để khởi động lại hệ thống\n"
+"Giữ: Hỏi để tắt nguồn hệ thống"
+
+msgid ""
+"Tap : Ask for restart KOreader\n"
+"Hold : Ask for exit KOreader"
+msgstr ""
+"Chạm: Hỏi để khởi động lại KOReader\n"
+"Giữ: Hỏi để thoát KOReader"
+
+msgid ""
+"Tap : Nothing\n"
+"Hold : Show frontlight dialog"
+msgstr ""
+"Chạm: Không làm gì\n"
+"Giữ: Hiển thị bảng điều chỉnh đèn nền"
+
+msgid ""
+"Tap : Open last book\n"
+"Hold : Show history"
+msgstr ""
+"Chạm: Mở cuốn sách gần nhất\n"
+"Giữ: Hiển thị lịch sử"
+
+msgid ""
+"Tap : Push progress to KOSync\n"
+"Hold : Pull progress from KOSync"
+msgstr ""
+"Chạm: Tải tiến trình lên KOSync\n"
+"Giữ: Lấy tiến trình về từ KOSync"
+
+msgid ""
+"Tap : Request UBS mass storage\n"
+"Hold : Nothing"
+msgstr ""
+"Chạm: Yêu cầu kết nối lưu trữ USB\n"
+"Giữ: Không làm gì"
+
+msgid ""
+"Tap : Show Calibre search\n"
+"Hold : Show file search"
+msgstr ""
+"Chạm: Tìm kiếm Calibre\n"
+"Giữ: Tìm kiếm tệp"
+
+msgid ""
+"Tap : Show OPDS catalog\n"
+"Hold : Show cloud storage"
+msgstr ""
+"Chạm: Hiển thị danh mục OPDS\n"
+"Giữ: Hiển thị lưu trữ đám mây"
+
+msgid ""
+"Tap : Show calendar statistics\n"
+"Hold : Show reader statistics"
+msgstr ""
+"Chạm: Hiển thị thống kê lịch\n"
+"Giữ: Hiển thị thống kê đọc sách"
+
+msgid ""
+"Tap : Show cloud storage\n"
+"Hold : Show OPDS catalog"
+msgstr ""
+"Chạm: Hiển thị lưu trữ đám mây\n"
+"Giữ: Hiển thị danh mục OPDS"
+
+msgid ""
+"Tap : Show collections\n"
+"Hold : Show favorites"
+msgstr ""
+"Chạm: Hiển thị bộ sưu tập\n"
+"Giữ: Hiển thị mục yêu thích"
+
+msgid ""
+"Tap : Show dictionary search\n"
+"Hold : Show wikipedia search"
+msgstr ""
+"Chạm: Tìm kiếm từ điển\n"
+"Giữ: Tìm kiếm Wikipedia"
+
+msgid ""
+"Tap : Show favorites\n"
+"Hold : Show collections"
+msgstr ""
+"Chạm: Hiển thị mục yêu thích\n"
+"Giữ: Hiển thị bộ sưu tập"
+
+msgid ""
+"Tap : Show file search\n"
+"Hold : Show Calibre search"
+msgstr ""
+"Chạm: Tìm kiếm tệp\n"
+"Giữ: Tìm kiếm Calibre"
+
+msgid ""
+"Tap : Show history\n"
+"Hold : Open last book"
+msgstr ""
+"Chạm: Hiển thị lịch sử\n"
+"Giữ: Mở cuốn sách gần nhất"
+
+msgid ""
+"Tap : Show power dialog\n"
+"Hold : Nothing"
+msgstr ""
+"Chạm: Hiển thị menu nguồn\n"
+"Giữ: Không làm gì"
+
+msgid ""
+"Tap : Show reader statistics\n"
+"Hold : Show calendar statistics"
+msgstr ""
+"Chạm: Hiển thị thống kê đọc sách\n"
+"Giữ: Hiển thị thống kê lịch"
+
+msgid ""
+"Tap : Show time\n"
+"Hold : Nothing"
+msgstr ""
+"Chạm: Hiển thị thời gian\n"
+"Giữ: Không làm gì"
+
+msgid ""
+"Tap : Show value\n"
+"Hold : Show battery statistics"
+msgstr ""
+"Chạm: Hiển thị giá trị\n"
+"Giữ: Hiển thị thông số pin"
+
+msgid ""
+"Tap : Show value\n"
+"Hold : Show system statistics"
+msgstr ""
+"Chạm: Hiển thị giá trị\n"
+"Giữ: Hiển thị thông số hệ thống"
+
+msgid ""
+"Tap : Show wikipedia search\n"
+"Hold : Show dictionary search"
+msgstr ""
+"Chạm: Tìm kiếm Wikipedia\n"
+"Giữ: Tìm kiếm từ điển"
+
+msgid ""
+"Tap : Suspend system\n"
+"Hold : Nothing"
+msgstr ""
+"Chạm: Tạm dừng hệ thống (ngủ)\n"
+"Giữ: Không làm gì"
+
+msgid ""
+"Tap : Swap rotation\n"
+"Hold : Invert rotation"
+msgstr ""
+"Chạm: Đổi hướng xoay\n"
+"Giữ: Đảo ngược hướng xoay"
+
+msgid ""
+"Tap : Toggle Calibre connection\n"
+"Hold : Nothing"
+msgstr ""
+"Chạm: Bật/tắt kết nối Calibre\n"
+"Giữ: Không làm gì"
+
+msgid ""
+"Tap : Toggle SSH server\n"
+"Hold : Nothing"
+msgstr ""
+"Chạm: Bật/tắt máy chủ SSH\n"
+"Giữ: Không làm gì"
+
+msgid ""
+"Tap : Toggle frontlight\n"
+"Hold : Show frontlight dialog"
+msgstr ""
+"Chạm: Bật/tắt đèn nền\n"
+"Giữ: Hiển thị bảng điều chỉnh đèn nền"
+
+msgid ""
+"Tap : Toggle lock gsensor\n"
+"Hold : Toggle ignore gsensor"
+msgstr ""
+"Chạm: Bật/tắt khóa cảm biến trọng lực\n"
+"Giữ: Bật/tắt bỏ qua cảm biến trọng lực"
+
+msgid ""
+"Tap : Toggle night mode\n"
+"Hold : Nothing"
+msgstr ""
+"Chạm: Bật/tắt chế độ ban đêm\n"
+"Giữ: Không làm gì"
+
+msgid ""
+"Tap : Toggle wifi\n"
+"Hold : Show wifi picker"
+msgstr ""
+"Chạm: Bật/tắt Wi-Fi\n"
+"Giữ: Hiển thị danh sách Wi-Fi"
+
+msgid "That menu item isn't available"
+msgstr "Mục menu này hiện không khả dụng"
+
+msgid "Tilde"
+msgstr "Dấu ngã (~)"
+
+msgid "Time"
+msgstr "Thời gian"
+
+msgid "Triangle-head right"
+msgstr "Đầu tam giác phải"
+
+msgid "Triangular bullet"
+msgstr "Đầu dòng tam giác"
+
+msgid "USB"
+msgstr "USB"
+
+msgid "Unknown author"
+msgstr "Tác giả không xác định"
+
+msgid "Unknown chapter"
+msgstr "Chương không xác định"
+
+msgid "Unknown title"
+msgstr "Tiêu đề không xác định"
+
+msgid "Unlock"
+msgstr "Mở khóa"
+
+msgid "Upper half block"
+msgstr "Khối nửa bên trên"
+
+msgid "Use ZenFooter "
+msgstr "Sử dụng ZenFooter "
+
+msgid "Use ZenSlider"
+msgstr "Sử dụng ZenSlider"
+
+msgid "Vertical bar"
+msgstr "Thanh dọc"
+
+msgid "Vertical block"
+msgstr "Khối dọc"
+
+msgid "Vertical block (empty)"
+msgstr "Khối dọc (rỗng)"
+
+msgid "Vertical ellipsis"
+msgstr "Dấu ba chấm dọc"
+
+msgid "Warmth"
+msgstr "Độ ấm"
+
+msgid "Wi-Fi"
+msgstr "Wi-Fi"
+
+msgid "WiFi"
+msgstr "WiFi"
+
+msgid "Wikipedia"
+msgstr "Wikipedia"
+
+msgid "available"
+msgstr "khả dụng"
+
+msgid "total"
+msgstr "tổng cộng"
+
+msgid "used"
+msgstr "đã dùng"
+
+msgid "Network"
+msgstr "Mạng"
+
+msgid ""
+"Tap : Toggle FileBrowserPlus connection\n"
+"Hold : Nothing"
+msgstr ""
+"Chạm: Bật/tắt kết nối FileBrowserPlus\n"
+"Giữ: Không làm gì"
+
+msgid "Pull progress"
+msgstr "Lấy tiến trình về"
+
+msgid "Push progress"
+msgstr "Đẩy tiến trình lên"
+
+msgid "Send current book"
+msgstr "Gửi cuốn sách hiện tại"
+
+msgid "Send file"
+msgstr "Gửi tệp"
+
+msgid ""
+"Tap : Toggle LocalSend connection\n"
+"Hold : Show localSend dialog"
+msgstr ""
+"Chạm: Bật/tắt kết nối LocalSend\n"
+"Giữ: Hiển thị hộp thoại LocalSend"
+
+msgid "Reset sections order to default"
+msgstr "Đặt lại thứ tự các phần về mặc định"
+
+msgid "Reset sections order to defaults"
+msgstr "Đặt lại thứ tự các phần về mặc định"
+
+msgid "Reset style to defaults"
+msgstr "Đặt lại kiểu dáng về mặc định"
+
+msgid "Sort sections"
+msgstr "Sắp xếp các phần"
