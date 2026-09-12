@@ -104,12 +104,12 @@ function ActionDefs.get()
             callback = function(ctx)
                 if NetworkMgr:isWifiOn() then NetworkMgr:toggleWifiOff()
                 else NetworkMgr:toggleWifiOn() end
-                UIManager:scheduleIn(1, function() ctx.touch_menu:updateItems() end)
+                UIManager:scheduleIn(1, function() Utils.updateMenu(ctx.touch_menu) end)
             end,
             hold_callback = function(ctx)
                 local function do_connect()
                     NetworkMgr:toggleWifiOn(function()
-                        UIManager:scheduleIn(0.5, function() ctx.touch_menu:updateItems() end)
+                        UIManager:scheduleIn(0.5, function() Utils.updateMenu(ctx.touch_menu) end)
                     end, true, true)
                 end
                 if NetworkMgr:isWifiOn() then NetworkMgr:toggleWifiOff(do_connect, true)
@@ -133,9 +133,9 @@ function ActionDefs.get()
             help_text = _("Tap : Toggle night mode\nHold : Nothing"),
             callback = function(ctx)
                 UIManager:broadcastEvent(Event:new("ToggleNightMode"))
-                ctx.touch_menu:updateItems()
+                Utils.updateMenu(ctx.touch_menu)
             end,
-            hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
+            hold_callback = function(ctx) Utils.closeMenu(ctx.touch_menu); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
         },
         light = {
             icon = "\u{EA2B}", -- led-on
@@ -154,10 +154,10 @@ function ActionDefs.get()
             help_text = _("Tap : Toggle frontlight\nHold : Show frontlight dialog"),
             callback = function(ctx)
                 UIManager:broadcastEvent(Event:new("ToggleFrontlight"))
-                ctx.touch_menu:updateItems()
+                Utils.updateMenu(ctx.touch_menu)
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowFlDialog"))
             end
         },
@@ -176,9 +176,9 @@ function ActionDefs.get()
             active_func = function(ctx) return ctx.powerd:isFrontlightOn() and ctx.powerd:frontlightWarmth() ~= 0 end,
             visible_func = function(ctx) return ctx.device:hasFrontlight() and ctx.device:hasNaturalLight() end,
             help_text = _("Tap : Nothing\nHold : Show frontlight dialog"),
-            callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end,
+            callback = function(ctx) Utils.closeMenu(ctx.touch_menu); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowFlDialog"))
             end
         },
@@ -221,14 +221,14 @@ function ActionDefs.get()
                     UIManager:broadcastEvent(Event:new("ToggleGSensor"))
                     if G_reader_settings:isTrue("input_lock_gsensor") then UIManager:broadcastEvent(Event:new("LockGSensor")) end
                 else UIManager:broadcastEvent(Event:new("LockGSensor")) end
-                ctx.touch_menu:updateItems()
+                Utils.updateMenu(ctx.touch_menu)
             end,
             hold_callback = function(ctx)
                 if G_reader_settings:isTrue("input_lock_gsensor") then
                     UIManager:broadcastEvent(Event:new("LockGSensor"))
                     if G_reader_settings:isTrue("input_ignore_gsensor") then UIManager:broadcastEvent(Event:new("ToggleGSensor")) end
                 else UIManager:broadcastEvent(Event:new("ToggleGSensor")) end
-                ctx.touch_menu:updateItems()
+                Utils.updateMenu(ctx.touch_menu)
             end
         },
         usb = {
@@ -241,7 +241,7 @@ function ActionDefs.get()
             help_text = _("Tap : Request UBS mass storage\nHold : Nothing"),
             visible_func = function(ctx) return ctx.device.canToggleMassStorage and ctx.device:canToggleMassStorage() end,
             callback = function(ctx) UIManager:broadcastEvent(Event:new("RequestUSBMS")) end,
-            hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
+            hold_callback = function(ctx) Utils.closeMenu(ctx.touch_menu); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
         },
         restart = {
             icon = "\u{F021}",
@@ -253,7 +253,7 @@ function ActionDefs.get()
             -- visible_func
             help_text = _("Tap : Ask for restart KOreader\nHold : Ask for exit KOreader"),
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:show(ConfirmBox:new{
                     text = _("Are you sure you want to restart KOReader ?"),
                     ok_text = _("Restart"),
@@ -261,7 +261,7 @@ function ActionDefs.get()
                 })
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:show(ConfirmBox:new{
                     text = _("Are you sure you want to exit KOReader ?"),
                     ok_text = _("Exit"),
@@ -279,7 +279,7 @@ function ActionDefs.get()
             -- visible_func
             help_text = _("Tap : Ask for exit KOreader\nHold : Ask for restart KOreader"),
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:show(ConfirmBox:new{
                     text = _("Are you sure you want to exit KOReader ?"),
                     ok_text = _("Exit"),
@@ -287,7 +287,7 @@ function ActionDefs.get()
                 })
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:show(ConfirmBox:new{
                     text = _("Are you sure you want to restart KOReader ?"),
                     ok_text = _("Restart"),
@@ -305,7 +305,7 @@ function ActionDefs.get()
             visible_func = function(ctx) return ctx.device:canReboot() end,
             help_text = _("Tap : Ask for reboot system\nHold : Ask for power off system"),
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 if ctx.device:canReboot() then
                     UIManager:askForReboot()
                 else
@@ -313,7 +313,7 @@ function ActionDefs.get()
                 end
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 if ctx.device:canPowerOff() then
                     UIManager:askForPowerOff()
                 else
@@ -331,14 +331,14 @@ function ActionDefs.get()
             visible_func = function(ctx) return ctx.device:canSuspend() end,
             help_text = _("Tap : Suspend system\nHold : Nothing"),
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 if ctx.device:canSuspend() then
                     UIManager:broadcastEvent(Event:new("RequestSuspend"))
                 else
                     UIManager:show(InfoMessage:new{ text =  _("Sleep") .. " : " .. _("Not possible") })
                 end
             end,
-            hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
+            hold_callback = function(ctx) Utils.closeMenu(ctx.touch_menu); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
         },
         poweroff = {
             icon = "\u{F011}",
@@ -350,7 +350,7 @@ function ActionDefs.get()
             visible_func = function(ctx) return ctx.device:canPowerOff() end,
             help_text = _("Tap : Ask for power off system\nHold : Ask for reboot system"),
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 if ctx.device:canPowerOff() then
                     UIManager:askForPowerOff()
                 else
@@ -358,7 +358,7 @@ function ActionDefs.get()
                 end
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 if ctx.device:canReboot() then
                     UIManager:askForReboot()
                 else
@@ -376,7 +376,7 @@ function ActionDefs.get()
             -- visible_func
             help_text = _("Tap : Show power dialog\nHold : Nothing"),
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 local dialog
 
                 local function close(fn)
@@ -451,7 +451,7 @@ function ActionDefs.get()
                 }
                 UIManager:show(dialog)
             end,
-            hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
+            hold_callback = function(ctx) Utils.closeMenu(ctx.touch_menu); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
         },
         dictionary = {
             icon = "\u{F02D}",
@@ -463,11 +463,11 @@ function ActionDefs.get()
             -- visible_func
             help_text = _("Tap : Show dictionary search\nHold : Show wikipedia search"),
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowDictionaryLookup"))
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowWikipediaLookup"))
             end
         },
@@ -481,11 +481,11 @@ function ActionDefs.get()
             -- visible_func
             help_text = _("Tap : Show wikipedia search\nHold : Show dictionary search"),
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowWikipediaLookup"))
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowDictionaryLookup"))
             end
         },
@@ -499,11 +499,11 @@ function ActionDefs.get()
             -- visible_func
             help_text = _("Tap : Show history\nHold : Open last book"),
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowHist"))
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("OpenLastDoc"))
             end
         },
@@ -517,11 +517,11 @@ function ActionDefs.get()
             -- visible_func
             help_text = _("Tap : Open last book\nHold : Show history"),
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("OpenLastDoc"))
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowHist"))
             end
         },
@@ -535,11 +535,11 @@ function ActionDefs.get()
             -- visible_func
             help_text = _("Tap : Show collections\nHold : Show favorites"),
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowCollList"))
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowColl"))
             end
         },
@@ -553,11 +553,11 @@ function ActionDefs.get()
             -- visible_func
             help_text = _("Tap : Show favorites\nHold : Show collections"),
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowColl"))
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowCollList"))
             end
         },
@@ -571,11 +571,11 @@ function ActionDefs.get()
             -- visible_func
             help_text = _("Tap : Show cloud storage\nHold : Show OPDS catalog"),
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowCloudStorage"))
                 end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 if Utils.hasPlugin and Utils.hasPlugin("opds") then UIManager:broadcastEvent(Event:new("ShowOPDSCatalog"))
                 else UIManager:show(InfoMessage:new{ text = "OPDS : " .. _("Plugin not activated.") }) end
             end
@@ -590,11 +590,11 @@ function ActionDefs.get()
             help_text = _("Tap : Show OPDS catalog\nHold : Show cloud storage"),
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("opds") end,
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowOPDSCatalog"))
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowCloudStorage"))
             end
         },
@@ -609,9 +609,9 @@ function ActionDefs.get()
             help_text = _("Tap : Toggle SSH server\nHold : Nothing"),
             callback = function(ctx)
                 UIManager:broadcastEvent(Event:new("ToggleSSHServer")) -- SSH doesn't need connection
-                UIManager:scheduleIn(1, function() ctx.touch_menu:updateItems() end)
+                UIManager:scheduleIn(1, function() Utils.updateMenu(ctx.touch_menu) end)
             end,
-            hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
+            hold_callback = function(ctx) Utils.closeMenu(ctx.touch_menu); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
         },
         calibre = {
             icon = "\u{EB8C}", -- server-network -- server-network-off
@@ -626,10 +626,10 @@ function ActionDefs.get()
                 NetworkMgr:runWhenOnline(function() -- check connection
                     local event = is_calibre_active() and "CloseWirelessConnection" or "StartWirelessConnection"
                     UIManager:broadcastEvent(Event:new(event))
-                    UIManager:scheduleIn(2, function() ctx.touch_menu:updateItems() end)
+                    UIManager:scheduleIn(2, function() Utils.updateMenu(ctx.touch_menu) end)
                 end)
             end,
-            hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text = _("Nothing to do") }) end
+            hold_callback = function(ctx) Utils.closeMenu(ctx.touch_menu); UIManager:show(InfoMessage:new{ text = _("Nothing to do") }) end
         },
         kosync = {
             icon = "\u{ED3E}",
@@ -641,7 +641,7 @@ function ActionDefs.get()
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("kosync") end,
             help_text = _("Tap : Push progress to KOSync\nHold : Pull progress from KOSync"),
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 NetworkMgr:runWhenOnline(function() -- check connection once
                     UIManager:broadcastEvent(Event:new("KOSyncPullProgress"))
                     -- Push after a short delay to let the pull complete first.
@@ -649,7 +649,7 @@ function ActionDefs.get()
                 end)
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 local dialog
 
                 local function close(fn)
@@ -701,11 +701,11 @@ function ActionDefs.get()
             callback = function(ctx)
                 NetworkMgr:runWhenOnline(function() -- check connection
                     UIManager:broadcastEvent(Event:new("ToggleLocalSend"))
-                    UIManager:scheduleIn(1, function() ctx.touch_menu:updateItems() end)
+                    UIManager:scheduleIn(1, function() Utils.updateMenu(ctx.touch_menu) end)
                 end)
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 local dialog
 
                 local function close(fn)
@@ -757,10 +757,10 @@ function ActionDefs.get()
             callback = function(ctx)
                 NetworkMgr:runWhenOnline(function() -- check connection
                     UIManager:broadcastEvent(Event:new("ToggleFilebrowserPlusServer"))
-                    UIManager:scheduleIn(1, function() ctx.touch_menu:updateItems() end)
+                    UIManager:scheduleIn(1, function() Utils.updateMenu(ctx.touch_menu) end)
                 end)
             end,
-            hold_callback = function(ctx) ctx.touch_menu:closeMenu(); UIManager:show(InfoMessage:new{ text = _("Nothing to do") }) end
+            hold_callback = function(ctx) Utils.closeMenu(ctx.touch_menu); UIManager:show(InfoMessage:new{ text = _("Nothing to do") }) end
         },
         search = {
             icon = "\u{F002}",
@@ -772,11 +772,11 @@ function ActionDefs.get()
             -- visible_func
             help_text = _("Tap : Show file search\nHold : Show Calibre search"),
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowFileSearch"))
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 if Utils.hasPlugin and Utils.hasPlugin("calibre") then UIManager:broadcastEvent(Event:new("CalibreSearch"))
                 else UIManager:show(InfoMessage:new{ text = "Calibre : " .. _("Plugin not activated.") }) end
             end
@@ -791,11 +791,11 @@ function ActionDefs.get()
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("calibre") end,
             help_text = _("Tap : Show Calibre search\nHold : Show file search"),
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("CalibreSearch"))
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowFileSearch"))
                 end
         },
@@ -809,11 +809,11 @@ function ActionDefs.get()
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("statistics") end,
             help_text = _("Tap : Show reader statistics\nHold : Show calendar statistics"),
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowReaderProgress"))
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowCalendarView"))
             end
         },
@@ -827,11 +827,11 @@ function ActionDefs.get()
             visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("statistics") end,
             help_text = _("Tap : Show calendar statistics\nHold : Show reader statistics"),
             callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowCalendarView"))
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowReaderProgress"))
             end
         },
@@ -861,7 +861,7 @@ function ActionDefs.get()
                 UIManager:show(InfoMessage:new{ text = string.format(_("Process memory %s MB"),process_memory_p) })
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
@@ -879,7 +879,7 @@ function ActionDefs.get()
                 UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.cpu and ctx.stat.cpu.usedp and string.format(_("CPU used %d%%"), ctx.stat.cpu.usedp) or "" })
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
@@ -897,7 +897,7 @@ function ActionDefs.get()
                 UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.memory and ctx.stat.memory.usedp and string.format(_("Memory used %d%%"), ctx.stat.memory.usedp) or "" })
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end,
@@ -915,7 +915,7 @@ function ActionDefs.get()
                 UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.memory and ctx.stat.memory.availablep and string.format(_("Memory available %d%%"), ctx.stat.memory.availablep) or "" })
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
@@ -933,7 +933,7 @@ function ActionDefs.get()
                 UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.memory and ctx.stat.memory.used and string.format(_("Memory used %d MB"), math.floor(ctx.stat.memory.used / 1024)) or "" })
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
@@ -951,7 +951,7 @@ function ActionDefs.get()
                 UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.memory and ctx.stat.memory.available and string.format(_("Memory available %d MB"), math.floor(ctx.stat.memory.available / 1024)) or "" })
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
@@ -969,7 +969,7 @@ function ActionDefs.get()
                 UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.memory and ctx.stat.memory.total and string.format(_("Memory total %d MB"), math.floor(ctx.stat.memory.total / 1024)) or "" })
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
@@ -987,7 +987,7 @@ function ActionDefs.get()
                 UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.storage and ctx.stat.storage.usedp and string.format(_("Storage used %d%%"), ctx.stat.storage.usedp) or "" })
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
@@ -1005,7 +1005,7 @@ function ActionDefs.get()
                 UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.storage and ctx.stat.storage.availablep and string.format(_("Storage available %d%%"), ctx.stat.storage.availablep) or "" })
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
@@ -1023,7 +1023,7 @@ function ActionDefs.get()
                 UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.storage and ctx.stat.storage.used and string.format(_("Storage used %d GB"), math.floor(ctx.stat.storage.used / 1024 / 1024)) or "" })
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
@@ -1041,7 +1041,7 @@ function ActionDefs.get()
                 UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.storage and ctx.stat.storage.available and string.format(_("Storage available %d GB"), math.floor(ctx.stat.storage.available / 1024 / 1024)) or "" })
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
@@ -1059,7 +1059,7 @@ function ActionDefs.get()
                 UIManager:show(InfoMessage:new{ text = ctx.stat and ctx.stat.storage and ctx.stat.storage.total and string.format(_("Storage total %d GB"), math.floor(ctx.stat.storage.total / 1024 / 1024)) or "" })
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
@@ -1102,7 +1102,7 @@ function ActionDefs.get()
                 })
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 if Utils.hasPlugin and Utils.hasPlugin("batterystat") then UIManager:broadcastEvent(Event:new("ShowBatteryStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Batterystat" .. " : " .. _("Plugin not activated.") }) end
             end
@@ -1129,7 +1129,7 @@ function ActionDefs.get()
                 })
             end,
             hold_callback = function(ctx)
-                ctx.touch_menu:closeMenu()
+                Utils.closeMenu(ctx.touch_menu)
                 if Utils.hasPlugin and Utils.hasPlugin("batterystat") then UIManager:broadcastEvent(Event:new("ShowBatteryStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Batterystat" .. " : " .. _("Plugin not activated.") }) end
             end

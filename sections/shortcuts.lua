@@ -142,11 +142,13 @@ function Shortcuts.build(ctx)
         if type(action_data) == "function" then -- native
             action_data(ctx)
         elseif type(action_data) == "table" then -- custom
-            ctx.touch_menu:closeMenu()
+            -- need to close touch_menu first -> see action_exec.lua
+            Utils.closeMenu(ctx.touch_menu)
             UIManager:nextTick(function() ActionExec.dispatch(action_data) end)
         end
     end
 
+    -- shortcuts btn construction
     local function createButton(def)
         local icon = def.icon_func and def.icon_func(ctx) or (def.icon or "")
         local label = def.label_func and def.label_func(ctx) or (def.label or "")
@@ -163,6 +165,7 @@ function Shortcuts.build(ctx)
         }
     end
 
+     -- shortcuts btn placement
     for i = 1, num_actions, max_cols do
         local row = HorizontalGroup:new{ align = "center" }
 

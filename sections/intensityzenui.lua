@@ -22,9 +22,9 @@ local UIManager       = require("ui/uimanager")
 local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
 
-local Utils            = require("common/utils")
+local Utils           = require("common/utils")
 local ZenSlider       = require("widgets/zen_slider")
-local Config           = require("config")
+local Config          = require("config")
 local _               = require("common/i18n").gettext
 
 local IntensityZenUI = {
@@ -61,7 +61,7 @@ function IntensityZenUI.build(ctx, settings_func)
     --
     local group = VerticalGroup:new{ align = "center" }
     local refs = { buttons = {}, sliders = {}, widgets = {} }
-    local update_touch_menu = function() if touch_menu and touch_menu.updateItems then touch_menu:updateItems() end end
+    local update_touch_menu = function() Utils.updateMenu(touch_menu) end
 
     local fl = {
         min = powerd.fl_min,

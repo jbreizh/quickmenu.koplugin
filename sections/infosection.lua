@@ -66,11 +66,11 @@ function InfoSection.build(ctx)
         bordersize = btn_bordersize,
         bordercolor = Blitbuffer.COLOR_DARK_GRAY,
         callback = function()
-            touch_menu:closeMenu()
+            Utils.closeMenu(touch_menu)
             reader.status:onShowBookStatus()
             end,
         hold_callback = function()
-            touch_menu:closeMenu()
+            Utils.closeMenu(touch_menu)
             if Utils.hasPlugin and Utils.hasPlugin("statistics") then
                 UIManager:broadcastEvent(Event:new("ShowBookStats"))
             else

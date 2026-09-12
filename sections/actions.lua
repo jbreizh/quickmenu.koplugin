@@ -141,12 +141,13 @@ function Actions.build(ctx)
         if type(action_data) == "function" then -- native
             action_data(ctx)
         elseif type(action_data) == "table" then -- custom
-            ctx.touch_menu:closeMenu()
+            -- need to close touch_menu first -> see action_exec.lua
+            Utils.closeMenu(ctx.touch_menu)
             UIManager:nextTick(function() ActionExec.dispatch(action_data) end)
         end
     end
 
-    -- Logique de calcul selon le mode
+    -- action btn construction
     local action_radius_ratio = action_radius / action_size -- 0 square 0.5 circle
     local action_btn_size = action_size
     local ratio = screen:scaleBySize(100) / 100
@@ -158,7 +159,6 @@ function Actions.build(ctx)
     local action_icon_size = math.floor((action_btn_size * 0.4) / ratio + 0.5)
     local action_label_size = math.floor((action_btn_size * 0.18) / ratio + 0.5)
 
-    -- Construction des boutons
     local function create_btn(entry)
         local def = entry.def
         local btn = ActionButton:new{

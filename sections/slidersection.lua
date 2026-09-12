@@ -3,6 +3,8 @@ local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
 local ProgressWidget  = require("ui/widget/progresswidget")
 
+local Utils           = require("common/utils")
+
 local SliderSection = {}
 
 function SliderSection.buildTicks(min, max, count)
@@ -41,9 +43,7 @@ function SliderSection.build(opts)
             progress:setPercentage(pct)
         end
 
-        if touch_menu and touch_menu.updateItems then
-            touch_menu:updateItems(1)
-        end
+        Utils.updateMenu(touch_menu)
     end
 
     -- widgets

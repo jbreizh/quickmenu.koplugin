@@ -93,8 +93,7 @@ end
 -- ============================================================
 function ActionCustom:applyActionCustom(ctx, callback, refresh)
     -- need to close touch_menu first -> see action_exec.lua
-    local touch_menu = ctx.touch_menu
-    if touch_menu and touch_menu.updateItems then touch_menu:closeMenu() end
+    Utils.closeMenu(ctx.touch_menu)
     -- apply
     UIManager:nextTick(function() ActionExec.dispatch(callback) end)
 end

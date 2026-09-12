@@ -184,6 +184,24 @@ function M.resetSectionToDefaults(section, defaults)
     end
 end
 
+--- Close touch_menu (top and bottom).
+--- @param slot      table  touch_menu
+function M.closeMenu(touch_menu)
+    if touch_menu and touch_menu.close_callback then touch_menu.close_callback() end -- close top_menu
+    if touch_menu and touch_menu.touch_menu_callback then touch_menu.touch_menu_callback() end -- close bottom menu
+end
+
+--- Update touch_menu
+--- @param slot      table  touch_menu
+function M.updateMenu(touch_menu)
+    if touch_menu and touch_menu.updateItems then
+        local UIManager     = require("ui/uimanager")
+        UIManager:nextTick(function()
+            touch_menu:updateItems()
+        end)
+    end
+end
+
 --- Verify plugin in present in active instance.
 --- @param slot      string  plugin name
 --- @return          boolean

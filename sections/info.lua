@@ -161,11 +161,11 @@ function Info.build(ctx)
                 bordersize    = btn_bordersize,
                 padding       = 0, --h_gap,
                 callback      = function()
-                    touch_menu:closeMenu()
+                    Utils.closeMenu(touch_menu)
                     reader.bookinfo:onShowBookCover(reader.document.file)
                 end,
                 hold_callback = function()
-                    touch_menu:closeMenu()
+                    Utils.closeMenu(touch_menu)
                     reader.bookinfo:onShowBookDescription(false, reader.document.file)
                 end
             }
@@ -180,11 +180,11 @@ function Info.build(ctx)
                 text_font_size = btn_font_size * 2,
                 show_parent    = touch_menu.show_parent,
                 callback       = function()
-                    touch_menu:closeMenu()
+                    Utils.closeMenu(touch_menu)
                     reader.bookinfo:onShowBookCover(reader.document.file)
                 end,
                 hold_callback  = function()
-                    touch_menu:closeMenu()
+                    Utils.closeMenu(touch_menu)
                     reader.bookinfo:onShowBookDescription(false, reader.document.file)
                 end
             }

@@ -13,6 +13,9 @@
 * **Exit:** A dedicated exit tab provides a unified way to manage your session. 
   - **In Filemanager:** Tap to close the menu, or hold to quit KOReader.
   - **In Reader:** Tap to close the menu, or hold to quit the reader and return to the Filemanager.
+  
+> [!WARNING]
+ > The Exit tab replaces the native button normally used to quit the reader and return to the Filemanager. You can disable this feature in the settings.
  
 <p align="center">
   <img src="assets/exit1.png" width="80%" alt="Exit button" />
@@ -68,9 +71,14 @@
 </p>
 
 ## Settings
-The settings interface allows users to tailor the Quick Menu to their specific workflow. You can toggle visibility for individual tabs (such as the exit tab or the main quick menu tab) and configure startup behavior to ensure the menu opens exactly how you prefer every time you access it.
+The settings interface allows you to tailor the Quick Menu to your specific workflow with real-time updates:
 
-The settings interface allows users to tailor the Quick Menu to their specific workflow. Every section can be easily configured by clicking the **gear icon (Settings)** directly within the Quick Menu. Any adjustments made are applied instantly, ensuring the interface updates in real-time to match your preferences. You can also toggle visibility for individual section and configure startup behavior to ensure the menu opens exactly how you prefer every time you access it.
+* **Global Settings:** Hold the menu icon to access main configuration options.
+* **Section Settings:** Click the gear icon directly within any section title to access its options.
+* **Centralized Access:** All settings are also fully accessible via KOReader's main menu under **Settings > Quick Menu**.
+
+> [!WARNING]
+> If you uncheck "Show title" for a section or disable it completely, you will no longer be able to access its gear icon. To re-enable it, navigate to **Settings > Quick Menu > [Section Name]**.
 
 <p align="center">
   <img src="assets/settings1.png" width="23%" alt="Settings 1" />
@@ -126,29 +134,43 @@ The following tables detail the available actions, their labels, and the functio
 | **Rotate** | 0/90/180/270° | Swap rotation | Invert rotation |
 | **Lock** | Lock/Unlock | Toggle lock gsensor | Toggle ignore gsensor |
 | **USB** | USB | Request USB mass storage | N/A |
+
+### Power Actions
+| Action | Label | Tap | Hold |
+| :--- | :--- | :--- | :--- |
 | **Restart** | Restart | Ask to restart KOReader | Ask to exit KOReader |
 | **Exit** | Exit | Ask to exit KOReader | Ask to restart KOReader |
 | **Reboot** | Reboot | Ask for system reboot | Ask for power off |
 | **Sleep** | Sleep | Suspend system | N/A |
 | **Power off** | Power off | Ask for power off | Ask for reboot |
 | **Power** | Power | Show power dialog | N/A |
-| **KOSync** | KOSync | Push progress | Pull progress |
-| **SSH** | On/Off | Toggle SSH server | N/A |
-| **Calibre** | On/Off | Toggle wireless connection | N/A |
 
-### Shortcut Actions
+### Network Actions
+| Action | Label | Tap | Hold |
+| :--- | :--- | :--- | :--- |
+| **Calibre** | On/Off | Toggle wireless connection | N/A |
+| **Cloud** | Cloud | Show cloud storage | Show OPDS catalog |
+| **FileBrowserPlus** | On/off | Toggle FileBrowserPlus | N/A |
+| **KOSync** | KOSync | Pull progress then Push progress | Show KOSync dialog |
+| **LocalSend** | On/Off | Toggle LocalSend | Show LocalSend dialog |
+| **OPDS** | OPDS | Show OPDS catalog | Show cloud storage |
+| **SSH** | On/Off | Toggle SSH server | N/A |
+
+### Search Actions
 | Action | Label | Tap | Hold |
 | :--- | :--- | :--- | :--- |
 | **Dictionary** | Dictionary | Show dictionary search | Show wikipedia search |
 | **Wikipedia** | Wikipedia | Show wikipedia search | Show dictionary search |
-| **History** | History | Show history | Open last book |
-| **Resume** | Last File | Open last book | Show history |
-| **Collections** | Collections | Show collections | Show favorites |
-| **Favorites** | Favorites | Show favorites | Show collections |
-| **Cloud** | Cloud | Show cloud storage | Show OPDS catalog |
-| **OPDS** | OPDS | Show OPDS catalog | Show cloud storage |
 | **Search** | Search | Show file search | Show Calibre search |
 | **Calibre (Search)**| Calibre | Show Calibre search | Show file search |
+
+### Shortcut Actions
+| Action | Label | Tap | Hold |
+| :--- | :--- | :--- | :--- |
+| **History** | History | Show history | Open last book |
+| **Resume** | Resume | Open last book | Show history |
+| **Collections** | Collections | Show collections | Show favorites |
+| **Favorites** | Favorites | Show favorites | Show collections |
 | **Statistics** | Statistics | Show reader statistics | Show calendar statistics |
 | **Calendar** | Calendar | Show calendar statistics | Show reader statistics |
 
@@ -162,6 +184,4 @@ The following tables detail the available actions, their labels, and the functio
 | **Time** | Time | Show full date/time | N/A |
 | **Battery** | Battery % | Show battery status | Show battery statistics |
 | **Aux Battery** | Aux Battery % | Show aux battery status | Show battery statistics |
-
-> **Note:** Actions requiring specific plugins (e.g., `systemstat`, `batterystat`, `opds`, `calibre`, `SSH`) will display an informational message if the corresponding plugin is not active[cite: 2].
 

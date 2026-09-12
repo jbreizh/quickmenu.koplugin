@@ -115,14 +115,17 @@ function Footer.build(ctx)
         -- actions system and custom
         local action_defs = ActionDefs.getMerged(config.custom_actions)
 
+        -- utils to exec actions
         local function exec_action(ctx, action_data)
-            if type(action_data) == "function" then
+            if type(action_data) == "function" then -- native
                 action_data(ctx)
-            elseif type(action_data) == "table" then
-                ctx.touch_menu:closeMenu()
+            elseif type(action_data) == "table" then -- custom
+                -- need to close touch_menu first -> see action_exec.lua
+                Utils.closeMenu(ctx.touch_menu)
                 UIManager:nextTick(function() ActionExec.dispatch(action_data) end)
             end
         end
+
         --
         local footer_width = touch_menu.width - touch_menu.padding*2
         local chevron_with = touch_menu.page_info_left_chev:getSize().w + touch_menu.page_info_right_chev:getSize().w

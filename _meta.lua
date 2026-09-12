@@ -3,5 +3,5 @@ return {
     name = "quickmenu",
     fullname = _("Quick Menu"),
     description = _("Quick Menu for settings and actions."),
-    version = "1.9",
+    version = "2.0",
 }
