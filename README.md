@@ -14,24 +14,29 @@
   - **In Filemanager:** Tap to close the menu, or hold to quit KOReader.
   - **In Reader:** Tap to close the menu, or hold to quit the reader and return to the Filemanager.
   
-> [!WARNING]
- > The Exit tab replaces the native button normally used to quit the reader and return to the Filemanager. You can disable this feature in the settings.
- 
 <p align="center">
-  <img src="assets/exit1.png" width="80%" alt="Exit button" />
+  <img src="assets/exit1.png" width="23%" alt="Exit button 1" />
+  <img src="assets/exit2.png" width="23%" alt="Exit button 2" />
 </p>
- 
+  
+> [!WARNING]
+ > The Exit tab replaces the native button normally used to quit the reader and return to the Filemanager. To disable it, uncheck **Settings > Quick menu > Quick menu > Add exit tab**.
+
 * **Actions:** This section provides quick-access toggles for essential device functions, such as Wi-Fi, orientation lock, power, and USB connection. It allows you to toggle system states instantly with a single tap.
 
 <p align="center">
   <img src="assets/action1.png" width="80%" alt="Actions" />
 </p>
 
+For details, see [Actions list](#actions-list)
+
 * **Frontlight:** Easily manage your visual comfort with dedicated controls for both intensity and warmth. This section offers granular adjustments to ensure your screen brightness and color temperature are perfectly suited to your environment.
 
 <p align="center">
   <img src="assets/frontlight1.png" width="80%" alt="Frontlight" />
 </p>
+
+<div align="center">
 
 | Frontlight | Tap | Hold |
 |:-------- |:--------:|:--------:|
@@ -40,17 +45,23 @@
 | Warmth - | Decrease warmth by 10% | Set warmth to 0% (off) |
 | Warmth - | Increase warmth by 10% | Set warmth to 100% (max) |
 
+</div>
+
 * **Shortcuts:** A customizable grid of buttons providing direct access to key features like your Library, Collections, Search, Dictionary, and Cloud services, helping you jump to your preferred areas with ease.
 
 <p align="center">
   <img src="assets/shortcuts1.png" width="80%" alt="Shortcuts" />
 </p>
 
+For details, see [Actions list](#actions-list)
+
 * **Reading:** Designed for in-reading utility, this section provides quick tools to manage your current book or document session, ensuring common reading-related tasks are always one tap away.
 
 <p align="center">
   <img src="assets/reading1.png" width="80%" alt="Reading" />
 </p>
+
+<div align="center">
 
 | Skim | Tap | Hold |
 |:-------- |:--------:|:--------:|
@@ -64,21 +75,20 @@
 | Bookmark toogle | Toogle bookmark | Show "bookmark" |
 | Bookmark + | Increase bookmark by 1 | Set bookmark to last |
 
+</div>
+
 * **Footer:** The status bar at the bottom acts as a summary panel, displaying real-time system information including CPU usage, storage availability, current time, and battery level, keeping you informed at a glance.
 
 <p align="center">
-  <img src="assets/footer1.png" width="80%" alt="Footer" />
+  <img src="assets/footer1.png" width="90%" alt="Footer" />
 </p>
 
+For details, see [Actions list](#actions-list)
+
 ## Settings
-The settings interface allows you to tailor the Quick Menu to your specific workflow with real-time updates:
+The settings interface allows you to tailor the Quick menu to your specific workflow with real-time updates:
 
-* **Global Settings:** Hold the menu icon to access main configuration options.
-* **Section Settings:** Click the gear icon directly within any section title to access its options.
-* **Centralized Access:** All settings are also fully accessible via KOReader's main menu under **Settings > Quick Menu**.
-
-> [!WARNING]
-> If you uncheck "Show title" for a section or disable it completely, you will no longer be able to access its gear icon. To re-enable it, navigate to **Settings > Quick Menu > [Section Name]**.
+* **Global Settings:** Hold the house Quick menu icon to access main configuration options or navigate to **Settings > Quick menu > Quick menu**.
 
 <p align="center">
   <img src="assets/settings1.png" width="23%" alt="Settings 1" />
@@ -86,6 +96,18 @@ The settings interface allows you to tailor the Quick Menu to your specific work
   <img src="assets/settings3.png" width="23%" alt="Settings 3" />
   <img src="assets/settings4.png" width="23%" alt="Settings 4" />
 </p>
+
+* **Section Settings:** Click the gear section icon directly within any section title to access its options or navigate to **Settings > Quick menu > [Section Name]**
+
+<p align="center">
+  <img src="assets/settings5.png" width="23%" alt="Settings 5" />
+  <img src="assets/settings6.png" width="23%" alt="Settings 6" />
+  <img src="assets/settings7.png" width="23%" alt="Settings 7" />
+  <img src="assets/settings8.png" width="23%" alt="Settings 8" />
+</p>
+
+> [!WARNING]
+> If you uncheck "Show title" for a section or disable it completely, you will no longer be able to access its gear icon. To re-enable it, navigate to **Settings > Quick menu > [Section Name]**.
 
 ## Custom Actions
 The plugin features a robust custom actions engine. Users can define their own menu items, assign custom icons from an extensive internal library, and map specific triggers to actions like "Tap" or "Hold." This flexibility allows you to integrate plugins, system commands, or specific menu navigation directly into your personalized dashboard.
@@ -112,6 +134,8 @@ This plugin has been built by building upon the work and ideas of several commun
 2. Unzip the archive and copy the `quickmenu.koplugin` **folder** into your device's plugins directory.
 3. Restart KOReader.
 
+<div align="center">
+
 | Device | Plugins directory |
 |--------|-------------------|
 | **Kobo** | `/mnt/onboard/.adds/koreader/plugins/` |
@@ -120,11 +144,16 @@ This plugin has been built by building upon the work and ideas of several commun
 | **Android** | `sdcard/koreader/plugins/` |
 | **Desktop (Linux/macOS)** | `/koreader/plugins/` |
 
+</div>
+
 ## Actions list
 
 The following tables detail the available actions, their labels, and the functionality triggered by **Tap** or **Hold** gestures.
 
 ### System Actions
+
+<div align="center">
+
 | Action | Label | Tap | Hold |
 | :--- | :--- | :--- | :--- |
 | **WiFi** | WiFi | Toggle Wi-Fi | Show Wi-Fi picker |
@@ -135,7 +164,12 @@ The following tables detail the available actions, their labels, and the functio
 | **Lock** | Lock/Unlock | Toggle lock gsensor | Toggle ignore gsensor |
 | **USB** | USB | Request USB mass storage | N/A |
 
+</div>
+
 ### Power Actions
+
+<div align="center">
+
 | Action | Label | Tap | Hold |
 | :--- | :--- | :--- | :--- |
 | **Restart** | Restart | Ask to restart KOReader | Ask to exit KOReader |
@@ -145,7 +179,12 @@ The following tables detail the available actions, their labels, and the functio
 | **Power off** | Power off | Ask for power off | Ask for reboot |
 | **Power** | Power | Show power dialog | N/A |
 
+</div>
+
 ### Network Actions
+
+<div align="center">
+
 | Action | Label | Tap | Hold |
 | :--- | :--- | :--- | :--- |
 | **Calibre** | On/Off | Toggle wireless connection | N/A |
@@ -156,7 +195,12 @@ The following tables detail the available actions, their labels, and the functio
 | **OPDS** | OPDS | Show OPDS catalog | Show cloud storage |
 | **SSH** | On/Off | Toggle SSH server | N/A |
 
+</div>
+
 ### Search Actions
+
+<div align="center">
+
 | Action | Label | Tap | Hold |
 | :--- | :--- | :--- | :--- |
 | **Dictionary** | Dictionary | Show dictionary search | Show wikipedia search |
@@ -164,7 +208,12 @@ The following tables detail the available actions, their labels, and the functio
 | **Search** | Search | Show file search | Show Calibre search |
 | **Calibre (Search)**| Calibre | Show Calibre search | Show file search |
 
+</div>
+
 ### Shortcut Actions
+
+<div align="center">
+
 | Action | Label | Tap | Hold |
 | :--- | :--- | :--- | :--- |
 | **History** | History | Show history | Open last book |
@@ -174,7 +223,12 @@ The following tables detail the available actions, their labels, and the functio
 | **Statistics** | Statistics | Show reader statistics | Show calendar statistics |
 | **Calendar** | Calendar | Show calendar statistics | Show reader statistics |
 
+</div>
+
 ### Footer Actions
+
+<div align="center">
+
 | Action | Label | Tap | Hold |
 | :--- | :--- | :--- | :--- |
 | **Process** | Memory (MB) | Show process memory | Show system statistics |
@@ -185,3 +239,4 @@ The following tables detail the available actions, their labels, and the functio
 | **Battery** | Battery % | Show battery status | Show battery statistics |
 | **Aux Battery** | Aux Battery % | Show aux battery status | Show battery statistics |
 
+</div>

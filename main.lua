@@ -159,15 +159,17 @@ local function patchTouchMenu(plugin)
         --
         plugin.touch_menu = self
 
-        -- increase menu size to 20
-        self.max_per_page_default = config.items_per_page or 20
+        -- increase menu size to 20 if show_bottom_menu is disable
+        if G_reader_settings:isFalse("show_bottom_menu") then
+            self.max_per_page_default = config.items_per_page or 20
+        end
 
         -- store orig_page for initial_pos_marker in skim to survive redraw
         self.skim_orig_page = nil
 
         -- force quick menu first
         if config.open_on_start then
-            self.last_index = config.idx_quickmenu_tab
+            self.last_index = config.idx_quickmenu_tab or 1
         end
 
         orig_init(self, ...)
@@ -413,7 +415,6 @@ function QuickMenuPlugin:init()
         patchFileManagerMenu(self)
         patchReaderMenu(self)
         self.ui.menu:registerToMainMenu(self)
-        self.config.idx_quickmenu_tab = 1
         logger.info("[QuickMenu] Initialized successfully.")
     end)
 
