@@ -16,6 +16,7 @@ local ActionDefs      = require("action_defs")
 local ActionManage    = require("action_manage")
 local Config          = require("config")
 local ActionButton    = require("widgets/actionbutton")
+local ShadowDeco      = require("widgets/shadow_deco")
 local Utils           = require("common/utils")
 local _               = require("common/i18n").gettext
 
@@ -49,7 +50,10 @@ function Actions.build(ctx)
     local btn_radius         = screen:scaleBySize(config.style.btn_radius or 7)
     local btn_bordersize     = screen:scaleBySize(config.style.btn_bordersize or 1.5)
     local btn_font_size      = config.style.btn_font_size or 16
-    local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
+    local btn_shadow_offset  = screen:scaleBySize(config.style.btn_shadow_offset or 2)
+    local btn_shadow_intensity = config.style.btn_shadow_intensity or 0.6
+    local btn_shadow_radius    = screen:scaleBySize(config.style.btn_shadow_radius or 6)
+    local slider_ticks_width   = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
     local section = Utils.getSection(config, Actions.id)
 
@@ -147,19 +151,27 @@ function Actions.build(ctx)
         end
     end
 
+    -- action btn width
+    local action_btn_size = action_size
+    if section.fit_ctrl then
+        local total_shadow_space = section.show_shadow and (btn_shadow_offset * num_actions) or 0
+        local total_gap_space = h_gap * (num_actions - 1)
+        action_btn_size = math.min(math.floor( (inner_width - total_shadow_space - total_gap_space ) / math.max(1, num_actions)), action_btn_size)
+    end
+
+    -- action btn gap
+    local action_btn_gap = h_gap + (section.show_shadow and btn_shadow_offset or 0)
+
     -- action btn construction
     local action_radius_ratio = action_radius / action_size -- 0 square 0.5 circle
-    local action_btn_size = action_size
     local ratio = screen:scaleBySize(100) / 100
-
-    if section.fit_ctrl then
-        action_btn_size = math.min(math.floor( (inner_width - (num_actions - 1) * h_gap ) / math.max(1, num_actions)), action_btn_size)
-    end
     local action_btn_radius = math.floor(action_btn_size * action_radius_ratio)
     local action_icon_size = math.floor((action_btn_size * 0.4) / ratio + 0.5)
     local action_label_size = math.floor((action_btn_size * 0.18) / ratio + 0.5)
 
     local function create_btn(entry)
+        local btn_group = VerticalGroup:new{ align = "center" }
+        -- create btn and shadow
         local def = entry.def
         local btn = ActionButton:new{
             icon          = def.icon_func and def.icon_func(ctx) or (def.icon or ""),
@@ -171,18 +183,23 @@ function Actions.build(ctx)
             callback      = def.callback and function() exec_action(ctx, def.callback) end or nil,
             hold_callback = def.hold_callback and function() exec_action(ctx, def.hold_callback) end or nil,
         }
+        table.insert(btn_group, btn)
+        -- create shadow
+        if section.show_shadow then
+            ShadowDeco.attach(btn, btn_shadow_offset, btn_shadow_intensity, btn_shadow_radius)
+            table.insert(btn_group, VerticalSpan:new{ width = screen:scaleBySize( btn_shadow_offset ) }) -- add space for shadow
+        end
+
+        -- create label
         if section.show_label and (def.label_func or def.label) then
-            return VerticalGroup:new{
-                align = "center",
-                btn,
-                TextWidget:new{
+            local btn_label = TextWidget:new{
                     text = def.label_func and def.label_func(ctx) or def.label,
                     face = Font:getFace("cfont", action_label_size),
                     max_width = action_btn_size,
                 }
-            }
+            table.insert(btn_group, btn_label)
         end
-        return btn
+        return btn_group
     end
 
     -- action btn placement
@@ -194,7 +211,7 @@ function Actions.build(ctx)
 
         -- fill the line till the line is full
         while i <= num_actions do
-            local next_w = current_row_w + (i > start_i and h_gap or 0) + action_btn_size
+            local next_w = current_row_w + (i > start_i and action_btn_gap or 0) + action_btn_size + (section.show_shadow and btn_shadow_offset or 0)
             if not section.fit_ctrl and i > start_i and next_w > inner_width then break end
 
             table.insert(row_actions, visible_actions[i])
@@ -204,9 +221,11 @@ function Actions.build(ctx)
 
         -- gap
         local n = #row_actions
-        local gap = h_gap
+        local gap = action_btn_gap
         if section.justified_ctrl and n > 1 then
-            gap = math.floor((inner_width - (n * action_btn_size)) / (n - 1))
+            local shadow_space = section.show_shadow and btn_shadow_offset or 0
+            local action_btn_space = action_btn_size * n
+            gap = math.floor((inner_width - action_btn_space - shadow_space) / (n - 1))
         end
 
         -- store the line
@@ -217,6 +236,12 @@ function Actions.build(ctx)
             end
             table.insert(row, create_btn(entry))
         end
+
+        -- add a last space for shadow
+        if section.show_shadow and #row_actions > 0 then
+            table.insert(row, HorizontalSpan:new{ width = btn_shadow_offset })
+        end
+
         table.insert(group, row)
     end
 
@@ -252,6 +277,11 @@ function Actions.getSettings(ctx, close, refresh)
             text = _("Show labels"),
             checked_func = function() return section.show_label end,
             callback = function() section.show_label = not section.show_label; Config.saveAndRefresh(ctx) end
+        },
+        {
+            text = _("Show shadows"),
+            checked_func = function() return section.show_shadow end,
+            callback = function() section.show_shadow = not section.show_shadow; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Fit controls"),

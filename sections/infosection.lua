@@ -65,6 +65,7 @@ function InfoSection.build(ctx)
         padding = h_gap,
         bordersize = btn_bordersize,
         bordercolor = Blitbuffer.COLOR_DARK_GRAY,
+        background = Blitbuffer.COLOR_WHITE,
         callback = function()
             Utils.closeMenu(touch_menu)
             reader.status:onShowBookStatus()

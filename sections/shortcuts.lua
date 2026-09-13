@@ -17,6 +17,7 @@ local ActionDefs      = require("action_defs")
 local ActionManage    = require("action_manage")
 local Config          = require("config")
 local Utils           = require("common/utils")
+local ShadowDeco      = require("widgets/shadow_deco")
 local _               = require("common/i18n").gettext
 
 local Shortcuts = {
@@ -49,7 +50,10 @@ function Shortcuts.build(ctx)
     local btn_radius         = screen:scaleBySize(config.style.btn_radius or 7)
     local btn_bordersize     = screen:scaleBySize(config.style.btn_bordersize or 1.5)
     local btn_font_size      = config.style.btn_font_size or 16
-    local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
+    local btn_shadow_offset  = screen:scaleBySize(config.style.btn_shadow_offset or 2)
+    local btn_shadow_intensity = config.style.btn_shadow_intensity or 0.6
+    local btn_shadow_radius    = screen:scaleBySize(config.style.btn_shadow_radius or 6)
+    local slider_ticks_width   = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
     local section = Utils.getSection(config, Shortcuts.id)
 
@@ -106,7 +110,7 @@ function Shortcuts.build(ctx)
         local label_title = TextWidget:new{
             text = Shortcuts.label .. " : " .. label_icon,
             face =  Font:getFace("cfont", btn_font_size), bold = true,
-            max_width = inner_width - btn_width*2,
+            max_width = inner_width - btn_width * 2,
         }
         -- settings
         local settings_btn = Button:new{
@@ -134,8 +138,14 @@ function Shortcuts.build(ctx)
         if section.collapse then  return { widget = group } end
     end
 
-    local max_cols =  section.max_cols or 3
-    local shortcuts_width = Math.round((inner_width  - h_gap * (max_cols - 1)) / max_cols)
+    -- shortcuts btn width
+    local max_cols = section.max_cols or 3
+    local total_shadow_space = section.show_shadow and (btn_shadow_offset * max_cols) or 0
+    local total_gap_space = h_gap * (max_cols - 1)
+    local shortcuts_width = Math.round((inner_width - total_shadow_space - total_gap_space) / max_cols)
+
+    -- shortcuts btn gap
+    local shortcuts_gap = h_gap + (section.show_shadow and btn_shadow_offset or 0)
 
     -- utils to exec actions
     local function exec_action(ctx, action_data)
@@ -153,7 +163,7 @@ function Shortcuts.build(ctx)
         local icon = def.icon_func and def.icon_func(ctx) or (def.icon or "")
         local label = def.label_func and def.label_func(ctx) or (def.label or "")
         local shortcuts_text = section.show_label and (Utils.get_safe_icon(icon) .. " " .. _(label)) or Utils.get_safe_icon(icon) -- btn doesnt't support svg
-        return Button:new{
+        local btn = Button:new{
             text           = shortcuts_text,
             width          = shortcuts_width,
             radius         = btn_radius,
@@ -163,6 +173,11 @@ function Shortcuts.build(ctx)
             callback       = def.callback and function() exec_action(ctx, def.callback) end or nil,
             hold_callback  = def.hold_callback and function() exec_action(ctx, def.hold_callback) end or nil,
         }
+        -- attach the shadow
+        if section.show_shadow then
+            ShadowDeco.attach(btn, btn_shadow_offset, btn_shadow_intensity, btn_shadow_radius)
+        end
+        return btn
     end
 
      -- shortcuts btn placement
@@ -176,14 +191,18 @@ function Shortcuts.build(ctx)
             table.insert(row, btn_widget)
 
             if j < math.min(i + max_cols - 1, num_actions) then
-                table.insert(row, HorizontalSpan:new{ width = h_gap })
+                table.insert(row, HorizontalSpan:new{ width = shortcuts_gap })
+            elseif section.show_shadow then
+                table.insert(row, HorizontalSpan:new{ width = btn_shadow_offset })
             end
         end
 
         table.insert(group, row)
 
         if i + max_cols <= num_actions then
-            table.insert(group, VerticalSpan:new{ width = h_gap })
+            table.insert(group, VerticalSpan:new{ width = shortcuts_gap })
+        elseif section.show_shadow then
+            table.insert(group, VerticalSpan:new{ width = btn_shadow_offset})
         end
     end
 
@@ -221,6 +240,11 @@ function Shortcuts.getSettings(ctx, close, refresh)
             checked_func = function() return section.show_label end,
             callback = function() section.show_label = not section.show_label; Config.saveAndRefresh(ctx) end,
             separator = true,
+        },
+        {
+            text = _("Show shadows"),
+            checked_func = function() return section.show_shadow end,
+            callback = function() section.show_shadow = not section.show_shadow; Config.saveAndRefresh(ctx) end
         },
         {
             text_func = function() return _("Columns") .. " (" .. section.max_cols .. ")\xE2\x80\xA6" end,

@@ -17,6 +17,7 @@ Config.DEFAULTS = {
             collapse = false,
             show_title = true,
             show_label = true,
+            show_shadow = true,
             fit_ctrl = true,
             justified_ctrl = true,
             items = { "wifi", "night", "light", "rotate", "lock", "usb", "power" }
@@ -26,6 +27,7 @@ Config.DEFAULTS = {
             enabled_r = true,
             collapse = false,
             show_title = true,
+            show_shadow = true,
             use_zenslider = false,
         },
         shortcuts = {
@@ -34,6 +36,7 @@ Config.DEFAULTS = {
             collapse = false,
             show_title = true,
             show_label = true,
+            show_shadow = true,
             max_cols = 3,
             items = { "history", "collections", "statistics", "search", "dictionary", "cloud" }
         },
@@ -42,7 +45,8 @@ Config.DEFAULTS = {
             show_title = true,
             collapse = false,
             show_thumbnail = true,
-            show_skim = true
+            show_skim = true,
+            show_shadow = true,
         },
         footer = {
             enabled_f = true,
@@ -63,6 +67,9 @@ Config.DEFAULTS = {
         btn_radius = 7,
         btn_bordersize = 1.5,
         btn_font_size = 16,
+        btn_shadow_offset = 4,
+        btn_shadow_intensity = 0.6,
+        btn_shadow_radius = 6,
         slider_ticks_width = 1,
     },
     open_on_start = true,
