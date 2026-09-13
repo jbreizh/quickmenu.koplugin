@@ -62,7 +62,7 @@ function SkimSection.build(ctx)
         if touch_menu.skim_orig_page then
             reader.link:onGoBackLink()
             touch_menu.skim_orig_page = nil
-            Utils.updateMenu(touch_menu)
+            Utils.updateMenu(touch_menu, 0)
         end
     end
 
@@ -112,21 +112,21 @@ function SkimSection.build(ctx)
     local h_gap2 = Math.round((inner_width - 7 * btn_width - 4 * h_gap) / 2)
     local row2 = HorizontalGroup:new{ align = "center" }
 
-    table.insert(row2, createBtn{ text = "\u{25C0}", callback = function() local p = reader.toc:getPreviousChapter(skim.curr_page); if p then goToPage(p) end; Utils.updateMenu(touch_menu) end, hold_callback = function() goToPage(1); Utils.updateMenu(touch_menu) end })
+    table.insert(row2, createBtn{ text = "\u{25C0}", callback = function() local p = reader.toc:getPreviousChapter(skim.curr_page); if p then goToPage(p) end; Utils.updateMenu(touch_menu, 0) end, hold_callback = function() goToPage(1); Utils.updateMenu(touch_menu, 0) end })
     table.insert(row2, HorizontalSpan:new{ width = h_gap })
     table.insert(row2, createBtn{ text = "\u{F0C9}", callback = function() Utils.closeMenu(touch_menu); goEvent("ShowToc") end, hold_callback = function() Utils.closeMenu(touch_menu); goEvent("ShowBookMap") end })
     table.insert(row2, HorizontalSpan:new{ width = h_gap })
-    table.insert(row2, createBtn{ text = "\u{25B6}", callback = function() local p = reader.toc:getNextChapter(skim.curr_page); if p then goToPage(p) end; Utils.updateMenu(touch_menu) end, hold_callback = function() goToPage(skim.page_count); Utils.updateMenu(touch_menu) end })
+    table.insert(row2, createBtn{ text = "\u{25B6}", callback = function() local p = reader.toc:getNextChapter(skim.curr_page); if p then goToPage(p) end; Utils.updateMenu(touch_menu, 0) end, hold_callback = function() goToPage(skim.page_count); Utils.updateMenu(touch_menu, 0) end })
 
     table.insert(row2, HorizontalSpan:new{ width = h_gap2 })
     table.insert(row2, createBtn{ text_func = function() return tostring(skim.curr_page) end, callback = function() Utils.closeMenu(touch_menu); goEvent("ShowGotoDialog") end, hold_callback = function() goToOrig() end })
     table.insert(row2, HorizontalSpan:new{ width = h_gap2 })
 
-    table.insert(row2, createBtn{ text = "\u{25C0}", callback = function() goEvent("GotoPreviousBookmarkFromPage"); Utils.updateMenu(touch_menu) end })
+    table.insert(row2, createBtn{ text = "\u{25C0}", callback = function() goEvent("GotoPreviousBookmarkFromPage"); Utils.updateMenu(touch_menu, 0) end })
     table.insert(row2, HorizontalSpan:new{ width = h_gap })
-    table.insert(row2, createBtn{ text_func = function() return reader.view.dogear_visible and "\u{F02E}" or "\u{F097}" end, callback = function() goEvent("ToggleBookmark"); Utils.updateMenu(touch_menu) end, hold_callback = function() Utils.closeMenu(touch_menu); goEvent("ShowBookmark") end })
+    table.insert(row2, createBtn{ text_func = function() return reader.view.dogear_visible and "\u{F02E}" or "\u{F097}" end, callback = function() goEvent("ToggleBookmark"); Utils.updateMenu(touch_menu, 0) end, hold_callback = function() Utils.closeMenu(touch_menu); goEvent("ShowBookmark") end })
     table.insert(row2, HorizontalSpan:new{ width = h_gap })
-    table.insert(row2, createBtn{ text = "\u{25B6}", callback = function() goEvent("GotoNextBookmarkFromPage"); Utils.updateMenu(touch_menu) end })
+    table.insert(row2, createBtn{ text = "\u{25B6}", callback = function() goEvent("GotoNextBookmarkFromPage"); Utils.updateMenu(touch_menu, 0) end })
 
     table.insert(group, row1.widget)
     table.insert(group, VerticalSpan:new{ width = v_gap })

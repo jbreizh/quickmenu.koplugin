@@ -185,20 +185,38 @@ function M.resetSectionToDefaults(section, defaults)
 end
 
 --- Close touch_menu (top and bottom).
---- @param slot      table  touch_menu
-function M.closeMenu(touch_menu)
-    if touch_menu and touch_menu.close_callback then touch_menu.close_callback() end -- close top_menu
-    if touch_menu and touch_menu.touch_menu_callback then touch_menu.touch_menu_callback() end -- close bottom menu
+--- @param tm      table  touch_menu
+function M.closeMenu(tm)
+    if tm and tm.close_callback then tm.close_callback() end -- close top_menu
+    if tm and tm.touch_menu_callback then tm.touch_menu_callback() end -- close bottom menu
 end
 
 --- Update touch_menu
---- @param slot      table  touch_menu
-function M.updateMenu(touch_menu)
-    if touch_menu and touch_menu.updateItems then
-        local UIManager     = require("ui/uimanager")
-        UIManager:nextTick(function()
-            touch_menu:updateItems()
-        end)
+--- @param tm      table  touch_menu
+--- @param delay   number delay before update, Nil -> nextTick
+function M.updateMenu(tm, delay)
+    if not (tm and tm.updateItems) then return end
+
+    if delay == 0 or delay == "instant" then -- instant update
+        tm:updateItems()
+        return
+    end
+
+    -- Debouncing
+    if tm._qs_pending_config_refresh then return end
+
+    local UIManager = require("ui/uimanager")
+    tm._qs_pending_config_refresh = true
+
+    local function do_update()
+        tm._qs_pending_config_refresh = false
+        if tm.updateItems then tm:updateItems() end
+    end
+
+    if type(delay) == "number" and delay > 0 then -- delay update
+        UIManager:scheduleIn(delay, do_update)
+    else -- nextTick update
+        UIManager:nextTick(do_update)
     end
 end
 

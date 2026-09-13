@@ -61,7 +61,7 @@ function IntensityZenUI.build(ctx, settings_func)
     --
     local group = VerticalGroup:new{ align = "center" }
     local refs = { buttons = {}, sliders = {}, widgets = {} }
-    local update_touch_menu = function() Utils.updateMenu(touch_menu) end
+    local update_touch_menu = function() Utils.updateMenu(touch_menu, 0) end
 
     local fl = {
         min = powerd.fl_min,

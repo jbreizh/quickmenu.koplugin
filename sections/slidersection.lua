@@ -43,7 +43,7 @@ function SliderSection.build(opts)
             progress:setPercentage(pct)
         end
 
-        Utils.updateMenu(touch_menu)
+        Utils.updateMenu(touch_menu, 0)
     end
 
     -- widgets
