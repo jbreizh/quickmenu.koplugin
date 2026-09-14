@@ -864,3 +864,6 @@ msgstr "Сбросить стиль по умолчанию"
 
 msgid "Sort sections"
 msgstr "Сортировать разделы"
+
+msgid "Show shadows"
+msgstr "Показывать тени"

@@ -1,15 +1,5 @@
-msgid ""
-msgstr ""
-"Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: vi\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.9\n"
+msgid "%s of %s"
+msgstr "%s / %s"
 
 msgid "%s of %s"
 msgstr "%s / %s"
@@ -109,15 +99,6 @@ msgstr "Mũi tên"
 
 msgid "Arrows left-right"
 msgstr "Mũi tên trái-phải"
-
-msgid ""
-"Author : Anthony Gress\n"
-"Projet : Zen UI\n"
-"https://github.com/AnthonyGress/zen_ui.koplugin"
-msgstr ""
-"Tác giả: Anthony Gress\n"
-"Dự án: Zen UI\n"
-"https://github.com/AnthonyGress/zen_ui.koplugin"
 
 msgid "Back"
 msgstr "Quay lại"
@@ -298,13 +279,6 @@ msgstr "Vừa khít các nút điều khiển"
 
 msgid "Footer"
 msgstr "Chân trang"
-
-msgid ""
-"Footer overflow !!!!\n"
-"Hidden actions :\n"
-msgstr ""
-"Chân trang bị tràn viền !!!!\n"
-"Các thao tác bị ẩn:\n"
 
 msgid "Fraction slash"
 msgstr "Gạch chéo phân số"
@@ -687,223 +661,6 @@ msgstr "Thao tác hệ thống"
 msgid "Tap"
 msgstr "Chạm"
 
-msgid ""
-"Tap : Ask for exit KOreader\n"
-"Hold : Ask for restart KOreader"
-msgstr ""
-"Chạm: Hỏi để thoát KOReader\n"
-"Giữ: Hỏi để khởi động lại KOReader"
-
-msgid ""
-"Tap : Ask for power off system\n"
-"Hold : Ask for reboot system"
-msgstr ""
-"Chạm: Hỏi để tắt nguồn hệ thống\n"
-"Giữ: Hỏi để khởi động lại hệ thống"
-
-msgid ""
-"Tap : Ask for reboot system\n"
-"Hold : Ask for power off system"
-msgstr ""
-"Chạm: Hỏi để khởi động lại hệ thống\n"
-"Giữ: Hỏi để tắt nguồn hệ thống"
-
-msgid ""
-"Tap : Ask for restart KOreader\n"
-"Hold : Ask for exit KOreader"
-msgstr ""
-"Chạm: Hỏi để khởi động lại KOReader\n"
-"Giữ: Hỏi để thoát KOReader"
-
-msgid ""
-"Tap : Nothing\n"
-"Hold : Show frontlight dialog"
-msgstr ""
-"Chạm: Không làm gì\n"
-"Giữ: Hiển thị bảng điều chỉnh đèn nền"
-
-msgid ""
-"Tap : Open last book\n"
-"Hold : Show history"
-msgstr ""
-"Chạm: Mở cuốn sách gần nhất\n"
-"Giữ: Hiển thị lịch sử"
-
-msgid ""
-"Tap : Push progress to KOSync\n"
-"Hold : Pull progress from KOSync"
-msgstr ""
-"Chạm: Tải tiến trình lên KOSync\n"
-"Giữ: Lấy tiến trình về từ KOSync"
-
-msgid ""
-"Tap : Request UBS mass storage\n"
-"Hold : Nothing"
-msgstr ""
-"Chạm: Yêu cầu kết nối lưu trữ USB\n"
-"Giữ: Không làm gì"
-
-msgid ""
-"Tap : Show Calibre search\n"
-"Hold : Show file search"
-msgstr ""
-"Chạm: Tìm kiếm Calibre\n"
-"Giữ: Tìm kiếm tệp"
-
-msgid ""
-"Tap : Show OPDS catalog\n"
-"Hold : Show cloud storage"
-msgstr ""
-"Chạm: Hiển thị danh mục OPDS\n"
-"Giữ: Hiển thị lưu trữ đám mây"
-
-msgid ""
-"Tap : Show calendar statistics\n"
-"Hold : Show reader statistics"
-msgstr ""
-"Chạm: Hiển thị thống kê lịch\n"
-"Giữ: Hiển thị thống kê đọc sách"
-
-msgid ""
-"Tap : Show cloud storage\n"
-"Hold : Show OPDS catalog"
-msgstr ""
-"Chạm: Hiển thị lưu trữ đám mây\n"
-"Giữ: Hiển thị danh mục OPDS"
-
-msgid ""
-"Tap : Show collections\n"
-"Hold : Show favorites"
-msgstr ""
-"Chạm: Hiển thị bộ sưu tập\n"
-"Giữ: Hiển thị mục yêu thích"
-
-msgid ""
-"Tap : Show dictionary search\n"
-"Hold : Show wikipedia search"
-msgstr ""
-"Chạm: Tìm kiếm từ điển\n"
-"Giữ: Tìm kiếm Wikipedia"
-
-msgid ""
-"Tap : Show favorites\n"
-"Hold : Show collections"
-msgstr ""
-"Chạm: Hiển thị mục yêu thích\n"
-"Giữ: Hiển thị bộ sưu tập"
-
-msgid ""
-"Tap : Show file search\n"
-"Hold : Show Calibre search"
-msgstr ""
-"Chạm: Tìm kiếm tệp\n"
-"Giữ: Tìm kiếm Calibre"
-
-msgid ""
-"Tap : Show history\n"
-"Hold : Open last book"
-msgstr ""
-"Chạm: Hiển thị lịch sử\n"
-"Giữ: Mở cuốn sách gần nhất"
-
-msgid ""
-"Tap : Show power dialog\n"
-"Hold : Nothing"
-msgstr ""
-"Chạm: Hiển thị menu nguồn\n"
-"Giữ: Không làm gì"
-
-msgid ""
-"Tap : Show reader statistics\n"
-"Hold : Show calendar statistics"
-msgstr ""
-"Chạm: Hiển thị thống kê đọc sách\n"
-"Giữ: Hiển thị thống kê lịch"
-
-msgid ""
-"Tap : Show time\n"
-"Hold : Nothing"
-msgstr ""
-"Chạm: Hiển thị thời gian\n"
-"Giữ: Không làm gì"
-
-msgid ""
-"Tap : Show value\n"
-"Hold : Show battery statistics"
-msgstr ""
-"Chạm: Hiển thị giá trị\n"
-"Giữ: Hiển thị thông số pin"
-
-msgid ""
-"Tap : Show value\n"
-"Hold : Show system statistics"
-msgstr ""
-"Chạm: Hiển thị giá trị\n"
-"Giữ: Hiển thị thông số hệ thống"
-
-msgid ""
-"Tap : Show wikipedia search\n"
-"Hold : Show dictionary search"
-msgstr ""
-"Chạm: Tìm kiếm Wikipedia\n"
-"Giữ: Tìm kiếm từ điển"
-
-msgid ""
-"Tap : Suspend system\n"
-"Hold : Nothing"
-msgstr ""
-"Chạm: Tạm dừng hệ thống (ngủ)\n"
-"Giữ: Không làm gì"
-
-msgid ""
-"Tap : Swap rotation\n"
-"Hold : Invert rotation"
-msgstr ""
-"Chạm: Đổi hướng xoay\n"
-"Giữ: Đảo ngược hướng xoay"
-
-msgid ""
-"Tap : Toggle Calibre connection\n"
-"Hold : Nothing"
-msgstr ""
-"Chạm: Bật/tắt kết nối Calibre\n"
-"Giữ: Không làm gì"
-
-msgid ""
-"Tap : Toggle SSH server\n"
-"Hold : Nothing"
-msgstr ""
-"Chạm: Bật/tắt máy chủ SSH\n"
-"Giữ: Không làm gì"
-
-msgid ""
-"Tap : Toggle frontlight\n"
-"Hold : Show frontlight dialog"
-msgstr ""
-"Chạm: Bật/tắt đèn nền\n"
-"Giữ: Hiển thị bảng điều chỉnh đèn nền"
-
-msgid ""
-"Tap : Toggle lock gsensor\n"
-"Hold : Toggle ignore gsensor"
-msgstr ""
-"Chạm: Bật/tắt khóa cảm biến trọng lực\n"
-"Giữ: Bật/tắt bỏ qua cảm biến trọng lực"
-
-msgid ""
-"Tap : Toggle night mode\n"
-"Hold : Nothing"
-msgstr ""
-"Chạm: Bật/tắt chế độ ban đêm\n"
-"Giữ: Không làm gì"
-
-msgid ""
-"Tap : Toggle wifi\n"
-"Hold : Show wifi picker"
-msgstr ""
-"Chạm: Bật/tắt Wi-Fi\n"
-"Giữ: Hiển thị danh sách Wi-Fi"
-
 msgid "That menu item isn't available"
 msgstr "Mục menu này hiện không khả dụng"
 
@@ -979,13 +736,6 @@ msgstr "đã dùng"
 msgid "Network"
 msgstr "Mạng"
 
-msgid ""
-"Tap : Toggle FileBrowserPlus connection\n"
-"Hold : Nothing"
-msgstr ""
-"Chạm: Bật/tắt kết nối FileBrowserPlus\n"
-"Giữ: Không làm gì"
-
 msgid "Pull progress"
 msgstr "Lấy tiến trình về"
 
@@ -998,13 +748,6 @@ msgstr "Gửi cuốn sách hiện tại"
 msgid "Send file"
 msgstr "Gửi tệp"
 
-msgid ""
-"Tap : Toggle LocalSend connection\n"
-"Hold : Show localSend dialog"
-msgstr ""
-"Chạm: Bật/tắt kết nối LocalSend\n"
-"Giữ: Hiển thị hộp thoại LocalSend"
-
 msgid "Reset sections order to default"
 msgstr "Đặt lại thứ tự các phần về mặc định"
 
@@ -1016,3 +759,111 @@ msgstr "Đặt lại kiểu dáng về mặc định"
 
 msgid "Sort sections"
 msgstr "Sắp xếp các phần"
+
+msgid "Author : Anthony Gress\nProjet : Zen UI\nhttps://github.com/AnthonyGress/zen_ui.koplugin"
+msgstr "Tác giả : Anthony Gress\nDự án : Zen UI\nhttps://github.com/AnthonyGress/zen_ui.koplugin"
+
+msgid "Footer overflow !!!!\nHidden actions :\n"
+msgstr "Chân trang bị tràn !!!!\nCác thao tác bị ẩn :\n"
+
+msgid "Show shadows"
+msgstr "Hiển thị bóng đổ"
+
+msgid "Tap : Ask for exit KOreader\nHold : Ask for restart KOreader"
+msgstr "Chạm : Hỏi thoát KOReader\nNhấn giữ : Hỏi khởi động lại KOReader"
+
+msgid "Tap : Ask for power off system\nHold : Ask for reboot system"
+msgstr "Chạm : Hỏi tắt nguồn hệ thống\nNhấn giữ : Hỏi khởi động lại hệ thống"
+
+msgid "Tap : Ask for reboot system\nHold : Ask for power off system"
+msgstr "Chạm : Hỏi khởi động lại hệ thống\nNhấn giữ : Hỏi tắt nguồn hệ thống"
+
+msgid "Tap : Ask for restart KOreader\nHold : Ask for exit KOreader"
+msgstr "Chạm : Hỏi khởi động lại KOReader\nNhấn giữ : Hỏi thoát KOReader"
+
+msgid "Tap : Nothing\nHold : Show frontlight dialog"
+msgstr "Chạm : Không làm gì\nNhấn giữ : Hiển thị hộp thoại đèn nền"
+
+msgid "Tap : Open last book\nHold : Show history"
+msgstr "Chạm : Mở cuốn sách gần nhất\nNhấn giữ : Hiển thị lịch sử"
+
+msgid "Tap : Push progress to KOSync\nHold : Pull progress from KOSync"
+msgstr "Chạm : Đẩy tiến trình lên KOSync\nNhấn giữ : Lấy tiến trình từ KOSync"
+
+msgid "Tap : Request UBS mass storage\nHold : Nothing"
+msgstr "Chạm : Yêu cầu chế độ lưu trữ USB\nNhấn giữ : Không làm gì"
+
+msgid "Tap : Show Calibre search\nHold : Show file search"
+msgstr "Chạm : Hiển thị tìm kiếm Calibre\nNhấn giữ : Hiển thị tìm kiếm tệp"
+
+msgid "Tap : Show OPDS catalog\nHold : Show cloud storage"
+msgstr "Chạm : Hiển thị danh mục OPDS\nNhấn giữ : Hiển thị lưu trữ đám mây"
+
+msgid "Tap : Show calendar statistics\nHold : Show reader statistics"
+msgstr "Chạm : Hiển thị thống kê lịch\nNhấn giữ : Hiển thị thống kê đọc sách"
+
+msgid "Tap : Show cloud storage\nHold : Show OPDS catalog"
+msgstr "Chạm : Hiển thị lưu trữ đám mây\nNhấn giữ : Hiển thị danh mục OPDS"
+
+msgid "Tap : Show collections\nHold : Show favorites"
+msgstr "Chạm : Hiển thị bộ sưu tập\nNhấn giữ : Hiển thị yêu thích"
+
+msgid "Tap : Show dictionary search\nHold : Show wikipedia search"
+msgstr "Chạm : Hiển thị tìm kiếm từ điển\nNhấn giữ : Hiển thị tìm kiếm Wikipedia"
+
+msgid "Tap : Show favorites\nHold : Show collections"
+msgstr "Chạm : Hiển thị yêu thích\nNhấn giữ : Hiển thị bộ sưu tập"
+
+msgid "Tap : Show file search\nHold : Show Calibre search"
+msgstr "Chạm : Hiển thị tìm kiếm tệp\nNhấn giữ : Hiển thị tìm kiếm Calibre"
+
+msgid "Tap : Show history\nHold : Open last book"
+msgstr "Chạm : Hiển thị lịch sử\nNhấn giữ : Mở cuốn sách gần nhất"
+
+msgid "Tap : Show power dialog\nHold : Nothing"
+msgstr "Chạm : Hiển thị hộp thoại nguồn\nNhấn giữ : Không làm gì"
+
+msgid "Tap : Show reader statistics\nHold : Show calendar statistics"
+msgstr "Chạm : Hiển thị thống kê đọc sách\nNhấn giữ : Hiển thị thống kê lịch"
+
+msgid "Tap : Show time\nHold : Nothing"
+msgstr "Chạm : Hiển thị thời gian\nNhấn giữ : Không làm gì"
+
+msgid "Tap : Show value\nHold : Show battery statistics"
+msgstr "Chạm : Hiển thị giá trị\nNhấn giữ : Hiển thị thống kê pin"
+
+msgid "Tap : Show value\nHold : Show system statistics"
+msgstr "Chạm : Hiển thị giá trị\nNhấn giữ : Hiển thị thống kê hệ thống"
+
+msgid "Tap : Show wikipedia search\nHold : Show dictionary search"
+msgstr "Chạm : Hiển thị tìm kiếm Wikipedia\nNhấn giữ : Hiển thị tìm kiếm từ điển"
+
+msgid "Tap : Suspend system\nHold : Nothing"
+msgstr "Chạm : Chế độ chờ hệ thống\nNhấn giữ : Không làm gì"
+
+msgid "Tap : Swap rotation\nHold : Invert rotation"
+msgstr "Chạm : Đổi hướng xoay\nNhấn giữ : Đảo ngược hướng xoay"
+
+msgid "Tap : Toggle Calibre connection\nHold : Nothing"
+msgstr "Chạm : Bật/tắt kết nối Calibre\nNhấn giữ : Không làm gì"
+
+msgid "Tap : Toggle FileBrowserPlus connection\nHold : Nothing"
+msgstr "Chạm : Bật/tắt kết nối FileBrowserPlus\nNhấn giữ : Không làm gì"
+
+msgid "Tap : Toggle LocalSend connection\nHold : Show localSend dialog"
+msgstr "Chạm : Bật/tắt kết nối LocalSend\nNhấn giữ : Hiển thị hộp thoại LocalSend"
+
+msgid "Tap : Toggle SSH server\nHold : Nothing"
+msgstr "Chạm : Bật/tắt máy chủ SSH\nNhấn giữ : Không làm gì"
+
+msgid "Tap : Toggle frontlight\nHold : Show frontlight dialog"
+msgstr "Chạm : Bật/tắt đèn nền\nNhấn giữ : Hiển thị hộp thoại đèn nền"
+
+msgid "Tap : Toggle lock gsensor\nHold : Toggle ignore gsensor"
+msgstr "Chạm : Bật/tắt khóa cảm biến gsensor\nNhấn giữ : Bật/tắt bỏ qua cảm biến gsensor"
+
+msgid "Tap : Toggle night mode\nHold : Nothing"
+msgstr "Chạm : Bật/tắt chế độ ban đêm\nNhấn giữ : Không làm gì"
+
+msgid "Tap : Toggle wifi\nHold : Show wifi picker"
+msgstr "Chạm : Bật/tắt wifi\nNhấn giữ : Hiển thị chọn mạng wifi"

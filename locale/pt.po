@@ -864,3 +864,6 @@ msgstr "Repor estilo por defeito"
 
 msgid "Sort sections"
 msgstr "Ordenar secções"
+
+msgid "Show shadows"
+msgstr "Mostrar sombras"

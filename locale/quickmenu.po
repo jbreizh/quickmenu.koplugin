@@ -1,4 +1,5 @@
-
+msgid "%s of %s"
+msgstr ""
 
 msgid "%s of %s"
 msgstr ""
@@ -862,4 +863,7 @@ msgid "Reset style to defaults"
 msgstr ""
 
 msgid "Sort sections"
+msgstr ""
+
+msgid "Show shadows"
 msgstr ""

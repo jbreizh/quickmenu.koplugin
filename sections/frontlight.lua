@@ -62,8 +62,8 @@ function Frontlight.build(ctx)
     if reader and not section.enabled_r then return nil end
 
     -- record value easy change for testing on emulator
-    local hasFrontlight = true --not not device:hasFrontlight() -- force bool
-    local hasNaturalLight = true --not not device:hasNaturalLight() -- force bool
+    local hasFrontlight = not not device:hasFrontlight() -- force bool
+    local hasNaturalLight = not not device:hasNaturalLight() -- force bool
 
     if not hasFrontlight then return nil end
 
@@ -176,7 +176,7 @@ function Frontlight.getSettings(ctx, close, refresh)
     local config  = ctx.config
     local section = Utils.getSection(config, Frontlight.id)
 
-    --if not device:hasFrontlight() then return {} end
+    if not device:hasFrontlight() then return {} end
     if not section then return {} end
 
     return {

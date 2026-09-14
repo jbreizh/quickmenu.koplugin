@@ -56,6 +56,7 @@ function Shortcuts.build(ctx)
     local slider_ticks_width   = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
     local section = Utils.getSection(config, Shortcuts.id)
+    local shadow_gap = (section.show_shadow and btn_shadow_offset or 0)
 
     if not section then return nil end
 
@@ -140,12 +141,12 @@ function Shortcuts.build(ctx)
 
     -- shortcuts btn width
     local max_cols = section.max_cols or 3
-    local total_shadow_space = section.show_shadow and (btn_shadow_offset * max_cols) or 0
+    local total_shadow_space = shadow_gap * max_cols
     local total_gap_space = h_gap * (max_cols - 1)
     local shortcuts_width = Math.round((inner_width - total_shadow_space - total_gap_space) / max_cols)
 
     -- shortcuts btn gap
-    local shortcuts_gap = h_gap + (section.show_shadow and btn_shadow_offset or 0)
+    local shortcuts_gap = h_gap + shadow_gap
 
     -- utils to exec actions
     local function exec_action(ctx, action_data)

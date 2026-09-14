@@ -16,6 +16,7 @@ local Config          = require("config")
 local InfoSection     = require("sections/infosection")
 local SkimSection     = require("sections/skimsection")
 local CoverButton     = require("widgets/coverbutton")
+local ShadowDeco      = require("widgets/shadowdeco")
 local Utils           = require("common/utils")
 local _               = require("common/i18n").gettext
 
@@ -52,7 +53,8 @@ function Info.build(ctx)
     local btn_shadow_radius    = screen:scaleBySize(config.style.btn_shadow_radius or 6)
     local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
-    local section      = Utils.getSection(config, Info.id)
+    local section    = Utils.getSection(config, Info.id)
+    local shadow_gap = (section.show_shadow and btn_shadow_offset or 0)
 
     if not section or not section.enabled_r or not reader then return nil end
     local refs = { buttons = {}, sliders = {}, widgets = {} }
@@ -128,19 +130,19 @@ function Info.build(ctx)
 
     --
     local info_col = VerticalGroup:new{ align = "center" }
-    local infoSection = InfoSection.build(ctx)
+    local infoSection = InfoSection.build(ctx, section.show_shadow)
     table.insert(info_col, infoSection.widget)
 
     if section.show_skim then
-        local skimSection = SkimSection.build(ctx)
-        table.insert(info_col, VerticalSpan:new{ width = v_gap })
+        local skimSection = SkimSection.build(ctx, section.show_shadow)
+        table.insert(info_col, VerticalSpan:new{ width = h_gap })
         table.insert(info_col, skimSection.widget)
         table.insert(refs.sliders, skimSection.refs.sliders[1])
     end
 
     --
-    if section.show_thumbnail then -- TODO more test
-        local cover_h = info_col:getSize().h - 2 * btn_bordersize -- WARNING padding and bordersize of info_thumbnail
+    if section.show_thumbnail then
+        local cover_h = info_col:getSize().h - 2 * btn_bordersize - shadow_gap -- WARNING padding, bordersize and shadow of info_thumbnail
         local cover_w = math.floor(2 * cover_h / 3 + 0.5)
 
         -- try to get and resize cover
@@ -154,6 +156,7 @@ function Info.build(ctx)
         end
 
         --
+        local thumbnail_col = VerticalGroup:new{ align = "center" }
         local info_thumbnail
         if ok and thumbnail then
             info_thumbnail = CoverButton:new{
@@ -193,20 +196,29 @@ function Info.build(ctx)
             }
         end
 
-        table.insert(row, info_thumbnail)
-        table.insert(row, HorizontalSpan:new{ width = h_gap })
+        -- create shadow
+        if section.show_shadow then
+            ShadowDeco.attach(info_thumbnail, btn_shadow_offset, btn_shadow_intensity, btn_shadow_radius)
+        end
+
+        --
+        table.insert(thumbnail_col, info_thumbnail)
+        table.insert(thumbnail_col, VerticalSpan:new{ width = shadow_gap })
+        --
+        table.insert(row, thumbnail_col)
+        table.insert(row, HorizontalSpan:new{ width = h_gap + shadow_gap })
 
         local opts = {}
         for k, v in pairs(ctx) do opts[k] = v end
-        opts.inner_width = inner_width - info_thumbnail:getSize().w - h_gap
+        opts.inner_width = inner_width - info_thumbnail:getSize().w - h_gap - shadow_gap
 
         info_col = VerticalGroup:new{ align = "left" }
-        local infoSection = InfoSection.build(opts)
+        local infoSection = InfoSection.build(opts, section.show_shadow)
         table.insert(info_col, infoSection.widget)
 
         if section.show_skim then
-            local skimSection = SkimSection.build(opts)
-            table.insert(info_col, VerticalSpan:new{ width = v_gap })
+            local skimSection = SkimSection.build(opts, section.show_shadow)
+            table.insert(info_col, VerticalSpan:new{ width = h_gap })
             table.insert(info_col, skimSection.widget)
             table.insert(refs.sliders, skimSection.refs.sliders[1])
         end

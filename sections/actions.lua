@@ -56,6 +56,7 @@ function Actions.build(ctx)
     local slider_ticks_width   = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
     local section = Utils.getSection(config, Actions.id)
+    local shadow_gap = (section.show_shadow and btn_shadow_offset or 0)
 
     if not section then return nil end
 
@@ -154,13 +155,13 @@ function Actions.build(ctx)
     -- action btn width
     local action_btn_size = action_size
     if section.fit_ctrl then
-        local total_shadow_space = section.show_shadow and (btn_shadow_offset * num_actions) or 0
+        local total_shadow_space = shadow_gap * num_actions
         local total_gap_space = h_gap * (num_actions - 1)
         action_btn_size = math.min(math.floor( (inner_width - total_shadow_space - total_gap_space ) / math.max(1, num_actions)), action_btn_size)
     end
 
     -- action btn gap
-    local action_btn_gap = h_gap + (section.show_shadow and btn_shadow_offset or 0)
+    local action_btn_gap = h_gap + shadow_gap
 
     -- action btn construction
     local action_radius_ratio = action_radius / action_size -- 0 square 0.5 circle
@@ -194,7 +195,7 @@ function Actions.build(ctx)
             local btn_label = TextWidget:new{
                     text = def.label_func and def.label_func(ctx) or def.label,
                     face = Font:getFace("cfont", action_label_size),
-                    max_width = action_btn_size + (section.show_shadow and btn_shadow_offset or 0),
+                    max_width = action_btn_size,
                 }
             table.insert(btn_group, btn_label)
         end
@@ -210,7 +211,7 @@ function Actions.build(ctx)
 
         -- fill the line till the line is full
         while i <= num_actions do
-            local next_w = current_row_w + (i > start_i and action_btn_gap or 0) + action_btn_size + (section.show_shadow and btn_shadow_offset or 0)
+            local next_w = current_row_w + (i > start_i and action_btn_gap or 0) + action_btn_size + shadow_gap
             if not section.fit_ctrl and i > start_i and next_w > inner_width then break end
 
             table.insert(row_actions, visible_actions[i])
@@ -222,9 +223,8 @@ function Actions.build(ctx)
         local n = #row_actions
         local gap = action_btn_gap
         if section.justified_ctrl and n > 1 then
-            local shadow_space = section.show_shadow and btn_shadow_offset or 0
             local action_btn_space = action_btn_size * n
-            gap = math.floor((inner_width - action_btn_space - shadow_space) / (n - 1))
+            gap = math.floor((inner_width - action_btn_space - shadow_gap) / (n - 1))
         end
 
         -- store the line

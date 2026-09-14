@@ -8,11 +8,12 @@ local Math            = require("optmath")
 local Event           = require("ui/event")
 
 local SliderSection   = require("sections/slidersection")
+local ShadowDeco      = require("widgets/shadowdeco")
 local Utils           = require("common/utils")
 
 local SkimSection = {}
 
-function SkimSection.build(ctx)
+function SkimSection.build(ctx, show_shadow)
     -- ctx import
     local config             = ctx.config
     local touch_menu         = ctx.touch_menu
@@ -31,18 +32,19 @@ function SkimSection.build(ctx)
     local btn_radius         = screen:scaleBySize(config.style.btn_radius or 7)
     local btn_bordersize     = screen:scaleBySize(config.style.btn_bordersize or 1.5)
     local btn_font_size      = config.style.btn_font_size or 16
+    local btn_shadow_offset  = screen:scaleBySize(config.style.btn_shadow_offset or 2)
+    local btn_shadow_intensity = config.style.btn_shadow_intensity or 0.6
+    local btn_shadow_radius    = screen:scaleBySize(config.style.btn_shadow_radius or 6)
     local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
-
-    local refs = { buttons = {}, sliders = {}, widgets = {} }
-    local group = VerticalGroup:new{ align = "center" }
+    local shadow_gap = (show_shadow and btn_shadow_offset or 0)
 
     local skim = {
         curr_page  = reader:getCurrentPage(),
         page_count = reader.document:getPageCount()
     }
 
-    -- Logique de Navigation
+    -- Logic
     local function addOrigin()
         if not touch_menu.skim_orig_page then
             reader.link:addCurrentLocationToStack()
@@ -81,6 +83,9 @@ function SkimSection.build(ctx)
         btn_radius         = btn_radius,
         btn_bordersize     = btn_bordersize,
         btn_font_size      = btn_font_size,
+        btn_shadow_offset  =btn_shadow_offset,
+        btn_shadow_intensity = btn_shadow_intensity,
+        btn_shadow_radius  = btn_shadow_radius,
         slider_ticks_width = slider_ticks_width,
         h_gap              = h_gap,
 
@@ -88,6 +93,8 @@ function SkimSection.build(ctx)
         max                = skim.page_count,
         get                = function() return skim.curr_page end,
         set                = goToPage,
+        show_shadow        = show_shadow or false,
+
         text_minus         = "\u{F056}",
         text_plus          = "\u{F055}",
         initial_pos_marker = true,
@@ -106,32 +113,42 @@ function SkimSection.build(ctx)
         props.bordersize = btn_bordersize
         props.text_font_size = btn_font_size
         props.show_parent = touch_menu.show_parent
-        return Button:new(props)
+        local btn = Button:new(props)
+        if show_shadow then
+            ShadowDeco.attach(btn, btn_shadow_offset, btn_shadow_intensity, btn_shadow_radius)
+        end
+        return btn
     end
 
-    local h_gap2 = Math.round((inner_width - 7 * btn_width - 4 * h_gap) / 2)
+    local center_gap = Math.round((inner_width - 7 * btn_width - 7 * shadow_gap - 4 * h_gap) / 2)
     local row2 = HorizontalGroup:new{ align = "center" }
 
     table.insert(row2, createBtn{ text = "\u{25C0}", callback = function() local p = reader.toc:getPreviousChapter(skim.curr_page); if p then goToPage(p) end; Utils.updateMenu(touch_menu, 0) end, hold_callback = function() goToPage(1); Utils.updateMenu(touch_menu, 0) end })
-    table.insert(row2, HorizontalSpan:new{ width = h_gap })
+    table.insert(row2, HorizontalSpan:new{ width = h_gap + shadow_gap })
     table.insert(row2, createBtn{ text = "\u{F0C9}", callback = function() Utils.closeMenu(touch_menu); goEvent("ShowToc") end, hold_callback = function() Utils.closeMenu(touch_menu); goEvent("ShowBookMap") end })
-    table.insert(row2, HorizontalSpan:new{ width = h_gap })
+    table.insert(row2, HorizontalSpan:new{ width = h_gap + shadow_gap })
     table.insert(row2, createBtn{ text = "\u{25B6}", callback = function() local p = reader.toc:getNextChapter(skim.curr_page); if p then goToPage(p) end; Utils.updateMenu(touch_menu, 0) end, hold_callback = function() goToPage(skim.page_count); Utils.updateMenu(touch_menu, 0) end })
 
-    table.insert(row2, HorizontalSpan:new{ width = h_gap2 })
+    table.insert(row2, HorizontalSpan:new{ width = center_gap + shadow_gap})
     table.insert(row2, createBtn{ text_func = function() return tostring(skim.curr_page) end, callback = function() Utils.closeMenu(touch_menu); goEvent("ShowGotoDialog") end, hold_callback = function() goToOrig() end })
-    table.insert(row2, HorizontalSpan:new{ width = h_gap2 })
+    table.insert(row2, HorizontalSpan:new{ width = center_gap + shadow_gap})
 
     table.insert(row2, createBtn{ text = "\u{25C0}", callback = function() goEvent("GotoPreviousBookmarkFromPage"); Utils.updateMenu(touch_menu, 0) end })
-    table.insert(row2, HorizontalSpan:new{ width = h_gap })
+    table.insert(row2, HorizontalSpan:new{ width = h_gap + shadow_gap })
     table.insert(row2, createBtn{ text_func = function() return reader.view.dogear_visible and "\u{F02E}" or "\u{F097}" end, callback = function() goEvent("ToggleBookmark"); Utils.updateMenu(touch_menu, 0) end, hold_callback = function() Utils.closeMenu(touch_menu); goEvent("ShowBookmark") end })
-    table.insert(row2, HorizontalSpan:new{ width = h_gap })
+    table.insert(row2, HorizontalSpan:new{ width = h_gap + shadow_gap })
     table.insert(row2, createBtn{ text = "\u{25B6}", callback = function() goEvent("GotoNextBookmarkFromPage"); Utils.updateMenu(touch_menu, 0) end })
+    table.insert(row2, HorizontalSpan:new{ width = shadow_gap })
 
+    -- group
+    local group = VerticalGroup:new{ align = "center" }
     table.insert(group, row1.widget)
-    table.insert(group, VerticalSpan:new{ width = v_gap })
+    table.insert(group, VerticalSpan:new{ width = h_gap })
     table.insert(group, row2)
+    table.insert(group, VerticalSpan:new{ width = shadow_gap })
 
+    -- refs
+    local refs = { buttons = {}, sliders = {}, widgets = {} }
     table.insert(refs.sliders, row1.refs.sliders[1])
 
     return { widget = group, refs = refs }

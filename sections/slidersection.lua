@@ -34,6 +34,8 @@ function SliderSection.build(opts)
     local btn_shadow_radius    = opts.btn_shadow_radius or screen:scaleBySize(6)
     local slider_ticks_width   = opts.slider_ticks_width or screen:scaleBySize(1)
 
+    local shadow_gap = (opts.show_shadow and btn_shadow_offset or 0)
+
     -- logic
     local progress
 
@@ -69,7 +71,7 @@ function SliderSection.build(opts)
     end
 
     progress = ProgressWidget:new{
-        width              = inner_width - 2 * btn_width - 2 * h_gap - 3 * (opts.show_shadow and btn_shadow_offset or 0),
+        width              = inner_width - 2 * btn_width - 2 * h_gap - 3 * shadow_gap,
         height             = minus:getSize().h,
         radius             = btn_radius,
         bordersize         = btn_bordersize,
@@ -103,18 +105,18 @@ function SliderSection.build(opts)
     local row = HorizontalGroup:new{
         align = "center",
         minus,
-        HorizontalSpan:new{ width = h_gap + (opts.show_shadow and btn_shadow_offset or 0) },
+        HorizontalSpan:new{ width = h_gap + shadow_gap },
         progress,
-        HorizontalSpan:new{ width = h_gap + (opts.show_shadow and btn_shadow_offset or 0) },
+        HorizontalSpan:new{ width = h_gap + shadow_gap },
         plus,
-        HorizontalSpan:new{ width = (opts.show_shadow and btn_shadow_offset or 0) },
+        HorizontalSpan:new{ width = shadow_gap },
     }
 
     --group
     local group = VerticalGroup:new{
         align = "center",
         row,
-        VerticalSpan:new{ width = (opts.show_shadow and btn_shadow_offset or 0) },
+        VerticalSpan:new{ width = shadow_gap },
     }
 
     -- refs
