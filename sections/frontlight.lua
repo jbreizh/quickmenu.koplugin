@@ -49,6 +49,9 @@ function Frontlight.build(ctx)
     local btn_radius         = screen:scaleBySize(config.style.btn_radius or 7)
     local btn_bordersize     = screen:scaleBySize(config.style.btn_bordersize or 1.5)
     local btn_font_size      = config.style.btn_font_size or 16
+    local btn_shadow_offset  = screen:scaleBySize(config.style.btn_shadow_offset or 2)
+    local btn_shadow_intensity = config.style.btn_shadow_intensity or 0.6
+    local btn_shadow_radius    = screen:scaleBySize(config.style.btn_shadow_radius or 6)
     local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
     local section = Utils.getSection(config, Frontlight.id)
@@ -59,8 +62,8 @@ function Frontlight.build(ctx)
     if reader and not section.enabled_r then return nil end
 
     -- record value easy change for testing on emulator
-    local hasFrontlight = not not device:hasFrontlight() -- force bool
-    local hasNaturalLight = not not device:hasNaturalLight() -- force bool
+    local hasFrontlight = true --not not device:hasFrontlight() -- force bool
+    local hasNaturalLight = true --not not device:hasNaturalLight() -- force bool
 
     if not hasFrontlight then return nil end
 
@@ -128,7 +131,7 @@ function Frontlight.build(ctx)
             if section.collapse then  return { widget = group , refs = refs} end
         end
         -- slider
-        local intensitySection = IntensitySection.build(ctx)
+        local intensitySection = IntensitySection.build(ctx, section.show_shadow)
         table.insert(group, intensitySection.widget)
         table.insert(refs.sliders, intensitySection.refs.sliders[1])
     end
@@ -155,7 +158,7 @@ function Frontlight.build(ctx)
             else
                 table.insert(group, VerticalSpan:new{ width = v_gap }) -- better for visual
             end
-            local warmthSection = WarmthSection.build(ctx)
+            local warmthSection = WarmthSection.build(ctx, section.show_shadow)
             table.insert(group, warmthSection.widget)
             table.insert(refs.sliders, warmthSection.refs.sliders[1])
         end
@@ -173,7 +176,7 @@ function Frontlight.getSettings(ctx, close, refresh)
     local config  = ctx.config
     local section = Utils.getSection(config, Frontlight.id)
 
-    if not device:hasFrontlight() then return {} end
+    --if not device:hasFrontlight() then return {} end
     if not section then return {} end
 
     return {
@@ -191,6 +194,11 @@ function Frontlight.getSettings(ctx, close, refresh)
             text = _("Show title"),
             checked_func = function() return section.show_title end,
             callback = function() section.show_title = not section.show_title; Config.saveAndRefresh(ctx) end
+        },
+        {
+            text = _("Show shadows"),
+            checked_func = function() return section.show_shadow end,
+            callback = function() section.show_shadow = not section.show_shadow; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Use ZenSlider"),

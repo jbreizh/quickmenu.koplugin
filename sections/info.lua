@@ -47,6 +47,9 @@ function Info.build(ctx)
     local btn_radius         = screen:scaleBySize(config.style.btn_radius or 7)
     local btn_bordersize     = screen:scaleBySize(config.style.btn_bordersize or 1.5)
     local btn_font_size      = config.style.btn_font_size or 16
+    local btn_shadow_offset  = screen:scaleBySize(config.style.btn_shadow_offset or 2)
+    local btn_shadow_intensity = config.style.btn_shadow_intensity or 0.6
+    local btn_shadow_radius    = screen:scaleBySize(config.style.btn_shadow_radius or 6)
     local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
     local section      = Utils.getSection(config, Info.id)
@@ -235,6 +238,11 @@ function Info.getSettings(ctx, close, refresh)
             text = _("Show title"),
             checked_func = function() return section.show_title end,
             callback = function() section.show_title = not section.show_title; Config.saveAndRefresh(ctx) end
+        },
+        {
+            text = _("Show shadows"),
+            checked_func = function() return section.show_shadow end,
+            callback = function() section.show_shadow = not section.show_shadow; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Show thumbnail"),

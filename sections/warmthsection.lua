@@ -5,7 +5,7 @@ local WarmthSection = {
     id = "frontlight"
 }
 
-function WarmthSection.build(ctx)
+function WarmthSection.build(ctx, show_shadow)
     -- ctx import
     local config             = ctx.config
     local touch_menu         = ctx.touch_menu
@@ -24,6 +24,9 @@ function WarmthSection.build(ctx)
     local btn_radius         = screen:scaleBySize(config.style.btn_radius or 7)
     local btn_bordersize     = screen:scaleBySize(config.style.btn_bordersize or 1.5)
     local btn_font_size      = config.style.btn_font_size or 16
+    local btn_shadow_offset  = screen:scaleBySize(config.style.btn_shadow_offset or 2)
+    local btn_shadow_intensity = config.style.btn_shadow_intensity or 0.6
+    local btn_shadow_radius    = screen:scaleBySize(config.style.btn_shadow_radius or 6)
     local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
     --
@@ -50,6 +53,9 @@ function WarmthSection.build(ctx)
         btn_radius         = btn_radius,
         btn_bordersize     = btn_bordersize,
         btn_font_size      = btn_font_size,
+        btn_shadow_offset  =btn_shadow_offset,
+        btn_shadow_intensity = btn_shadow_intensity,
+        btn_shadow_radius  = btn_shadow_radius,
         slider_ticks_width = slider_ticks_width,
         h_gap              = h_gap,
 
@@ -59,6 +65,7 @@ function WarmthSection.build(ctx)
         get                = getValue,
         set                = setValue,
         ticks              = SliderSection.buildTicks(min_val, max_val, tick_count),
+        show_shadow        = show_shadow or false,
 
         text_minus         = "\u{F2DC}", -- frozen,
         text_plus          = "\u{F490}", -- flame,

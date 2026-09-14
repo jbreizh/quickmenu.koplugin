@@ -16,7 +16,7 @@ local ActionDefs      = require("action_defs")
 local ActionManage    = require("action_manage")
 local Config          = require("config")
 local ActionButton    = require("widgets/actionbutton")
-local ShadowDeco      = require("widgets/shadow_deco")
+local ShadowDeco      = require("widgets/shadowdeco")
 local Utils           = require("common/utils")
 local _               = require("common/i18n").gettext
 
@@ -187,15 +187,14 @@ function Actions.build(ctx)
         -- create shadow
         if section.show_shadow then
             ShadowDeco.attach(btn, btn_shadow_offset, btn_shadow_intensity, btn_shadow_radius)
-            table.insert(btn_group, VerticalSpan:new{ width = screen:scaleBySize( btn_shadow_offset ) }) -- add space for shadow
+            table.insert(btn_group, VerticalSpan:new{ width = btn_shadow_offset }) -- add space for shadow
         end
-
         -- create label
         if section.show_label and (def.label_func or def.label) then
             local btn_label = TextWidget:new{
                     text = def.label_func and def.label_func(ctx) or def.label,
                     face = Font:getFace("cfont", action_label_size),
-                    max_width = action_btn_size,
+                    max_width = action_btn_size + (section.show_shadow and btn_shadow_offset or 0),
                 }
             table.insert(btn_group, btn_label)
         end
@@ -274,14 +273,14 @@ function Actions.getSettings(ctx, close, refresh)
             callback = function() section.show_title = not section.show_title; Config.saveAndRefresh(ctx) end
         },
         {
-            text = _("Show labels"),
-            checked_func = function() return section.show_label end,
-            callback = function() section.show_label = not section.show_label; Config.saveAndRefresh(ctx) end
-        },
-        {
             text = _("Show shadows"),
             checked_func = function() return section.show_shadow end,
             callback = function() section.show_shadow = not section.show_shadow; Config.saveAndRefresh(ctx) end
+        },
+        {
+            text = _("Show labels"),
+            checked_func = function() return section.show_label end,
+            callback = function() section.show_label = not section.show_label; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Fit controls"),

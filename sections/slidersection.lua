@@ -1,8 +1,11 @@
 local Button          = require("ui/widget/button")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
+local VerticalGroup   = require("ui/widget/verticalgroup")
+local VerticalSpan    = require("ui/widget/verticalspan")
 local ProgressWidget  = require("ui/widget/progresswidget")
 
+local ShadowDeco      = require("widgets/shadowdeco")
 local Utils           = require("common/utils")
 
 local SliderSection = {}
@@ -26,7 +29,10 @@ function SliderSection.build(opts)
     local btn_radius         = opts.btn_radius or screen:scaleBySize(7)
     local btn_font_size      = opts.btn_font_size or 16
     local btn_bordersize     = opts.btn_bordersize or screen:scaleBySize(1.5)
-    local slider_ticks_width = opts.slider_ticks_width or screen:scaleBySize(1)
+    local btn_shadow_offset  = opts.btn_shadow_offset or screen:scaleBySize(2)
+    local btn_shadow_intensity = opts.btn_shadow_intensity or 0.6
+    local btn_shadow_radius    = opts.btn_shadow_radius or screen:scaleBySize(6)
+    local slider_ticks_width   = opts.slider_ticks_width or screen:scaleBySize(1)
 
     -- logic
     local progress
@@ -58,8 +64,12 @@ function SliderSection.build(opts)
         hold_callback  = opts.minus_hold_callback or function() setValue(opts.min) end,
     }
 
+    if opts.show_shadow then
+        ShadowDeco.attach(minus, btn_shadow_offset, btn_shadow_intensity, btn_shadow_radius)
+    end
+
     progress = ProgressWidget:new{
-        width              = inner_width - 2 * btn_width - 2 * h_gap,
+        width              = inner_width - 2 * btn_width - 2 * h_gap - 3 * (opts.show_shadow and btn_shadow_offset or 0),
         height             = minus:getSize().h,
         radius             = btn_radius,
         bordersize         = btn_bordersize,
@@ -69,6 +79,10 @@ function SliderSection.build(opts)
         last               = opts.max,
         initial_pos_marker = opts.initial_pos_marker,
     }
+
+    if opts.show_shadow then
+        ShadowDeco.attach(progress, btn_shadow_offset, btn_shadow_intensity, btn_shadow_radius)
+    end
 
     local plus = Button:new{
         text           = opts.text_plus or "+",
@@ -81,14 +95,26 @@ function SliderSection.build(opts)
         hold_callback  = opts.plus_hold_callback or function() setValue(opts.max) end,
     }
 
-    -- group
+    if opts.show_shadow then
+        ShadowDeco.attach(plus, btn_shadow_offset, btn_shadow_intensity, btn_shadow_radius)
+    end
+
+    -- row
     local row = HorizontalGroup:new{
         align = "center",
         minus,
-        HorizontalSpan:new{ width = h_gap },
+        HorizontalSpan:new{ width = h_gap + (opts.show_shadow and btn_shadow_offset or 0) },
         progress,
-        HorizontalSpan:new{ width = h_gap },
+        HorizontalSpan:new{ width = h_gap + (opts.show_shadow and btn_shadow_offset or 0) },
         plus,
+        HorizontalSpan:new{ width = (opts.show_shadow and btn_shadow_offset or 0) },
+    }
+
+    --group
+    local group = VerticalGroup:new{
+        align = "center",
+        row,
+        VerticalSpan:new{ width = (opts.show_shadow and btn_shadow_offset or 0) },
     }
 
     -- refs
@@ -101,7 +127,7 @@ function SliderSection.build(opts)
         max    = opts.max,
     })
 
-    return { widget = row, refs = refs }
+    return { widget = group, refs = refs }
 end
 
 return SliderSection
