@@ -9,7 +9,6 @@ local ConfirmBox      = require("ui/widget/confirmbox")
 
 local Font            = require("ui/font")
 
-local Math            = require("optmath")
 local UIManager       = require("ui/uimanager")
 
 local ActionExec      = require("action_exec")
@@ -143,7 +142,7 @@ function Shortcuts.build(ctx)
     local max_cols = section.max_cols or 3
     local total_shadow_space = shadow_gap * max_cols
     local total_gap_space = h_gap * (max_cols - 1)
-    local shortcuts_width = Math.round((inner_width - total_shadow_space - total_gap_space) / max_cols)
+    local shortcuts_width = math.floor((inner_width - total_shadow_space - total_gap_space) / max_cols)
 
     -- shortcuts btn gap
     local shortcuts_gap = h_gap + shadow_gap

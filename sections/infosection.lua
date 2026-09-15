@@ -79,7 +79,7 @@ function InfoSection.build(ctx, show_shadow)
         radius = btn_radius,
         padding = h_gap,
         bordersize = btn_bordersize,
-        bordercolor = Blitbuffer.COLOR_DARK_GRAY,
+        --bordercolor = Blitbuffer.COLOR_DARK_GRAY,
         background = Blitbuffer.COLOR_WHITE,
         callback = function()
             Utils.closeMenu(touch_menu)

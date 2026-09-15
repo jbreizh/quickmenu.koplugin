@@ -8,8 +8,6 @@ local HorizontalSpan   = require("ui/widget/horizontalspan")
 local ConfirmBox       = require("ui/widget/confirmbox")
 local ButtonDialog    = require("ui/widget/buttondialog")
 
-local Math             = require("optmath")
-
 local UIManager        = require("ui/uimanager")
 
 local IntensitySection = require("sections/intensitysection")

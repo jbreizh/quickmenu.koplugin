@@ -2,9 +2,8 @@ local Button          = require("ui/widget/button")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
 local VerticalGroup   = require("ui/widget/verticalgroup")
-local VerticalSpan  = require("ui/widget/verticalspan")
+local VerticalSpan    = require("ui/widget/verticalspan")
 
-local Math            = require("optmath")
 local Event           = require("ui/event")
 
 local SliderSection   = require("sections/slidersection")
@@ -120,7 +119,7 @@ function SkimSection.build(ctx, show_shadow)
         return btn
     end
 
-    local center_gap = Math.round((inner_width - 7 * btn_width - 7 * shadow_gap - 4 * h_gap) / 2)
+    local center_gap = math.floor((inner_width - 7 * btn_width - 7 * shadow_gap - 4 * h_gap) / 2)
     local row2 = HorizontalGroup:new{ align = "center" }
 
     table.insert(row2, createBtn{ text = "\u{25C0}", callback = function() local p = reader.toc:getPreviousChapter(skim.curr_page); if p then goToPage(p) end; Utils.updateMenu(touch_menu, 0) end, hold_callback = function() goToPage(1); Utils.updateMenu(touch_menu, 0) end })
