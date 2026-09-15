@@ -147,17 +147,6 @@ function Shortcuts.build(ctx)
     -- shortcuts btn gap
     local shortcuts_gap = h_gap + shadow_gap
 
-    -- utils to exec actions
-    local function exec_action(ctx, action_data)
-        if type(action_data) == "function" then -- native
-            action_data(ctx)
-        elseif type(action_data) == "table" then -- custom
-            -- need to close touch_menu first -> see action_exec.lua
-            Utils.closeMenu(ctx.touch_menu)
-            UIManager:nextTick(function() ActionExec.dispatch(action_data) end)
-        end
-    end
-
     -- shortcuts btn construction
     local function createButton(def)
         local icon = def.icon_func and def.icon_func(ctx) or (def.icon or "")
@@ -170,8 +159,8 @@ function Shortcuts.build(ctx)
             bordersize     = btn_bordersize,
             text_font_size = btn_font_size,
             show_parent    = touch_menu.show_parent,
-            callback       = def.callback and function() exec_action(ctx, def.callback) end or nil,
-            hold_callback  = def.hold_callback and function() exec_action(ctx, def.hold_callback) end or nil,
+            callback       = def.callback and function() ActionExec.exec_action(ctx, def.callback) end or nil,
+            hold_callback  = def.hold_callback and function() ActionExec.exec_action(ctx, def.hold_callback) end or nil,
         }
         -- attach the shadow
         if section.show_shadow then

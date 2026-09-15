@@ -29,8 +29,7 @@ function ActionCustom:showActionCustomMenu(ctx, refresh)
     local config = ctx.config
     if config.custom_actions and #config.custom_actions > 0 then
         for i, action in ipairs(config.custom_actions) do
-            buttons[#buttons + 1] = {
-                {
+            table.insert(buttons, {{
                 text = (Utils.get_safe_icon(action.icon) or _("None")) .. " " ..(action.label or _("None")), -- btn doesnt't support svg
                 -- update action
                 callback = function()
@@ -42,22 +41,19 @@ function ActionCustom:showActionCustomMenu(ctx, refresh)
                     UIManager:close(dialog)
                     self:applyActionCustomDialog(ctx, action, refresh)
                 end,
-                }
-            }
+            }})
         end
     else
-        buttons[#buttons + 1] = {
-            {
-                text = _("No custom action") .. "\xE2\x80\xA6",
-                enabled = false -- Rend le bouton non cliquable
-            }
-        }
+        table.insert(buttons, {{
+            text = _("No custom action") .. "\xE2\x80\xA6",
+            enabled = false -- Rend le bouton non cliquable
+        }})
     end
 
     table.insert(buttons, {}) -- separator
 
     -- new action
-    buttons[#buttons + 1] = {
+    table.insert(buttons, {
         {
         text = _("Add"),
         -- add action
@@ -73,7 +69,7 @@ function ActionCustom:showActionCustomMenu(ctx, refresh)
             if refresh then refresh() end
         end
         },
-    }
+    })
 
     dialog = ButtonDialog:new{
         -- dismissable = false,
@@ -91,13 +87,6 @@ end
 -- ============================================================
 -- Apply
 -- ============================================================
-function ActionCustom:applyActionCustom(ctx, callback, refresh)
-    -- need to close touch_menu first -> see action_exec.lua
-    Utils.closeMenu(ctx.touch_menu)
-    -- apply
-    UIManager:nextTick(function() ActionExec.dispatch(callback) end)
-end
-
 function ActionCustom:applyActionCustomDialog(ctx, action, refresh)
     local dialog
     local is_callback = not not (action.callback and action.callback.label and action.callback.label ~= "") --force boolean
@@ -119,7 +108,7 @@ function ActionCustom:applyActionCustomDialog(ctx, action, refresh)
             callback = function()
                 if is_callback then
                     UIManager:close(dialog)
-                    self:applyActionCustom(ctx, action.callback)
+                    ActionExec.exec_action(ctx, action.callback)
                 end
             end
         }},
@@ -128,7 +117,7 @@ function ActionCustom:applyActionCustomDialog(ctx, action, refresh)
             callback = function()
                 if is_hold_callback then
                     UIManager:close(dialog)
-                    self:applyActionCustom(ctx, action.hold_callback)
+                    ActionExec.exec_action(ctx, action.hold_callback)
                 end
             end
         }},
@@ -209,15 +198,14 @@ function ActionCustom:addActionCustomDialog(ctx, refresh)
 
     table.insert(buttons, {}) -- separator
 
-    buttons[#buttons + 1] = {
-        {
+    table.insert(buttons, {{
         text = _("Exit"),
         callback = function()
             UIManager:close(dialog)
             self:showActionCustomMenu(ctx, refresh)
         end
-        },
-    }
+    }})
+
     dialog = ButtonDialog:new{
         title        = "\u{E8B6}" .. " " .. _("Add new action") .. " :",
         title_align  = "left",
@@ -271,7 +259,7 @@ function ActionCustom:callbackActionCustomDialog(ctx, action, index, is_hold_cal
 
     table.insert(buttons, {}) -- separator
 
-    buttons[#buttons + 1] = {
+    table.insert(buttons, {
         {
             text = _("Delete"),
             callback = function()
@@ -288,7 +276,7 @@ function ActionCustom:callbackActionCustomDialog(ctx, action, index, is_hold_cal
                 self:updateActionCustomDialog(ctx, action, index, refresh)
             end
         }
-    }
+    })
 
     dialog = ButtonDialog:new{
         title        = "\u{E8B6}" .. " " .. ((is_hold_callback and _("Select hold")) or _("Select tap")) .. " :",

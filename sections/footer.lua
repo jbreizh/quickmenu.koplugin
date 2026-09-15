@@ -11,7 +11,7 @@ local UIManager    = require("ui/uimanager")
 local Event        = require("ui/event")
 local IconButton   = require("ui/widget/iconbutton")
 
-local ActionExec      = require("action_exec")
+local ActionExec   = require("action_exec")
 local ActionDefs   = require("action_defs")
 local ActionManage = require("action_manage")
 local Config       = require("config")
@@ -114,23 +114,10 @@ function Footer.build(ctx)
         section.items = section.items or {}
         -- actions system and custom
         local action_defs = ActionDefs.getMerged(config.custom_actions)
-
-        -- utils to exec actions
-        local function exec_action(ctx, action_data)
-            if type(action_data) == "function" then -- native
-                action_data(ctx)
-            elseif type(action_data) == "table" then -- custom
-                -- need to close touch_menu first -> see action_exec.lua
-                Utils.closeMenu(ctx.touch_menu)
-                UIManager:nextTick(function() ActionExec.dispatch(action_data) end)
-            end
-        end
-
         --
         local footer_width = touch_menu.width - touch_menu.padding*2
         local chevron_with = touch_menu.page_info_left_chev:getSize().w + touch_menu.page_info_right_chev:getSize().w
         local max_footer_width = footer_width - btn_width*2 - chevron_with
-        --print(footer_width .. ":" .. touch_menu.page_info_left_chev:getSize().w .. ":" .. max_footer_width)
         local current_width = 0
         local has_overflow = false
         local overflow_items = {}
@@ -148,8 +135,8 @@ function Footer.build(ctx)
                     text_font_bold = false,
                     bordersize = 0,
                     show_parent = touch_menu.show_parent,
-                    callback       = item_def.callback and function() exec_action(ctx, item_def.callback) end or nil,
-                    hold_callback  = item_def.hold_callback and function() exec_action(ctx, item_def.hold_callback) end or nil,
+                    callback       = item_def.callback and function() ActionExec.exec_action(ctx, item_def.callback) end or nil,
+                    hold_callback  = item_def.hold_callback and function() ActionExec.exec_action(ctx, item_def.hold_callback) end or nil,
                 }
                 -- if item fit then add btn else store hidden items
                 local btn_w = btn:getSize().w
@@ -158,7 +145,6 @@ function Footer.build(ctx)
                     table.insert(touch_menu.footer[3][1], btn)
                 else
                     has_overflow = true
-                    print("coucou")
                     overflow_icon = table.insert(overflow_items, "• " .. Utils.get_safe_icon(item_def.icon or "") .. " " .. (item_def.label or ""))
                 end
             end

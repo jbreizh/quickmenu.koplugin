@@ -141,17 +141,6 @@ function Actions.build(ctx)
         table.insert(group, VerticalSpan:new{ width = screen:scaleBySize( 10 ) }) -- better for visual
     end
 
-    -- utils to exec actions
-    local function exec_action(ctx, action_data)
-        if type(action_data) == "function" then -- native
-            action_data(ctx)
-        elseif type(action_data) == "table" then -- custom
-            -- need to close touch_menu first -> see action_exec.lua
-            Utils.closeMenu(ctx.touch_menu)
-            UIManager:nextTick(function() ActionExec.dispatch(action_data) end)
-        end
-    end
-
     -- action btn width
     local action_btn_size = action_size
     if section.fit_ctrl then
@@ -181,8 +170,8 @@ function Actions.build(ctx)
             icon_size     = action_icon_size,
             bordersize    = btn_bordersize,
             is_active     = def.active_func and def.active_func(ctx) or false,
-            callback      = def.callback and function() exec_action(ctx, def.callback) end or nil,
-            hold_callback = def.hold_callback and function() exec_action(ctx, def.hold_callback) end or nil,
+            callback      = def.callback and function() ActionExec.exec_action(ctx, def.callback) end or nil,
+            hold_callback = def.hold_callback and function() ActionExec.exec_action(ctx, def.hold_callback) end or nil,
         }
         table.insert(btn_group, btn)
         -- create shadow

@@ -1,17 +1,22 @@
---[[
-Executes one "action" entry (the shape the start menu and the hero Action
-module share): { internal = "close"|"settings" } | { plugin = {key,method} } |
-{ action = <dispatcher table> }. The CALLER closes its own menu/widget first and
-wraps this in UIManager:nextTick; dispatch only runs the action. Extracted from
-bookshelf_start_menu.lua so the start menu and the Action micro-module share one
-execution path.
-]]
+local UIManager       = require("ui/uimanager")
+
+local Utils           = require("common/utils")
 local _ = require("common/i18n").gettext
 
-local Exec = {}
+local ActionExec = {}
 
--- entry: the action entry.
-function Exec.dispatch(entry)
+function ActionExec.exec_action(ctx, entry)
+    if type(entry) == "function" then -- native
+        entry(ctx)
+    elseif type(entry) == "table" then -- custom
+        -- need to close touch_menu first
+        Utils.closeMenu(ctx.touch_menu)
+        -- need to wrap in UIManager:nextTick
+        UIManager:nextTick(function() ActionExec.dispatch(entry) end)
+    end
+end
+
+function ActionExec.dispatch(entry)
     if type(entry) ~= "table" then return end
     local logger    = require("logger")
 
@@ -37,4 +42,4 @@ function Exec.dispatch(entry)
     end
 end
 
-return Exec
+return ActionExec
