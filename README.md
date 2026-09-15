@@ -8,6 +8,9 @@
   <img src="assets/global3.png" width="30%" alt="Global view 3" />
 </p>
 
+> [!WARNING]
+> Although Quick menu is an independent plugin, it is designed and tested to work optimally with the Bookshelf plugin. However, it is incompatible with Zenos plugin, SimpleUI plugin and other plugins offering similar functionalities to Quick menu.
+
 ## Core Sections
 
 * **Exit:** A dedicated exit tab provides a unified way to manage your session. 
