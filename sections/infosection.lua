@@ -46,19 +46,30 @@ function InfoSection.build(ctx, show_shadow)
     local shadow_gap = (show_shadow and btn_shadow_offset or 0)
 
     if not reader then return nil end
+
     -- text
     local txt_w = inner_width - 2 * h_gap - 2 * btn_bordersize - shadow_gap-- WARNING padding, bordersize and shadow of clickableGroup
+
     local info_title = TextWidget:new{
         text = (reader.doc_props or {}).display_title or reader.props.title or _("Unknown title"),
         max_width = txt_w,
-        face =  Font:getFace("cfont", btn_font_size),
+        face = Font:getFace("cfont", btn_font_size),
         bold = true
     }
+    -- bookshelf integration
+    if Utils.isFontInstalled("Inter-ExtraBold.ttf") then
+        info_title.face = Font:getFace("Inter-ExtraBold.ttf", btn_font_size + 4)
+        info_title.bold = false
+    end
     local info_auth = TextWidget:new{
         text = (reader.doc_props or {}).authors or _("Unknown author"),
         max_width = txt_w,
         face = Font:getFace("cfont", btn_font_size)
     }
+    -- bookshelf integration
+    if Utils.isFontInstalled("Caveat-Regular.ttf") then
+        info_auth.face = Font:getFace("Caveat-Regular.ttf", btn_font_size + 4)
+    end
     local info_chap = TextWidget:new{
         text = reader.toc:getTocTitleByPage(reader:getCurrentPage()) or _("Unknown chapter"),
         max_width = txt_w,

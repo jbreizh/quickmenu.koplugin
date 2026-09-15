@@ -1,14 +1,27 @@
 local M = {}
 
---- Convertit une valeur native en pourcentage (0-100).
---- @param val number La valeur actuelle (ex: nl.cur).
---- @param min number La valeur minimale (ex: nl.min).
---- @param max number La valeur maximale (ex: nl.max).
---- @return number Le pourcentage arrondi (0-100).
+--- Checks if a font is installed without triggering an error in the logs.
+--- @string filename The filename of the font (e.g., "Caveat-Regular.ttf")
+--- @return boolean True if the font is found, false otherwise.
+function M.isFontInstalled(filename)
+    local FontList = require("fontlist")
+    for _, path in ipairs(FontList:getFontList()) do
+        if path:match("([^/]+)$") == filename then
+            return true
+        end
+    end
+    return false
+end
+
+--- Converts a native value to a percentage (0-100).
+--- @param val number The current value (e.g., nl.cur).
+--- @param min number The minimum value (e.g., nl.min).
+--- @param max number The maximum value (e.g., nl.max).
+--- @return number The rounded percentage (0-100).
 function M.get_percentage(val, min, max)
     if not val or not min or not max or (max - min) == 0 then return 0 end
     local percent = ((val - min) / (max - min)) * 100
-    return math.floor(percent + 0.5) -- +0.5 pour un arrondi correct
+    return math.floor(percent + 0.5) -- +0.5 for correct rounding
 end
 
 --- Normalizes a string by removing accents for sorting purposes.
