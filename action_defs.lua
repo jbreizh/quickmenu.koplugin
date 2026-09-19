@@ -19,6 +19,8 @@ local _                = require("common/i18n").gettext
 
 local ActionDefs = {}
 
+local WIDTHFACTOR = 0.5
+
 local category_label = {
     ["system"]   = _("System"),
     ["network"]  = _("Network"),
@@ -445,7 +447,7 @@ function ActionDefs.get()
                 dialog = ButtonDialog:new{
                     title        = "\u{F011}" .. " " .. _("Power") .. " :",
                     title_align  = "left",
-                    width_factor =  0.5,
+                    width_factor =  WIDTHFACTOR,
                     buttons      = buttons,
                     tap_close_callback = close()
                 }
@@ -682,7 +684,7 @@ function ActionDefs.get()
                 dialog = ButtonDialog:new{
                     title        = "\u{ED3E}" .. " " .. _("KOSync") .. " :",
                     title_align  = "left",
-                    width_factor =  0.5,
+                    width_factor =  WIDTHFACTOR,
                     buttons      = buttons,
                     tap_close_callback = close()
                 }
@@ -738,7 +740,7 @@ function ActionDefs.get()
                 dialog = ButtonDialog:new{
                     title        = "\u{F1D8}" .. " " .. "LocalSend" .. " :",
                     title_align  = "left",
-                    width_factor =  0.5,
+                    width_factor =  WIDTHFACTOR,
                     buttons      = buttons,
                     tap_close_callback = close()
                 }

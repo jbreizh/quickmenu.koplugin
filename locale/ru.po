@@ -865,8 +865,8 @@ msgstr "Сортировать разделы"
 msgid "Show shadows"
 msgstr "Показывать тени"
 
-msgid "Show all tab"
-msgstr "Показать все вкладки"
-
 msgid "Use ZenFooter"
 msgstr "Использовать ZenFooter"
+
+msgid "Show on all tab"
+msgstr "Показать на всех вкладках"

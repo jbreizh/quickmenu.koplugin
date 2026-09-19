@@ -25,6 +25,8 @@ local Frontlight = {
     icon  = "\u{EA2B}" -- led-on
 }
 
+local WIDTHFACTOR = 0.8
+
 -- ============================================================
 -- Frontlight Builder
 -- ============================================================
@@ -255,7 +257,7 @@ function Frontlight.showSettings(ctx)
         -- dismissable = false,
         title = Frontlight.icon .. " " .. Frontlight.label .. " :",
         title_align  = "left",
-        width_factor = 0.9,
+        width_factor = WIDTHFACTOR,
         buttons = buttons,
     }
     UIManager:show(dialog)

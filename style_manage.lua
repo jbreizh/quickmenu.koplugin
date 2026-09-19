@@ -9,6 +9,8 @@ local _           = require("common/i18n").gettext
 
 local StyleManage = {}
 
+local WIDTHFACTOR = 0.8
+
 function StyleManage:buildStyleSubMenu(plugin, on_close, on_refresh)
     --
     local config = plugin.config
@@ -48,6 +50,7 @@ function StyleManage:buildStyleSubMenu(plugin, on_close, on_refresh)
                     --dismissable = false,
                     title = "\u{F044}" .. " " .. key .. " :",
                     title_align  = "left",
+                    width_factor = WIDTHFACTOR,
                     buttons = {
                         {
                             { text = "-10",  callback = function() nudge(-10) end },
@@ -128,6 +131,8 @@ function StyleManage:showStyleDialog(plugin, refresh)
 
     dialog = ButtonDialog:new{
         title = "\u{EAD7}" .. " " .. _("Style") .. " :",
+        title_align  = "left",
+        width_factor = WIDTHFACTOR,
         buttons = buttons,
         tap_close_callback = function()
             if refresh then refresh() end

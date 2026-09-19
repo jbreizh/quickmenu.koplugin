@@ -865,8 +865,8 @@ msgstr "Ordenar secciones"
 msgid "Show shadows"
 msgstr "Mostrar sombras"
 
-msgid "Show all tab"
-msgstr "Mostrar todas las pestañas"
-
 msgid "Use ZenFooter"
 msgstr "Usar ZenFooter"
+
+msgid "Show on all tab"
+msgstr "Mostrar en todas las pestañas"

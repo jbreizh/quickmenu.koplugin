@@ -26,6 +26,8 @@ local Actions = {
     icon  = "\u{E767}" --auto fix
 }
 
+local WIDTHFACTOR = 0.8
+
 -- ============================================================
 -- Actions Builder
 -- ============================================================
@@ -347,7 +349,7 @@ function Actions.showSettings(ctx)
         -- dismissable = false,
         title = Actions.icon .. " " .. Actions.label .. " :",
         title_align  = "left",
-        width_factor = 0.9,
+        width_factor = WIDTHFACTOR,
         buttons = buttons,
         tap_close_callback = close()
     }

@@ -865,8 +865,8 @@ msgstr "セクションを並び替える"
 msgid "Show shadows"
 msgstr "影を表示"
 
-msgid "Show all tab"
-msgstr "すべてのタブを表示"
-
 msgid "Use ZenFooter"
 msgstr "ZenFooterを使用"
+
+msgid "Show on all tab"
+msgstr "すべてのタブに表示"

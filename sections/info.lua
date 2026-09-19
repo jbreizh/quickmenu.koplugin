@@ -26,6 +26,8 @@ local Info = {
     icon  = "\u{E7BA}" --book-multiple
 }
 
+local WIDTHFACTOR = 0.8
+
 -- ============================================================
 -- Info Builder
 -- ============================================================
@@ -317,7 +319,7 @@ function Info.showSettings(ctx)
         -- dismissable = false,
         title = Info.icon .. " " .. Info.label .. " :",
         title_align  = "left",
-        width_factor = 0.9,
+        width_factor = WIDTHFACTOR,
         buttons = buttons,
     }
     UIManager:show(dialog)

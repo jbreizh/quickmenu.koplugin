@@ -865,8 +865,8 @@ msgstr ""
 msgid "Show shadows"
 msgstr ""
 
-msgid "Show all tab"
+msgid "Use ZenFooter"
 msgstr ""
 
-msgid "Use ZenFooter"
+msgid "Show on all tab"
 msgstr ""

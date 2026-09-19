@@ -865,8 +865,8 @@ msgstr "Abschnitte sortieren"
 msgid "Show shadows"
 msgstr "Schatten anzeigen"
 
-msgid "Show all tab"
-msgstr "Alle Tabs anzeigen"
-
 msgid "Use ZenFooter"
 msgstr "ZenFooter verwenden"
+
+msgid "Show on all tab"
+msgstr "Auf allen Tabs anzeigen"

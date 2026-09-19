@@ -24,6 +24,8 @@ local Footer = {
     icon  = "\u{EDF9}" -- footer
 }
 
+local WIDTHFACTOR = 0.8
+
 -- ============================================================
 -- Footer Builder
 -- ============================================================
@@ -208,7 +210,7 @@ function Footer.getSettings(ctx, close, refresh)
             callback = function() section.show_title = not section.show_title; Config.saveAndRefresh(ctx) end
         },
         {
-            text = _("Show all tab"),
+            text = _("Show on all tab"),
             checked_func = function() return section.show_all_tab end,
             callback = function() section.show_all_tab = not section.show_all_tab; Config.saveAndRefresh(ctx) end,
         },
@@ -283,7 +285,7 @@ function Footer.showSettings(ctx)
         -- dismissable = false,
         title = Footer.icon .. " " .. Footer.label .. " :",
         title_align  = "left",
-        width_factor = 0.9,
+        width_factor = WIDTHFACTOR,
         buttons = buttons,
     }
     UIManager:show(dialog)

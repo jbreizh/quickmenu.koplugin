@@ -25,6 +25,8 @@ local Shortcuts = {
     icon  = "\u{EA38}" -- link
 }
 
+local WIDTHFACTOR = 0.8
+
 -- ============================================================
 -- Shortcuts Builder
 -- ============================================================
@@ -257,6 +259,7 @@ function Shortcuts.getSettings(ctx, close, refresh)
                     --dismissable = false,
                     title = "\u{EC6C}" .. " " .. _("Columns") .. " :",
                     title_align  = "left",
+                    width_factor = WIDTHFACTOR,
                     buttons = {
                         {
                             { text = "-1",   callback = function() nudge(-1)  end },
@@ -340,7 +343,7 @@ function Shortcuts.showSettings(ctx)
         -- dismissable = false,
         title = Shortcuts.icon .. " " .. Shortcuts.label .. " :",
         title_align  = "left",
-        width_factor = 0.9,
+        width_factor = WIDTHFACTOR,
         buttons = buttons,
     }
     UIManager:show(dialog)

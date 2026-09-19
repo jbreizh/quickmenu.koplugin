@@ -31,6 +31,8 @@ local QuickMenu = {
     icon  = "\u{ED9F}" -- home-outline
 }
 
+local WIDTHFACTOR = 0.8
+
 -- ============================================================
 -- Shared Context Builder
 -- ============================================================
@@ -489,7 +491,7 @@ function QuickMenu.showSettings(plugin)
     dialog = ButtonDialog:new{
         title = QuickMenu.icon .. " " .. QuickMenu.label .. " :",
         title_align  = "left",
-        width_factor = 0.9,
+        width_factor = WIDTHFACTOR,
         buttons = buttons,
         tap_close_callback = close()
     }
