@@ -198,33 +198,33 @@ function M.resetSectionToDefaults(section, defaults)
 end
 
 --- Close touch_menu (top and bottom).
---- @param tm      table  touch_menu
-function M.closeMenu(tm)
-    if tm and tm.close_callback then tm.close_callback() end -- close top_menu
-    if tm and tm.touch_menu_callback then tm.touch_menu_callback() end -- close bottom menu
+--- @param touch_menu      table  touch_menu
+function M.closeMenu(touch_menu)
+    if touch_menu and touch_menu.close_callback then touch_menu.close_callback() end -- close top_menu
+    if touch_menu and touch_menu.touch_menu_callback then touch_menu.touch_menu_callback() end -- close bottom menu
 end
 
 --- Update touch_menu
---- @param tm   table   touch_menu
+--- @param touch_menu   table   touch_menu
 --- @param opts table   options (delay, full)
-function M.updateMenu(tm, opts)
-    if not (tm and tm.updateItems) then return end
+function M.updateMenu(touch_menu, opts)
+    if not (touch_menu and touch_menu.updateItems) then return end
     -- options
     opts = opts or {}
     local delay = opts.delay -- delay before update in s (default : nil)
     local full = opts.full -- true force fullscreen refresh (default : nil)
     -- full refresh
-    if full then tm._qs_full_refresh = true end
+    if full then touch_menu._qs_full_refresh = true end
     -- instant update
-    if delay == 0 then tm:updateItems(); return end
+    if delay == 0 then touch_menu:updateItems(); return end
     -- Debouncing
-    if tm._qs_pending_refresh then return end
+    if touch_menu._qs_pending_refresh then return end
     local UIManager = require("ui/uimanager")
-    tm._qs_pending_refresh = true
+    touch_menu._qs_pending_refresh = true
     --
     local function do_update()
-        tm._qs_pending_refresh = false
-        if tm.updateItems then tm:updateItems() end
+        touch_menu._qs_pending_refresh = false
+        if touch_menu.updateItems then touch_menu:updateItems() end
     end
     -- delay update or nextTick update
     if type(delay) == "number" and delay > 0 then

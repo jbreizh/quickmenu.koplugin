@@ -221,12 +221,16 @@ function QuickMenu.updateTab(plugin)
 end
 
 local function restartTab(plugin, refresh)
+    --
+    local config         = plugin.config
+    local menu_instance  = plugin.menu_instance
+    local is_filemanager = plugin.is_filemanager
     -- close touch_menu
-    if plugin.is_filemanager then  plugin.menu_instance:onCloseFileManagerMenu()
-    else plugin.menu_instance:onCloseReaderMenu() end
+    if is_filemanager then menu_instance:onCloseFileManagerMenu()
+    else menu_instance:onCloseReaderMenu() end
     -- open touch_menu
     UIManager:nextTick(function()
-        plugin.menu_instance:onShowMenu()
+        menu_instance:onShowMenu()
         if refresh then refresh() end
     end)
 end

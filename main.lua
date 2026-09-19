@@ -154,7 +154,7 @@ local function patchTouchMenu(plugin)
         end
 
         -- store orig_page for initial_pos_marker in skim to survive redraw
-        self.skim_orig_page = nil
+        self._qs_orig_page = nil
 
         -- force quick menu first
         if config.open_on_start then

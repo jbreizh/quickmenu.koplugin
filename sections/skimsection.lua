@@ -45,9 +45,9 @@ function SkimSection.build(ctx, show_shadow)
 
     -- Logic
     local function addOrigin()
-        if not touch_menu.skim_orig_page then
+        if not touch_menu._qs_orig_page then
             reader.link:addCurrentLocationToStack()
-            touch_menu.skim_orig_page = reader:getCurrentPage()
+            touch_menu._qs_orig_page = reader:getCurrentPage()
         end
     end
 
@@ -60,9 +60,9 @@ function SkimSection.build(ctx, show_shadow)
     end
 
     local function goToOrig()
-        if touch_menu.skim_orig_page then
+        if touch_menu._qs_orig_page then
             reader.link:onGoBackLink()
-            touch_menu.skim_orig_page = nil
+            touch_menu._qs_orig_page = nil
             Utils.updateMenu(touch_menu, {delay = 0})
         end
     end
@@ -103,7 +103,7 @@ function SkimSection.build(ctx, show_shadow)
     progress.ticks              = reader.toc:getTocTicksFlattened()
     progress.tick_width         = slider_ticks_width
     progress.alt                = reader.document.flows
-    progress.initial_percentage = (touch_menu.skim_orig_page or skim.curr_page) / skim.page_count
+    progress.initial_percentage = (touch_menu._qs_orig_page or skim.curr_page) / skim.page_count
 
     -- Row 2: Navigation
     local function createBtn(props)
