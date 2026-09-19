@@ -92,7 +92,7 @@ function Frontlight.build(ctx)
                 show_parent    = touch_menu.show_parent,
                 callback       = function()
                     section.collapse = not section.collapse
-                    Config.saveAndRefresh(ctx, true) -- no flush
+                    Config.saveAndRefresh(ctx, {flush = false, full = false, delay=0})
                 end,
                 -- hold_callback
             }

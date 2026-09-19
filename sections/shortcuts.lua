@@ -93,7 +93,7 @@ function Shortcuts.build(ctx)
             show_parent    = touch_menu.show_parent,
             callback       = function()
                 section.collapse = not section.collapse
-                Config.saveAndRefresh(ctx, true) -- no flush
+                Config.saveAndRefresh(ctx, {flush = false, full = false, delay=0})
             end,
             --hold_callback = function() end,
         }
@@ -239,21 +239,19 @@ function Shortcuts.getSettings(ctx, close, refresh)
             keep_menu_open = true,
             callback = close(function()
                 local original = section.max_cols
+                local dialog
                 local function getValue() return section.max_cols end
                 local function setValue(v) section.max_cols = math.max(1, math.min(15, v)); Config.saveAndRefresh(ctx) end
                 local function rebuild()
-                    UIManager:setDirty("all", "ui") -- WARNING touch_menu only repaint touch_menu... dialog outside touch_menu need repaint
+                    dialog:reinit()
+                    UIManager:setDirty("all", "ui")
                 end
-
-                local dialog
                 local function nudge(delta)
                     setValue(getValue() + delta)
-                    dialog:reinit()
                     rebuild()
                 end
-
                 local function close() UIManager:close(dialog); if refresh then refresh() end end
-                local function revert() setValue(original); rebuild() end
+                local function revert() setValue(original) end
 
                 dialog = ButtonDialog:new{
                     --dismissable = false,
@@ -267,7 +265,7 @@ function Shortcuts.getSettings(ctx, close, refresh)
                         },
                         {
                             { text = _("Cancel"), callback = function() revert(); close() end },
-                            { text = _("Default"),callback = function() setValue(Config.DEFAULTS.sections.shortcuts.max_cols); rebuild(); dialog:reinit() end },
+                            { text = _("Default"),callback = function() setValue(Config.DEFAULTS.sections.shortcuts.max_cols); rebuild() end },
                             { text = _("Apply"), is_enter_default = true, callback = close },
                         },
                     },

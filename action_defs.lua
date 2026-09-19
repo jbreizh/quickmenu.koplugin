@@ -104,12 +104,12 @@ function ActionDefs.get()
             callback = function(ctx)
                 if NetworkMgr:isWifiOn() then NetworkMgr:toggleWifiOff()
                 else NetworkMgr:toggleWifiOn() end
-                Utils.updateMenu(ctx.touch_menu, 1)
+                Utils.updateMenu(ctx.touch_menu, {delay = 1})
             end,
             hold_callback = function(ctx)
                 local function do_connect()
                     NetworkMgr:toggleWifiOn(function()
-                        Utils.updateMenu(ctx.touch_menu, 0.5)
+                        Utils.updateMenu(ctx.touch_menu, {delay = 0.5})
                     end, true, true)
                 end
                 if NetworkMgr:isWifiOn() then NetworkMgr:toggleWifiOff(do_connect, true)
@@ -133,7 +133,7 @@ function ActionDefs.get()
             help_text = _("Tap : Toggle night mode\nHold : Nothing"),
             callback = function(ctx)
                 UIManager:broadcastEvent(Event:new("ToggleNightMode"))
-                Utils.updateMenu(ctx.touch_menu, 0)
+                Utils.updateMenu(ctx.touch_menu, {delay = 0})
             end,
             hold_callback = function(ctx) Utils.closeMenu(ctx.touch_menu); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
         },
@@ -154,7 +154,7 @@ function ActionDefs.get()
             help_text = _("Tap : Toggle frontlight\nHold : Show frontlight dialog"),
             callback = function(ctx)
                 UIManager:broadcastEvent(Event:new("ToggleFrontlight"))
-                Utils.updateMenu(ctx.touch_menu, 0) -- need instant update
+                Utils.updateMenu(ctx.touch_menu, {delay = 0}) -- need instant update
             end,
             hold_callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
@@ -221,14 +221,14 @@ function ActionDefs.get()
                     UIManager:broadcastEvent(Event:new("ToggleGSensor"))
                     if G_reader_settings:isTrue("input_lock_gsensor") then UIManager:broadcastEvent(Event:new("LockGSensor")) end
                 else UIManager:broadcastEvent(Event:new("LockGSensor")) end
-                Utils.updateMenu(ctx.touch_menu, 0)
+                Utils.updateMenu(ctx.touch_menu, {delay = 0})
             end,
             hold_callback = function(ctx)
                 if G_reader_settings:isTrue("input_lock_gsensor") then
                     UIManager:broadcastEvent(Event:new("LockGSensor"))
                     if G_reader_settings:isTrue("input_ignore_gsensor") then UIManager:broadcastEvent(Event:new("ToggleGSensor")) end
                 else UIManager:broadcastEvent(Event:new("ToggleGSensor")) end
-                Utils.updateMenu(ctx.touch_menu, 0)
+                Utils.updateMenu(ctx.touch_menu, {delay = 0})
             end
         },
         usb = {
@@ -609,7 +609,7 @@ function ActionDefs.get()
             help_text = _("Tap : Toggle SSH server\nHold : Nothing"),
             callback = function(ctx)
                 UIManager:broadcastEvent(Event:new("ToggleSSHServer")) -- SSH doesn't need connection
-                Utils.updateMenu(ctx.touch_menu, 1)
+                Utils.updateMenu(ctx.touch_menu, {delay = 1})
             end,
             hold_callback = function(ctx) Utils.closeMenu(ctx.touch_menu); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
         },
@@ -626,7 +626,7 @@ function ActionDefs.get()
                 NetworkMgr:runWhenOnline(function() -- check connection
                     local event = is_calibre_active() and "CloseWirelessConnection" or "StartWirelessConnection"
                     UIManager:broadcastEvent(Event:new(event))
-                    Utils.updateMenu(ctx.touch_menu, 2)
+                    Utils.updateMenu(ctx.touch_menu, {delay = 2})
                 end)
             end,
             hold_callback = function(ctx) Utils.closeMenu(ctx.touch_menu); UIManager:show(InfoMessage:new{ text = _("Nothing to do") }) end
@@ -701,7 +701,7 @@ function ActionDefs.get()
             callback = function(ctx)
                 NetworkMgr:runWhenOnline(function() -- check connection
                     UIManager:broadcastEvent(Event:new("ToggleLocalSend"))
-                    Utils.updateMenu(ctx.touch_menu, 1)
+                    Utils.updateMenu(ctx.touch_menu, {delay = 1})
                 end)
             end,
             hold_callback = function(ctx)
@@ -757,7 +757,7 @@ function ActionDefs.get()
             callback = function(ctx)
                 NetworkMgr:runWhenOnline(function() -- check connection
                     UIManager:broadcastEvent(Event:new("ToggleFilebrowserPlusServer"))
-                    Utils.updateMenu(ctx.touch_menu, 1)
+                    Utils.updateMenu(ctx.touch_menu, {delay = 1})
                 end)
             end,
             hold_callback = function(ctx) Utils.closeMenu(ctx.touch_menu); UIManager:show(InfoMessage:new{ text = _("Nothing to do") }) end

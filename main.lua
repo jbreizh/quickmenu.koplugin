@@ -6,6 +6,7 @@
 -- TODO TODO TODO patch readermenu and filemanagermenu last_tab_index instead of TouchMenu last_index
 -- TODO in this can use readermenu:onShowMenu(tab_index, do_not_show) to reopen
 -- TODO use self.config.idx_quickmenu_tab
+-- rework footer in update item (option for all tab)
 
 -- ============================================================
 -- Definition
@@ -213,6 +214,7 @@ local function patchTouchMenu(plugin)
         --
         if not self.item_table or not self.item_table.panel then
             self._qs_refs = nil -- clear refs when switching away from panel tab
+            self._qs_full_refresh = nil -- clear full_refresh when switching away from panel tab
             return orig_updateItems(self, target_page, target_item_id)
         end
 
@@ -251,7 +253,14 @@ local function patchTouchMenu(plugin)
         self.dimen.h = self.item_group:getSize().h + self.bordersize * 2 + self.padding
         self:moveFocusTo(self.cur_tab, 1, FocusManager.NOT_FOCUS)
 
+        --
         local keep_bg = old_dimen and self.dimen.h >= old_dimen.h
+        if self._qs_full_refresh then
+            keep_bg = false
+            self._qs_full_refresh = false
+        end
+
+        -- Refresh screen
         UIManager:setDirty((self.is_fresh or keep_bg) and self.show_parent or "all", function()
             local refresh_dimen = old_dimen and old_dimen:combine(self.dimen) or self.dimen
             local refresh_type = "ui"

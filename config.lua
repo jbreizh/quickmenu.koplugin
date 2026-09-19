@@ -147,18 +147,28 @@ function Config.load()
     return cfg
 end
 
-function Config.save(cfg, no_flush)
+function Config.save(cfg, opts)
+    -- options
+    opts = opts or {}
+    local flush = opts.flush ~= false -- default : true
+    -- Save settings in Ram
     _settings:saveSetting("quick_menu_settings", cfg)
-    if not no_flush then _settings:flush() end
+    -- Save setting on Drive
+    if flush then _settings:flush() end
 end
 
-function Config.saveAndRefresh(ctx, no_flush)
-    -- save
+function Config.saveAndRefresh(ctx, opts)
+    -- options
+    opts = opts or {}
+    local flush = opts.flush ~= false -- default : true
+    local delay = opts.delay          -- default : nil
+    local full  = opts.full ~= false  -- default : true
+    -- Save settings
     local config = ctx.config
-    if config then Config.save(config, no_flush) end
-    -- refresh
+    if config then Config.save(config, { flush = flush }) end
+    -- Refresh touch menu with options
     local touch_menu = ctx.touch_menu
-    Utils.updateMenu(touch_menu)
+    if touch_menu then Utils.updateMenu(touch_menu, {delay = delay, full = full}) end
 end
 
 return Config

@@ -200,6 +200,17 @@ function QuickMenu.updateTab(plugin)
     }, (not config.add_exit_tab and not is_filemanager), -1) -- not add_exit_tab and not fm -> last position - 1
 end
 
+local function restartTab(plugin, refresh)
+    -- close touch_menu
+    if plugin.is_filemanager then  plugin.menu_instance:onCloseFileManagerMenu()
+    else plugin.menu_instance:onCloseReaderMenu() end
+    -- open touch_menu
+    UIManager:nextTick(function()
+        plugin.menu_instance:onShowMenu()
+        if refresh then refresh() end
+    end)
+end
+
 function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
     --
     local config         = plugin.config
@@ -214,14 +225,7 @@ function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
             config.add_exit_tab = not config.add_exit_tab
             Config.save(config)
             QuickMenu.updateTab(plugin)
-            -- close touch_menu
-            if plugin.is_filemanager then  plugin.menu_instance:onCloseFileManagerMenu()
-            else plugin.menu_instance:onCloseReaderMenu() end
-            -- open touch_menu
-            UIManager:nextTick(function()
-                plugin.menu_instance:onShowMenu()
-                if refresh then refresh() end
-            end)
+            restartTab(plugin, refresh)
         end),
     })
 
@@ -232,15 +236,7 @@ function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
             config.add_quickmenu_tab = not config.add_quickmenu_tab
             Config.save(config)
             QuickMenu.updateTab(plugin)
-            -- close touch_menu
-            if plugin.is_filemanager then  plugin.menu_instance:onCloseFileManagerMenu()
-            else plugin.menu_instance:onCloseReaderMenu() end
-            -- open touch_menu
-            UIManager:nextTick(function()
-                plugin.menu_instance:onShowMenu()
-                if refresh then refresh() end
-            end)
-
+            restartTab(plugin, refresh)
         end),
     })
 
@@ -249,7 +245,6 @@ function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
         checked_func = function() return config.open_on_start end,
         callback = function()
             config.open_on_start = not config.open_on_start
-            --Config.save(config)
             Config.saveAndRefresh(plugin) -- WARNING plugin remplace ctx
         end,
         separator = true,
@@ -298,7 +293,6 @@ function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
                     for index, section in ipairs(sort_sections) do
                         table.insert(config.section_order, section.id)
                     end
-                    -- Config.save(config)
                     Config.saveAndRefresh(plugin) -- WARNING plugin remplace ctx
                 end
             })
@@ -318,7 +312,6 @@ function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
                     for position, section_id in ipairs(Config.DEFAULTS.section_order) do
                         table.insert(config.section_order, section_id)
                     end
-                    --Config.save(config)
                     Config.saveAndRefresh(plugin) -- WARNING plugin remplace ctx
                     if refresh then refresh() end
                 end,
@@ -367,14 +360,7 @@ function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
                     --config.custom_actions = {} --WARNING don't reset custom_actions ??????
                     Config.save(config)
                     QuickMenu.updateTab(plugin)
-                    -- close touch_menu
-                    if plugin.is_filemanager then  plugin.menu_instance:onCloseFileManagerMenu()
-                    else plugin.menu_instance:onCloseReaderMenu() end
-                    -- open touch_menu
-                    UIManager:nextTick(function()
-                        plugin.menu_instance:onShowMenu()
-                        if refresh then refresh() end
-                    end)
+                    restartTab(plugin, refresh)
                 end,
                 cancel_callback = function()
                     if refresh then refresh() end

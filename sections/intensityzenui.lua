@@ -61,7 +61,7 @@ function IntensityZenUI.build(ctx, settings_func)
     --
     local group = VerticalGroup:new{ align = "center" }
     local refs = { buttons = {}, sliders = {}, widgets = {} }
-    local update_touch_menu = function() Utils.updateMenu(touch_menu, 0) end
+    local update_touch_menu = function() Utils.updateMenu(touch_menu, {delay = 0}) end
 
     local fl = {
         min = powerd.fl_min,
@@ -106,8 +106,7 @@ function IntensityZenUI.build(ctx, settings_func)
             show_parent    = touch_menu.show_parent,
             callback       = function()
                 section.collapse = not section.collapse
-                Config.save(config, true) -- no flush
-                update_touch_menu()
+                Config.saveAndRefresh(ctx, {flush = false, full = false, delay=0})
             end,
             -- hold_callback
         }

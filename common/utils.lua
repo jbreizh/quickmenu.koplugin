@@ -205,30 +205,31 @@ function M.closeMenu(tm)
 end
 
 --- Update touch_menu
---- @param tm      table  touch_menu
---- @param delay   number delay before update, Nil -> nextTick
-function M.updateMenu(tm, delay)
+--- @param tm   table   touch_menu
+--- @param opts table   options (delay, full)
+function M.updateMenu(tm, opts)
     if not (tm and tm.updateItems) then return end
-
-    if delay == 0 or delay == "instant" then -- instant update
-        tm:updateItems()
-        return
-    end
-
+    -- options
+    opts = opts or {}
+    local delay = opts.delay -- delay before update in s (default : nil)
+    local full = opts.full -- true force fullscreen refresh (default : nil)
+    -- full refresh
+    if full then tm._qs_full_refresh = true end
+    -- instant update
+    if delay == 0 then tm:updateItems(); return end
     -- Debouncing
-    if tm._qs_pending_config_refresh then return end
-
+    if tm._qs_pending_refresh then return end
     local UIManager = require("ui/uimanager")
-    tm._qs_pending_config_refresh = true
-
+    tm._qs_pending_refresh = true
+    --
     local function do_update()
-        tm._qs_pending_config_refresh = false
+        tm._qs_pending_refresh = false
         if tm.updateItems then tm:updateItems() end
     end
-
-    if type(delay) == "number" and delay > 0 then -- delay update
+    -- delay update or nextTick update
+    if type(delay) == "number" and delay > 0 then
         UIManager:scheduleIn(delay, do_update)
-    else -- nextTick update
+    else
         UIManager:nextTick(do_update)
     end
 end

@@ -28,23 +28,21 @@ function StyleManage:buildStyleSubMenu(plugin, on_close, on_refresh)
             keep_menu_open = true,
             callback = on_close(function()
                 local original = config.style[key]
+                local dialog
                 local function getValue() return config.style[key] end
                 local function setValue(v) config.style[key] = math.max(0, math.min(150, v)); Config.saveAndRefresh(plugin) end
                 local function rebuild()
-                    UIManager:setDirty("all", "ui") -- WARNING touch_menu only repaint touch_menu... dialog outside touch_menu need repaint
+                    dialog:reinit()
+                    UIManager:setDirty("all", "ui")
                 end
-
-                local dialog
                 local function nudge(delta)
                     local newVal = getValue() + delta
                     newVal = math.floor(newVal * 10 + 0.5) / 10
                     setValue(newVal)
-                    dialog:reinit()
                     rebuild()
                 end
-
                 local function close() UIManager:close(dialog); if on_refresh then on_refresh() end end
-                local function revert() setValue(original); rebuild() end
+                local function revert() setValue(original) end
 
                 dialog = ButtonDialog:new{
                     --dismissable = false,
@@ -62,7 +60,7 @@ function StyleManage:buildStyleSubMenu(plugin, on_close, on_refresh)
                         },
                         {
                             { text = _("Cancel"), callback = function() revert(); close() end },
-                            { text = _("Default"),callback = function() setValue(Config.DEFAULTS.style[key]); rebuild(); dialog:reinit() end },
+                            { text = _("Default"),callback = function() setValue(Config.DEFAULTS.style[key]); rebuild() end },
                             { text = _("Apply"), is_enter_default = true, callback = close },
                         },
                     },

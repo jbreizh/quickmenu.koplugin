@@ -59,7 +59,7 @@ function WarmthZenUI.build(ctx)
     --
     local group = VerticalGroup:new{ align = "center" }
     local refs = { buttons = {}, sliders = {}, widgets = {} }
-    local update_touch_menu = function() Utils.updateMenu(touch_menu, 0) end
+    local update_touch_menu = function() Utils.updateMenu(touch_menu, {delay = 0}) end
 
     local nl = {
         min = powerd.fl_warmth_min,
