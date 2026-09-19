@@ -108,6 +108,24 @@ function QuickMenu.createPanel(plugin)
 end
 
 -- ============================================================
+-- Footer Creator
+-- ============================================================
+function QuickMenu.createFooter(plugin)
+    --
+    QuickMenu.updatePlugin(plugin) -- update plugin = ctx in
+    --
+    local ok, footer_mod = pcall(require, "sections/footer")
+    if ok and footer_mod and type(footer_mod.build) == "function" then
+        local success, result = pcall(footer_mod.build, plugin)
+        if not success then
+            logger.err("[QuickMenu] Failed to build footer via Footer.build: " .. tostring(result))
+        end
+    else
+        logger.err("[QuickMenu] Failed to load footer module or missing 'build' method.")
+    end
+end
+
+-- ============================================================
 -- Settings Menu Builder
 -- ============================================================
 local function find_tab_index(tab_list, id)

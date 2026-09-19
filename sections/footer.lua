@@ -52,6 +52,22 @@ function Footer.build(ctx)
 
     if not section then return nil end
 
+    -- touch_menu default time_info_txt
+    local function time_info_txt()
+        local time_info_txt = datetime.secondsToHour(os.time(), G_reader_settings:isTrue("twelve_hour_clock"))
+        if device:hasBattery() then
+            local batt_lvl = powerd:getCapacity()
+            local batt_symbol = powerd:getBatterySymbol(powerd:isCharged(), powerd:isCharging(), batt_lvl)
+            time_info_txt = BD.wrap(time_info_txt) .. " " .. BD.wrap("⌁") .. BD.wrap(batt_symbol) ..  BD.wrap(batt_lvl .. "%")
+            if device:hasAuxBattery() and powerd:isAuxBatteryConnected() then
+                local aux_batt_lvl = powerd:getAuxCapacity()
+                local aux_batt_symbol = powerd:getBatterySymbol(powerd:isAuxCharged(), powerd:isAuxCharging(), aux_batt_lvl)
+                time_info_txt = time_info_txt .. " " .. BD.wrap("+") .. BD.wrap(aux_batt_symbol) ..  BD.wrap(aux_batt_lvl .. "%")
+            end
+        end
+        return time_info_txt
+    end
+
     -- footer layout after orig_init: self=touch_menu
     --   footer[1] = LeftContainer  {up_button=btn}
     --   footer[2] = CenterContainer{self.page_info=HGrp{self.page_info_left_chev=btn, self.page_info_text=txtW, self.page_info_right_chev=btn}}
@@ -63,12 +79,13 @@ function Footer.build(ctx)
     touch_menu.footer[2][1] = HorizontalGroup:new{}
     touch_menu.footer[3][1] = HorizontalGroup:new{}
     -- default footer force to rebuild default footer cause force to clear
-    if (filemanager and not section.enabled_f) or (reader and not section.enabled_r) then
+    if (filemanager and not section.enabled_f) or (reader and not section.enabled_r) or not (touch_menu._qs_quickmenu_tab  or section.show_all_tab) then
         -- insert up_button left
         table.insert(touch_menu.footer[1][1], touch_menu.up_button)
          -- insert page_info center
         table.insert(touch_menu.footer[2][1], touch_menu.page_info)
-        -- insert default_footer right
+        -- insert device_info right
+        touch_menu.time_info:setText(time_info_txt())
         table.insert(touch_menu.footer[3][1], touch_menu.device_info)
     -- zenFooter
     elseif section.use_zenfooter then
@@ -194,7 +211,6 @@ function Footer.getSettings(ctx, close, refresh)
             text = _("Show all tab"),
             checked_func = function() return section.show_all_tab end,
             callback = function() section.show_all_tab = not section.show_all_tab; Config.saveAndRefresh(ctx) end,
-            separator = true,
         },
         {
             text = _("Use ZenFooter"),

@@ -6,7 +6,6 @@
 -- TODO TODO TODO patch readermenu and filemanagermenu last_tab_index instead of TouchMenu last_index
 -- TODO in this can use readermenu:onShowMenu(tab_index, do_not_show) to reopen
 -- TODO use self.config.idx_quickmenu_tab
--- rework footer in update item (option for all tab)
 
 -- ============================================================
 -- Definition
@@ -29,7 +28,6 @@ local QuickMenuPlugin = WidgetContainer:extend{
     inner_width = 0,
 }
 
-
 -- ============================================================
 -- Hook TouchMenu to support panel tabs
 -- ============================================================
@@ -39,7 +37,6 @@ local function patchTouchMenu(plugin)
     local HorizontalGroup = require("ui/widget/horizontalgroup")
     local IconButton      = require("ui/widget/iconbutton")
 
-    local BD              = require("ui/bidi")
     local UIManager       = require("ui/uimanager")
     local Geom            = require("ui/geometry")
     local GestureRange    = require("ui/gesturerange")
@@ -47,26 +44,10 @@ local function patchTouchMenu(plugin)
 
     local Device          = require("device")
     local Screen          = Device.screen
-    local powerd          = Device:getPowerDevice()
-    local datetime        = require("datetime")
+
+    local QuickMenu       = require("quickmenu")
 
     local config          = plugin.config
-
-    -- touch_menu default_footer
-    local function default_footer()
-        local default_footer = datetime.secondsToHour(os.time(), G_reader_settings:isTrue("twelve_hour_clock"))
-        if Device:hasBattery() then
-            local batt_lvl = powerd:getCapacity()
-            local batt_symbol = powerd:getBatterySymbol(powerd:isCharged(), powerd:isCharging(), batt_lvl)
-            default_footer = BD.wrap(default_footer) .. " " .. BD.wrap("⌁") .. BD.wrap(batt_symbol) ..  BD.wrap(batt_lvl .. "%")
-            if Device:hasAuxBattery() and powerd:isAuxBatteryConnected() then
-                local aux_batt_lvl = powerd:getAuxCapacity()
-                local aux_batt_symbol = powerd:getBatterySymbol(powerd:isAuxCharged(), powerd:isAuxCharging(), aux_batt_lvl)
-                default_footer = default_footer .. " " .. BD.wrap("+") .. BD.wrap(aux_batt_symbol) ..  BD.wrap(aux_batt_lvl .. "%")
-            end
-        end
-        return default_footer
-    end
 
     -- grab zenslider
     local function get_sliders(touch_menu)
@@ -237,19 +218,16 @@ local function patchTouchMenu(plugin)
              -- clear flag
             self._qs_refs = nil
             self._qs_full_refresh = nil
+            self._qs_quickmenu_tab = nil
 
             -- clear and rebuild default footer
-            if not config.sections.footer.show_all_tab then
-                self.footer[1][1] = HorizontalGroup:new{}
-                self.footer[2][1] = HorizontalGroup:new{}
-                self.footer[3][1] = HorizontalGroup:new{}
-                table.insert(self.footer[1][1], self.up_button)
-                table.insert(self.footer[2][1], self.page_info)
-                table.insert(self.footer[3][1], self.device_info)
-            end
+            QuickMenu.createFooter(plugin)
 
             return orig_updateItems(self, target_page, target_item_id)
         end
+
+        -- quickmenu tab ?
+        self._qs_quickmenu_tab = true
 
         -- zenSlider
         if not self._qs_refs then
@@ -278,7 +256,7 @@ local function patchTouchMenu(plugin)
         self.page_info_right_chev:enableDisable(false)
         self.page_num = 1
         self.page = 1
-        self.time_info:setText(default_footer())
+        QuickMenu.createFooter(plugin)
 
         -- Recalculate dimen
         local old_dimen = self.dimen:copy()
@@ -286,7 +264,7 @@ local function patchTouchMenu(plugin)
         self.dimen.h = self.item_group:getSize().h + self.bordersize * 2 + self.padding
         self:moveFocusTo(self.cur_tab, 1, FocusManager.NOT_FOCUS)
 
-        --
+        -- keep background or not
         local keep_bg = old_dimen and self.dimen.h >= old_dimen.h
         if self._qs_full_refresh then
             keep_bg = false

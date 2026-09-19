@@ -9,7 +9,7 @@ local _settings = LuaSettings:open(SETTINGS_PATH)
 local Config = {}
 
 Config.DEFAULTS = {
-    section_order = { "actions", "frontlight", "shortcuts", "info", "footer" },
+    section_order = { "actions", "frontlight", "shortcuts", "info" },
     sections = {
         actions = {
             enabled_f = true,
@@ -100,8 +100,16 @@ function Config.load()
     local cfg = _settings:readSetting("quick_menu_settings") or {}
     cfg.sections = cfg.sections or {}
 
-    -- section_order
-    if cfg.section_order == nil then cfg.section_order = Config.DEFAULTS.section_order end
+    -- section_order (remove legacy <= v1.9 footer if present)
+    if cfg.section_order == nil then
+        cfg.section_order = Config.DEFAULTS.section_order
+    else
+        local cleaned_order = {}
+        for i, id in ipairs(cfg.section_order) do
+            if id ~= "footer" then table.insert(cleaned_order, id) end
+        end
+        cfg.section_order = cleaned_order
+    end
 
     -- sections level 1
     for section_id, section_data in pairs(cfg.sections) do

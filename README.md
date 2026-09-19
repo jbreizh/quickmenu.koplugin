@@ -124,7 +124,7 @@ This plugin has been built by building upon the work and ideas of several commun
 * **[AndyHazz](https://github.com/AndyHazz)** for the icon and action selectors implemented in [bookshelf.koplugin](https://github.com/AndyHazz/bookshelf.koplugin).
 * **[doctorhetfield-cmd](https://github.com/doctorhetfield-cmd)** for the power menu implementation from [simpleui.koplugin](https://github.com/doctorhetfield-cmd/simpleui.koplugin).
 * **[AnthonyGress](https://github.com/AnthonyGress)** for the sliders and `touch_menu` hooks inspired by [zenos.koplugin](https://github.com/xZenLabs/zen-os).
-* **[federico1176-wq](https://github.com/federico1176-wq)** for the shadow idea and code [quick-menu-fork](https://github.com/federico1176-wq/quick-menu-fork).
+* **[federico1176-wq](https://github.com/federico1176-wq)** for the shadow idea and code from [quick-menu-fork](https://github.com/federico1176-wq/quick-menu-fork).
 
 
 ## Installation
