@@ -269,7 +269,7 @@ function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
         checked_func = function() return config.open_on_start end,
         callback = function()
             config.open_on_start = not config.open_on_start
-            Config.saveAndRefresh(plugin) -- WARNING plugin remplace ctx
+            Config.saveAndRefresh(plugin)
         end,
         separator = true,
     })
@@ -279,7 +279,7 @@ function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
         text = _("Style") .. "\xE2\x80\xA6",
         keep_menu_open = true,
         callback = close(function()
-            StyleManage:showStyleDialog(plugin, refresh) -- WARNING plugin remplace ctx
+            StyleManage:showStyleDialog(plugin, refresh)
         end),
     })
 
@@ -291,7 +291,7 @@ function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
         end,
         keep_menu_open = true,
         callback = close(function()
-            ActionCustom:showActionCustomMenu(plugin, refresh) -- WARNING plugin remplace ctx
+            ActionCustom:showActionCustomMenu(plugin, refresh)
         end),
 
     })
@@ -304,9 +304,13 @@ function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
             local sort_sections = {}
             for index, section_id in ipairs(config.section_order) do
                 local ok, section_mod = pcall(require, "sections/" .. section_id)
-                local icon = (ok and section_mod.icon) and (section_mod.icon .. " ") or ""
-                local label = (ok and section_mod.label) and section_mod.label or section_id
-                table.insert(sort_sections, { text = icon .. " " .. label, id = section_id })
+                if ok and section_mod then
+                    local icon = section_mod.icon or ""
+                    local label = section_mod.label or section_id
+                    table.insert(sort_sections, { text = icon .. " " .. label, id = section_id })
+                else
+                    logger.err("[QuickMenu] Failed to load section : " .. tostring(section_id))
+                end
             end
 
             UIManager:show(SortWidget:new{
@@ -317,7 +321,7 @@ function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
                     for index, section in ipairs(sort_sections) do
                         table.insert(config.section_order, section.id)
                     end
-                    Config.saveAndRefresh(plugin) -- WARNING plugin remplace ctx
+                    Config.saveAndRefresh(plugin)
                 end
             })
         end,
@@ -336,7 +340,7 @@ function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
                     for position, section_id in ipairs(Config.DEFAULTS.section_order) do
                         table.insert(config.section_order, section_id)
                     end
-                    Config.saveAndRefresh(plugin) -- WARNING plugin remplace ctx
+                    Config.saveAndRefresh(plugin)
                     if refresh then refresh() end
                 end,
                 cancel_callback = function()
@@ -410,7 +414,7 @@ function QuickMenu.buildSettingsMenu(plugin)
     -- global
     local menu_items = {}
     table.insert(menu_items, {
-        text = QuickMenu.label,
+        text = QuickMenu.icon .. " " ..  QuickMenu.label,
         sub_item_table = QuickMenu.buildGlobalSubmenu(plugin,
             function(fn) return fn end, -- noop_close
             function() end             -- noop_refresh
@@ -422,20 +426,22 @@ function QuickMenu.buildSettingsMenu(plugin)
     for section_id, section_data in pairs(config.sections) do
         local ok, section_mod = pcall(require, "sections/" .. section_id)
         if ok and section_mod then
-            table.insert(sort_sections, {id = section_id, label = section_mod.label or section_id})
+            local icon = section_mod.icon or ""
+            local label = section_mod.label or section_id
+            table.insert(sort_sections, {id = section_id, label = label, icon = icon})
         else
             logger.err("[QuickMenu] Failed to load section : " .. tostring(section_id))
         end
     end
+
     Utils.sort_by_field(sort_sections, "label", true, true) --natural sort taking care of accent
 
     for idx, section in ipairs(sort_sections) do
         local ok, section_mod = pcall(require, "sections/" .. section.id)
-
         if ok and section_mod and section_mod.getSettings then
             local success, items = pcall(function()
                 QuickMenu.updatePlugin(plugin) -- need to update or device won't be set for frontlight
-                return section_mod.getSettings(plugin, -- WARNING need complete plugin/ctx
+                return section_mod.getSettings(plugin,
                     function(fn) return fn end, -- noop_close
                     function() end             -- noop_refresh
                 )
@@ -444,7 +450,7 @@ function QuickMenu.buildSettingsMenu(plugin)
             if success then
                 if items and #items > 0 then
                     table.insert(menu_items, {
-                        text = section.label,
+                        text = section.icon .. " " .. section.label,
                         sub_item_table = items,
                         separator = (idx == #sort_sections),
                     })
