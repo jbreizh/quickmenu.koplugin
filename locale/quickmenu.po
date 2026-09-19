@@ -793,9 +793,6 @@ msgstr ""
 msgid "Upper half block"
 msgstr ""
 
-msgid "Use ZenFooter "
-msgstr ""
-
 msgid "Use ZenSlider"
 msgstr ""
 
@@ -866,4 +863,10 @@ msgid "Sort sections"
 msgstr ""
 
 msgid "Show shadows"
+msgstr ""
+
+msgid "Show all tab"
+msgstr ""
+
+msgid "Use ZenFooter"
 msgstr ""

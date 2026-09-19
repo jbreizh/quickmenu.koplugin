@@ -47,6 +47,7 @@ function Footer.build(ctx)
     local btn_bordersize     = screen:scaleBySize(config.style.btn_bordersize or 1.5)
     local btn_font_size      = config.style.btn_font_size or 16
     local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
+
     local section            = Utils.getSection(config, Footer.id)
 
     if not section then return nil end
@@ -61,63 +62,49 @@ function Footer.build(ctx)
     touch_menu.footer[1][1] = HorizontalGroup:new{}
     touch_menu.footer[2][1] = HorizontalGroup:new{}
     touch_menu.footer[3][1] = HorizontalGroup:new{}
-    -- settings_btn
-    local settings_btn = Button:new{
-        text           = "\u{EB92}",
-        width          = btn_width,
-        radius         = btn_radius,
-        bordersize     = 0,
-        text_font_size = btn_font_size,
-        show_parent    = touch_menu.show_parent,
-        callback       = function()
-            Footer.showSettings(ctx)
-        end,
-        --hold_callback = function() end,
-    }
-    -- up_button : original is local can't reference it
-    local up_button = Button:new{
-        icon           = "chevron.up",
-        --text           = "▲",
-        width          = btn_width,
-        radius         = btn_radius,
-        bordersize     = 0,
-        text_font_size = btn_font_size,
-        show_parent    = touch_menu.show_parent,
-        callback = function()  touch_menu:backToUpperMenu()
-        end,
-    }
     -- default footer force to rebuild default footer cause force to clear
     if (filemanager and not section.enabled_f) or (reader and not section.enabled_r) then
         -- insert up_button left
-        table.insert(touch_menu.footer[1][1], up_button)
+        table.insert(touch_menu.footer[1][1], touch_menu.up_button)
          -- insert page_info center
         table.insert(touch_menu.footer[2][1], touch_menu.page_info)
         -- insert default_footer right
-        table.insert(touch_menu.footer[3][1], touch_menu.time_info)
-        -- insert settings_btn
-        if section.show_title then table.insert(touch_menu.footer[3][1], settings_btn) end
+        table.insert(touch_menu.footer[3][1], touch_menu.device_info)
     -- zenFooter
     elseif section.use_zenfooter then
         -- insert up_button center
-        table.insert(touch_menu.footer[2][1], up_button)
+        table.insert(touch_menu.footer[2][1], touch_menu.up_button)
         -- insert page_info right
         table.insert(touch_menu.footer[3][1], touch_menu.page_info)
+        -- settings_btn
+        local settings_btn = Button:new{
+            text           = "\u{EB92}",
+            width          = btn_width,
+            radius         = btn_radius,
+            bordersize     = 0,
+            text_font_size = btn_font_size,
+            show_parent    = touch_menu.show_parent,
+            callback       = function()
+                Footer.showSettings(ctx)
+            end,
+            --hold_callback = function() end,
+        }
         -- insert settings_btn right
         if section.show_title then table.insert(touch_menu.footer[3][1], settings_btn) end
     -- quickmenu footer
     else
         -- insert up_button left
-        table.insert(touch_menu.footer[1][1], up_button)
+        table.insert(touch_menu.footer[1][1], touch_menu.up_button)
         -- insert page_info_left_chev left
-        table.insert(touch_menu.footer[1][1], touch_menu.page_info_left_chev)
+        if section.show_all_tab then table.insert(touch_menu.footer[1][1], touch_menu.page_info_left_chev) end
         -- create custom footer and insert right
         section.items = section.items or {}
         -- actions system and custom
         local action_defs = ActionDefs.getMerged(config.custom_actions)
         --
-        local footer_width = touch_menu.width - touch_menu.padding*2
-        local chevron_with = touch_menu.page_info_left_chev:getSize().w + touch_menu.page_info_right_chev:getSize().w
-        local max_footer_width = footer_width - btn_width*2 - chevron_with
+        local max_footer_width = touch_menu.width - touch_menu.padding * 2 - touch_menu.up_button:getSize().w
+        if section.show_title then max_footer_width =  max_footer_width - btn_width end
+        if section.show_all_tab then max_footer_width =  max_footer_width - touch_menu.page_info_left_chev:getSize().w - touch_menu.page_info_right_chev:getSize().w end
         local current_width = 0
         local has_overflow = false
         local overflow_items = {}
@@ -170,7 +157,7 @@ function Footer.build(ctx)
             --hold_callback = function() end,
         }
         -- insert page_info_right_chev right
-        table.insert(touch_menu.footer[3][1], touch_menu.page_info_right_chev)
+        if section.show_all_tab then table.insert(touch_menu.footer[3][1], touch_menu.page_info_right_chev) end
         -- insert settings_btn_overflow right
         if section.show_title then table.insert(touch_menu.footer[3][1], settings_btn_overflow) end
     end
@@ -204,7 +191,13 @@ function Footer.getSettings(ctx, close, refresh)
             callback = function() section.show_title = not section.show_title; Config.saveAndRefresh(ctx) end
         },
         {
-            text = _("Use ZenFooter "),
+            text = _("Show all tab"),
+            checked_func = function() return section.show_all_tab end,
+            callback = function() section.show_all_tab = not section.show_all_tab; Config.saveAndRefresh(ctx) end,
+            separator = true,
+        },
+        {
+            text = _("Use ZenFooter"),
             checked_func = function() return section.use_zenfooter end,
             callback = function() section.use_zenfooter = not section.use_zenfooter; Config.saveAndRefresh(ctx) end,
             separator = true,

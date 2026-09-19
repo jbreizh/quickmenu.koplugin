@@ -29,81 +29,88 @@ local QuickMenuPlugin = WidgetContainer:extend{
     inner_width = 0,
 }
 
--- touch_menu default_footer
-local function default_footer()
-    local BD = require("ui/bidi")
-    local Device        = require("device")
-    local Screen        = Device.screen
-    local powerd = Device:getPowerDevice()
-    local datetime = require("datetime")
-    local default_footer = datetime.secondsToHour(os.time(), G_reader_settings:isTrue("twelve_hour_clock"))
-    if Device:hasBattery() then
-        local batt_lvl = powerd:getCapacity()
-        local batt_symbol = powerd:getBatterySymbol(powerd:isCharged(), powerd:isCharging(), batt_lvl)
-        default_footer = BD.wrap(default_footer) .. " " .. BD.wrap("⌁") .. BD.wrap(batt_symbol) ..  BD.wrap(batt_lvl .. "%")
-        if Device:hasAuxBattery() and powerd:isAuxBatteryConnected() then
-            local aux_batt_lvl = powerd:getAuxCapacity()
-            local aux_batt_symbol = powerd:getBatterySymbol(powerd:isAuxCharged(), powerd:isAuxCharging(), aux_batt_lvl)
-            default_footer = default_footer .. " " .. BD.wrap("+") .. BD.wrap(aux_batt_symbol) ..  BD.wrap(aux_batt_lvl .. "%")
-        end
-    end
-    return default_footer
-end
-
--- grab zenslider
-local function get_sliders(touch_menu)
-    local refs = touch_menu._qs_refs
-    if not refs then return {} end
-    local sliders = {}
-    for idx, sr in ipairs(refs.sliders or {}) do
-        table.insert(sliders, sr.slider)
-    end
-    return sliders
-end
-
--- Gesture handler for panel taps/pans
-local function handlePanelGesture(touch_menu, ges, is_hold)
-    local refs = touch_menu._qs_refs
-    if not refs then return false end
-    if not is_hold then
-        for _i, sr in ipairs(refs.sliders or {}) do
-            -- zen_slider
-            if sr.slider and sr.slider:handleTap(ges) then return true end
-            -- generic slider
-            local w = sr.widget
-            if w and w.dimen and ges.pos:intersectWith(w.dimen) then
-
-                -- preferred API: slider defines its own conversion
-                local percent
-
-                if w.getPercentageFromPosition then percent = w:getPercentageFromPosition(ges.pos) end
-
-                if percent then
-                    local value
-
-                    if sr.fromPercent then value = sr.fromPercent(percent)
-                    else value = math.floor((sr.max - sr.min) * percent + sr.min + 0.5) end
-
-                    if sr.set then sr.set(value) return true  end
-                end
-            end
-        end
-    end
-    return false
-end
 
 -- ============================================================
 -- Hook TouchMenu to support panel tabs
 -- ============================================================
 local function patchTouchMenu(plugin)
-    local TouchMenu    = require("ui/widget/touchmenu")
-    local UIManager    = require("ui/uimanager")
-    local Geom         = require("ui/geometry")
-    local FocusManager = require("ui/widget/focusmanager")
-    local GestureRange = require("ui/gesturerange")
-    local config       = plugin.config
+    local TouchMenu       = require("ui/widget/touchmenu")
+    local FocusManager    = require("ui/widget/focusmanager")
+    local HorizontalGroup = require("ui/widget/horizontalgroup")
+    local IconButton      = require("ui/widget/iconbutton")
 
+    local BD              = require("ui/bidi")
+    local UIManager       = require("ui/uimanager")
+    local Geom            = require("ui/geometry")
+    local GestureRange    = require("ui/gesturerange")
+    local Size            = require("ui/size")
 
+    local Device          = require("device")
+    local Screen          = Device.screen
+    local powerd          = Device:getPowerDevice()
+    local datetime        = require("datetime")
+
+    local config          = plugin.config
+
+    -- touch_menu default_footer
+    local function default_footer()
+        local default_footer = datetime.secondsToHour(os.time(), G_reader_settings:isTrue("twelve_hour_clock"))
+        if Device:hasBattery() then
+            local batt_lvl = powerd:getCapacity()
+            local batt_symbol = powerd:getBatterySymbol(powerd:isCharged(), powerd:isCharging(), batt_lvl)
+            default_footer = BD.wrap(default_footer) .. " " .. BD.wrap("⌁") .. BD.wrap(batt_symbol) ..  BD.wrap(batt_lvl .. "%")
+            if Device:hasAuxBattery() and powerd:isAuxBatteryConnected() then
+                local aux_batt_lvl = powerd:getAuxCapacity()
+                local aux_batt_symbol = powerd:getBatterySymbol(powerd:isAuxCharged(), powerd:isAuxCharging(), aux_batt_lvl)
+                default_footer = default_footer .. " " .. BD.wrap("+") .. BD.wrap(aux_batt_symbol) ..  BD.wrap(aux_batt_lvl .. "%")
+            end
+        end
+        return default_footer
+    end
+
+    -- grab zenslider
+    local function get_sliders(touch_menu)
+        local refs = touch_menu._qs_refs
+        if not refs then return {} end
+        local sliders = {}
+        for idx, sr in ipairs(refs.sliders or {}) do
+            table.insert(sliders, sr.slider)
+        end
+        return sliders
+    end
+
+    -- Gesture handler for panel taps/pans
+    local function handlePanelGesture(touch_menu, ges, is_hold)
+        local refs = touch_menu._qs_refs
+        if not refs then return false end
+        if not is_hold then
+            for _i, sr in ipairs(refs.sliders or {}) do
+                -- zen_slider
+                if sr.slider and sr.slider:handleTap(ges) then return true end
+                -- generic slider
+                local w = sr.widget
+                if w and w.dimen and ges.pos:intersectWith(w.dimen) then
+
+                    -- preferred API: slider defines its own conversion
+                    local percent
+
+                    if w.getPercentageFromPosition then percent = w:getPercentageFromPosition(ges.pos) end
+
+                    if percent then
+                        local value
+
+                        if sr.fromPercent then value = sr.fromPercent(percent)
+                        else value = math.floor((sr.max - sr.min) * percent + sr.min + 0.5) end
+
+                        if sr.set then sr.set(value) return true  end
+                    end
+                end
+            end
+        end
+        return false
+    end
+
+    --
     local function ensure_panel_gestures(touch_menu)
         local gestures = touch_menu.ges_events
         if gestures
@@ -173,6 +180,19 @@ local function patchTouchMenu(plugin)
             self.last_index = config.idx_quickmenu_tab or 1
         end
 
+        -- save up_button
+        local footer_width = Screen:getWidth() - Size.padding.default*2
+        self.up_button = IconButton:new{
+            icon = "chevron.up",
+            show_parent = self.show_parent,
+            padding_left = math.floor(footer_width*0.33*0.1),
+            padding_right = math.floor(footer_width*0.33*0.1),
+            callback = function()
+                self:backToUpperMenu()
+            end,
+        }
+
+        --
         orig_init(self, ...)
 
         -- add hold_callback on quick_menu_tab and exit_tab
@@ -211,10 +231,23 @@ local function patchTouchMenu(plugin)
     function TouchMenu:updateItems(target_page, target_item_id)
         -- FileManager may create its TouchMenu before we patches the class.
         ensure_panel_gestures(self)
-        --
+
+        -- switching away from quickmenu tab
         if not self.item_table or not self.item_table.panel then
-            self._qs_refs = nil -- clear refs when switching away from panel tab
-            self._qs_full_refresh = nil -- clear full_refresh when switching away from panel tab
+             -- clear flag
+            self._qs_refs = nil
+            self._qs_full_refresh = nil
+
+            -- clear and rebuild default footer
+            if not config.sections.footer.show_all_tab then
+                self.footer[1][1] = HorizontalGroup:new{}
+                self.footer[2][1] = HorizontalGroup:new{}
+                self.footer[3][1] = HorizontalGroup:new{}
+                table.insert(self.footer[1][1], self.up_button)
+                table.insert(self.footer[2][1], self.page_info)
+                table.insert(self.footer[3][1], self.device_info)
+            end
+
             return orig_updateItems(self, target_page, target_item_id)
         end
 

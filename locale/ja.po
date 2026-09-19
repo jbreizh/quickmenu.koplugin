@@ -793,9 +793,6 @@ msgstr "ロック解除"
 msgid "Upper half block"
 msgstr "上半分ブロック"
 
-msgid "Use ZenFooter "
-msgstr "ZenFooterを使用"
-
 msgid "Use ZenSlider"
 msgstr "ZenSliderを使用"
 
@@ -867,3 +864,9 @@ msgstr "セクションを並び替える"
 
 msgid "Show shadows"
 msgstr "影を表示"
+
+msgid "Show all tab"
+msgstr "すべてのタブを表示"
+
+msgid "Use ZenFooter"
+msgstr "ZenFooterを使用"

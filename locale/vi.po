@@ -694,9 +694,6 @@ msgstr "Mở khóa"
 msgid "Upper half block"
 msgstr "Khối nửa bên trên"
 
-msgid "Use ZenFooter "
-msgstr "Sử dụng ZenFooter "
-
 msgid "Use ZenSlider"
 msgstr "Sử dụng ZenSlider"
 
@@ -867,3 +864,9 @@ msgstr "Chạm : Bật/tắt chế độ ban đêm\nNhấn giữ : Không làm g
 
 msgid "Tap : Toggle wifi\nHold : Show wifi picker"
 msgstr "Chạm : Bật/tắt wifi\nNhấn giữ : Hiển thị chọn mạng wifi"
+
+msgid "Show all tab"
+msgstr "Hiển thị tất cả các tab"
+
+msgid "Use ZenFooter"
+msgstr "Sử dụng ZenFooter"

@@ -793,9 +793,6 @@ msgstr "Desbloquear"
 msgid "Upper half block"
 msgstr "Bloco da metade superior"
 
-msgid "Use ZenFooter "
-msgstr "Usar ZenFooter"
-
 msgid "Use ZenSlider"
 msgstr "Usar ZenSlider"
 
@@ -867,3 +864,9 @@ msgstr "Ordenar secções"
 
 msgid "Show shadows"
 msgstr "Mostrar sombras"
+
+msgid "Show all tab"
+msgstr "Mostrar todas as abas"
+
+msgid "Use ZenFooter"
+msgstr "Usar ZenFooter"

@@ -829,9 +829,6 @@ msgstr "Raccourci"
 msgid "System"
 msgstr "Système"
 
-msgid "Use ZenFooter "
-msgstr "Utiliser ZenFooter"
-
 msgid "Network"
 msgstr "Réseau"
 
@@ -867,3 +864,9 @@ msgstr "Trier les sections"
 
 msgid "Show shadows"
 msgstr "Afficher les ombres"
+
+msgid "Show all tab"
+msgstr "Afficher tous les onglets"
+
+msgid "Use ZenFooter"
+msgstr "Utiliser ZenFooter"
