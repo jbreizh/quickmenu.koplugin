@@ -57,19 +57,21 @@ function InfoSection.build(ctx, show_shadow)
         bold = true
     }
     -- bookshelf integration
-    if Utils.isFontInstalled("Inter-ExtraBold.ttf") then
+    if Utils.hasPlugin("bookshelf") and Utils.isFontInstalled("Inter-ExtraBold.ttf") then
         info_title.face = Font:getFace("Inter-ExtraBold.ttf", btn_font_size + 4)
         info_title.bold = false
     end
+
     local info_auth = TextWidget:new{
         text = (reader.doc_props or {}).authors or _("Unknown author"),
         max_width = txt_w,
         face = Font:getFace("cfont", btn_font_size)
     }
     -- bookshelf integration
-    if Utils.isFontInstalled("Caveat-Regular.ttf") then
+    if Utils.hasPlugin("bookshelf") and Utils.isFontInstalled("Caveat-Regular.ttf") then
         info_auth.face = Font:getFace("Caveat-Regular.ttf", btn_font_size + 4)
     end
+
     local info_chap = TextWidget:new{
         text = reader.toc:getTocTitleByPage(reader:getCurrentPage()) or _("Unknown chapter"),
         max_width = txt_w,
@@ -98,7 +100,7 @@ function InfoSection.build(ctx, show_shadow)
             end,
         hold_callback = function()
             Utils.closeMenu(touch_menu)
-            if Utils.hasPlugin and Utils.hasPlugin("statistics") then
+            if Utils.hasPlugin("statistics") then
                 UIManager:broadcastEvent(Event:new("ShowBookStats"))
             else
                 UIManager:show(InfoMessage:new{ text = "Statistics : " .. _("Plugin not activated.") })

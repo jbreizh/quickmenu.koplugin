@@ -197,9 +197,13 @@ function QuickMenu.updateTab(plugin)
                     text = _("Are you sure you want to exit book ?"),
                     ok_text = _("Exit"),
                     ok_callback = function()
-                        local file = menu_instance.ui.document and menu_instance.ui.document.file
-                        menu_instance.ui:onClose()
-                        if file then menu_instance.ui:showFileManager(file) end
+                        if Utils.hasPlugin("bookshelf") then
+                            UIManager:broadcastEvent(Event:new("ToggleBookshelf"))
+                        else
+                            local file = menu_instance.ui.document and menu_instance.ui.document.file
+                            menu_instance.ui:onClose()
+                            if file then menu_instance.ui:showFileManager(file) end
+                        end
                     end
                 })
             end

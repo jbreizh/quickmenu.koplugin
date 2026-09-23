@@ -578,7 +578,7 @@ function ActionDefs.get()
                 end,
             hold_callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
-                if Utils.hasPlugin and Utils.hasPlugin("opds") then UIManager:broadcastEvent(Event:new("ShowOPDSCatalog"))
+                if Utils.hasPlugin("opds") then UIManager:broadcastEvent(Event:new("ShowOPDSCatalog"))
                 else UIManager:show(InfoMessage:new{ text = "OPDS : " .. _("Plugin not activated.") }) end
             end
         },
@@ -590,7 +590,7 @@ function ActionDefs.get()
             category = "network",
             -- active_func
             help_text = _("Tap : Show OPDS catalog\nHold : Show cloud storage"),
-            visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("opds") end,
+            visible_func = function(ctx) return Utils.hasPlugin("opds") end,
             callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
                 UIManager:broadcastEvent(Event:new("ShowOPDSCatalog"))
@@ -607,7 +607,7 @@ function ActionDefs.get()
             label_func = function(ctx) return is_ssh_active() and _("On") or _("Off") end,
             category = "network",
             active_func = function(ctx) return is_ssh_active() end,
-            visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("SSH") end,
+            visible_func = function(ctx) return Utils.hasPlugin("SSH") end,
             help_text = _("Tap : Toggle SSH server\nHold : Nothing"),
             callback = function(ctx)
                 UIManager:broadcastEvent(Event:new("ToggleSSHServer")) -- SSH doesn't need connection
@@ -622,7 +622,7 @@ function ActionDefs.get()
             label_func = function(ctx) return is_calibre_active() and _("On") or _("Off") end,
             category = "network",
             active_func = function(ctx) return is_calibre_active() end,
-            visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("calibre") end,
+            visible_func = function(ctx) return Utils.hasPlugin("calibre") end,
             help_text = _("Tap : Toggle Calibre connection\nHold : Nothing"),
             callback = function(ctx)
                 NetworkMgr:runWhenOnline(function() -- check connection
@@ -640,7 +640,7 @@ function ActionDefs.get()
             -- label_func
             category = "network",
             -- active_func
-            visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("kosync") end,
+            visible_func = function(ctx) return Utils.hasPlugin("kosync") end,
             help_text = _("Tap : Push progress to KOSync\nHold : Pull progress from KOSync"),
             callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
@@ -779,7 +779,7 @@ function ActionDefs.get()
             end,
             hold_callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
-                if Utils.hasPlugin and Utils.hasPlugin("calibre") then UIManager:broadcastEvent(Event:new("CalibreSearch"))
+                if Utils.hasPlugin("calibre") then UIManager:broadcastEvent(Event:new("CalibreSearch"))
                 else UIManager:show(InfoMessage:new{ text = "Calibre : " .. _("Plugin not activated.") }) end
             end
         },
@@ -790,7 +790,7 @@ function ActionDefs.get()
             -- label_func
             category = "search",
             -- active_func
-            visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("calibre") end,
+            visible_func = function(ctx) return Utils.hasPlugin("calibre") end,
             help_text = _("Tap : Show Calibre search\nHold : Show file search"),
             callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
@@ -808,7 +808,7 @@ function ActionDefs.get()
             -- label_func
             category = "shortcut",
             -- active_func
-            visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("statistics") end,
+            visible_func = function(ctx) return Utils.hasPlugin("statistics") end,
             help_text = _("Tap : Show reader statistics\nHold : Show calendar statistics"),
             callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
@@ -826,7 +826,7 @@ function ActionDefs.get()
             -- label_func
             category = "shortcut",
             -- active_func
-            visible_func = function(ctx) return Utils.hasPlugin and Utils.hasPlugin("statistics") end,
+            visible_func = function(ctx) return Utils.hasPlugin("statistics") end,
             help_text = _("Tap : Show calendar statistics\nHold : Show reader statistics"),
             callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
@@ -864,7 +864,7 @@ function ActionDefs.get()
             end,
             hold_callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
-                if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
+                if Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
         },
@@ -882,7 +882,7 @@ function ActionDefs.get()
             end,
             hold_callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
-                if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
+                if Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
         },
@@ -900,7 +900,7 @@ function ActionDefs.get()
             end,
             hold_callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
-                if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
+                if Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end,
         },
@@ -918,7 +918,7 @@ function ActionDefs.get()
             end,
             hold_callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
-                if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
+                if Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
         },
@@ -936,7 +936,7 @@ function ActionDefs.get()
             end,
             hold_callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
-                if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
+                if Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
         },
@@ -954,7 +954,7 @@ function ActionDefs.get()
             end,
             hold_callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
-                if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
+                if Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
         },
@@ -972,7 +972,7 @@ function ActionDefs.get()
             end,
             hold_callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
-                if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
+                if Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
         },
@@ -990,7 +990,7 @@ function ActionDefs.get()
             end,
             hold_callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
-                if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
+                if Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
         },
@@ -1008,7 +1008,7 @@ function ActionDefs.get()
             end,
             hold_callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
-                if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
+                if Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
         },
@@ -1026,7 +1026,7 @@ function ActionDefs.get()
             end,
             hold_callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
-                if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
+                if Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
         },
@@ -1044,7 +1044,7 @@ function ActionDefs.get()
             end,
             hold_callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
-                if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
+                if Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
         },
@@ -1062,7 +1062,7 @@ function ActionDefs.get()
             end,
             hold_callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
-                if Utils.hasPlugin and Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
+                if Utils.hasPlugin("systemstat") then UIManager:broadcastEvent(Event:new("ShowSysStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Systemstat : " .. _("Plugin not activated.") }) end
             end
         },
@@ -1105,7 +1105,7 @@ function ActionDefs.get()
             end,
             hold_callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
-                if Utils.hasPlugin and Utils.hasPlugin("batterystat") then UIManager:broadcastEvent(Event:new("ShowBatteryStatistics"))
+                if Utils.hasPlugin("batterystat") then UIManager:broadcastEvent(Event:new("ShowBatteryStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Batterystat" .. " : " .. _("Plugin not activated.") }) end
             end
         },
@@ -1132,7 +1132,7 @@ function ActionDefs.get()
             end,
             hold_callback = function(ctx)
                 Utils.closeMenu(ctx.touch_menu)
-                if Utils.hasPlugin and Utils.hasPlugin("batterystat") then UIManager:broadcastEvent(Event:new("ShowBatteryStatistics"))
+                if Utils.hasPlugin("batterystat") then UIManager:broadcastEvent(Event:new("ShowBatteryStatistics"))
                 else UIManager:show(InfoMessage:new{ text = "Batterystat" .. " : " .. _("Plugin not activated.") }) end
             end
         }

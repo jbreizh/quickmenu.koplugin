@@ -13,6 +13,7 @@
 local WidgetContainer = require("ui/widget/container/widgetcontainer")
 
 local QuickMenuPlugin = WidgetContainer:extend{
+    name = "quickmenu",
     config = nil,
     touch_menu = nil,
     menu_instance = nil,
