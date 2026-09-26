@@ -287,34 +287,34 @@ local function patchTouchMenu(plugin)
     -- Hook for zenSlider
     local orig_onPan = TouchMenu.onPan
     function TouchMenu:onPanCloseAllMenus(arg, ges_ev)
-        if not (self._qs_refs and self.item_table and self.item_table.panel) then -- not in the panel
-            if orig_onPan then return orig_onPan(self, arg, ges_ev) end
-            return
-        end
-        if self._qs_slider_locked then self._qs_opening_pan = true; return true end -- slider lock
-        self._qs_opening_pan = false
-        for _i, sl in ipairs(get_sliders(self)) do
-            if sl:handlePan(ges_ev) then return true end
+        if self._qs_refs and self.item_table and self.item_table.panel then -- in the panel
+            if self._qs_slider_locked then self._qs_opening_pan = true; return true end -- slider lock
+            self._qs_opening_pan = false
+            for _i, sl in ipairs(get_sliders(self)) do
+                if sl:handlePan(ges_ev) then return true end
+            end
         end
         if orig_onPan then return orig_onPan(self, arg, ges_ev) end
     end
 
     function TouchMenu:onPanReleaseCloseAllMenus(arg, ges_ev)
-        if not (self._qs_refs and self.item_table and self.item_table.panel) then return end -- not in the panel
-        if self._qs_slider_locked or self._qs_opening_pan then self._qs_opening_pan = false; return end --slider lock
-        for _i, sl in ipairs(get_sliders(self)) do
-            if sl:handlePanRelease(ges_ev, self.show_parent, self.dimen) then return true end
+        if self._qs_refs and self.item_table and self.item_table.panel then -- in the panel
+            if self._qs_slider_locked or self._qs_opening_pan then self._qs_opening_pan = false; return end --slider lock
+            for _i, sl in ipairs(get_sliders(self)) do
+                if sl:handlePanRelease(ges_ev, self.show_parent, self.dimen) then return true end
+            end
         end
     end
 
     local orig_onSwipe = TouchMenu.onSwipe
     function TouchMenu:onSwipe(arg, ges_ev)
         if self._qs_refs and self.item_table and self.item_table.panel then -- in the panel
-            if not self._qs_slider_locked then --slider lock
+            if not self._qs_slider_locked then --slider not lock
                 for _i, sl in ipairs(get_sliders(self)) do
                     if sl:handleSwipe(ges_ev, self.show_parent, self.dimen) then return true end
                 end
             end
+            if ges_ev.direction == "north" then self:closeMenu(); return true end --close menu
             return true
         end
         if orig_onSwipe then return orig_onSwipe(self, arg, ges_ev) end

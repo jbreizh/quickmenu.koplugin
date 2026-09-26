@@ -74,7 +74,7 @@ Config.DEFAULTS = {
         slider_ticks_width = 1,
     },
     open_on_start = true,
-    add_exit_tab = true,
+    add_exit_tab = false,
     add_quickmenu_tab = true,
     idx_quickmenu_tab = 1,
     items_per_page = 20,
