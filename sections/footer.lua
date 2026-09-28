@@ -81,7 +81,8 @@ function Footer.build(ctx)
     touch_menu.footer[2][1] = HorizontalGroup:new{}
     touch_menu.footer[3][1] = HorizontalGroup:new{}
     -- default footer force to rebuild default footer cause force to clear
-    if (filemanager and not section.enabled_f) or (reader and not section.enabled_r) or not (touch_menu._qs_quickmenu_tab  or section.show_all_tab) then
+    local is_in_panel = touch_menu.item_table and touch_menu.item_table.panel
+    if (filemanager and not section.enabled_f) or (reader and not section.enabled_r) or (not is_in_panel and not section.show_all_tab) then
         -- insert up_button left
         table.insert(touch_menu.footer[1][1], touch_menu.up_button)
          -- insert page_info center

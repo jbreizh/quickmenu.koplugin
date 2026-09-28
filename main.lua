@@ -65,28 +65,11 @@ local function patchTouchMenu(plugin)
     local function handlePanelGesture(touch_menu, ges, is_hold)
         local refs = touch_menu._qs_refs
         if not refs then return false end
-        if not is_hold then
-            for _i, sr in ipairs(refs.sliders or {}) do
-                -- zen_slider
-                if sr.slider and sr.slider:handleTap(ges) then return true end
-                -- generic slider
-                local w = sr.widget
-                if w and w.dimen and ges.pos:intersectWith(w.dimen) then
-
-                    -- preferred API: slider defines its own conversion
-                    local percent
-
-                    if w.getPercentageFromPosition then percent = w:getPercentageFromPosition(ges.pos) end
-
-                    if percent then
-                        local value
-
-                        if sr.fromPercent then value = sr.fromPercent(percent)
-                        else value = math.floor((sr.max - sr.min) * percent + sr.min + 0.5) end
-
-                        if sr.set then sr.set(value) return true  end
-                    end
-                end
+        for _i, sr in ipairs(refs.sliders or {}) do
+            local w = sr.slider or sr.widget -- slider = zen_slider / widget = generic
+            if w then
+                if not is_hold and w.handleTap and w:handleTap(ges) then return true end
+                if is_hold and w.handleHold and w:handleHold(ges) then return true end
             end
         end
         return false
@@ -219,16 +202,12 @@ local function patchTouchMenu(plugin)
              -- clear flag
             self._qs_refs = nil
             self._qs_full_refresh = nil
-            self._qs_quickmenu_tab = nil
 
             -- clear and rebuild default footer
             QuickMenu.createFooter(plugin)
 
             return orig_updateItems(self, target_page, target_item_id)
         end
-
-        -- quickmenu tab ?
-        self._qs_quickmenu_tab = true
 
         -- zenSlider
         if not self._qs_refs then

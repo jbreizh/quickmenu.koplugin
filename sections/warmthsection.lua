@@ -1,5 +1,8 @@
+local Event        = require("ui/event")
+local UIManager    = require("ui/uimanager")
 local Math          = require("optmath")
 local SliderSection = require("sections/slidersection")
+local Utils        = require("common/utils")
 
 local WarmthSection = {
     id = "frontlight"
@@ -69,6 +72,10 @@ function WarmthSection.build(ctx, show_shadow)
 
         text_minus         = "\u{F2DC}", -- frozen,
         text_plus          = "\u{F490}", -- flame,
+        progress_hold_callback      =  function()
+            UIManager:broadcastEvent(Event:new("ToggleNightMode"))
+            Utils.updateMenu(ctx.touch_menu, {delay = 0}) -- need instant update
+        end,
     }
 
     return sliderSection

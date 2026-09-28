@@ -257,12 +257,7 @@ function IntensityZenUI.build(ctx, settings_func)
         fl_plus,
     }
 
-    refs.fl_progress   = fl_progress
-    refs.fl_state      = fl
-    refs.setBrightness = setBrightness
     table.insert(refs.sliders, { slider = fl_progress })
-
-    --table.insert(group, VerticalSpan:new{ width = v_gap })
     table.insert(group, fl_row)
     return { widget = group, refs = refs }
 end

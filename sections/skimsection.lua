@@ -97,6 +97,7 @@ function SkimSection.build(ctx, show_shadow)
         text_minus         = "\u{F056}",
         text_plus          = "\u{F055}",
         initial_pos_marker = true,
+        --progress_hold_callback      =  function() print("incroyable") end,
     }
 
     local progress = row1.refs.sliders[1].widget

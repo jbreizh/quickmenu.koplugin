@@ -217,12 +217,7 @@ function WarmthZenUI.build(ctx)
         nl_plus,
     }
 
-    refs.nl_progress = nl_progress
-    refs.nl_state    = nl
-    refs.setWarmth   = setWarmth
     table.insert(refs.sliders, { slider = nl_progress })
-
-    -- table.insert(group, VerticalSpan:new{ width = v_gap })
     table.insert(group, nl_row)
     return { widget = group, refs = refs }
 end

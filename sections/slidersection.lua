@@ -5,6 +5,7 @@ local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
 local ProgressWidget  = require("ui/widget/progresswidget")
 
+local QmSlider        = require("widgets/qm_slider")
 local ShadowDeco      = require("widgets/shadowdeco")
 local Utils           = require("common/utils")
 
@@ -70,7 +71,7 @@ function SliderSection.build(opts)
         ShadowDeco.attach(minus, btn_shadow_offset, btn_shadow_intensity, btn_shadow_radius)
     end
 
-    progress = ProgressWidget:new{
+    progress = QmSlider:new{
         width              = inner_width - 2 * btn_width - 2 * h_gap - 3 * shadow_gap,
         height             = minus:getSize().h,
         radius             = btn_radius,
@@ -80,6 +81,11 @@ function SliderSection.build(opts)
         tick_width         = slider_ticks_width,
         last               = opts.max,
         initial_pos_marker = opts.initial_pos_marker,
+        hold_callback      = opts.progress_hold_callback or nil,
+        min                = opts.min,
+        max                = opts.max,
+        set                = setValue,
+        get                = getValue,
     }
 
     if opts.show_shadow then
@@ -121,13 +127,7 @@ function SliderSection.build(opts)
 
     -- refs
     local refs = { buttons = {}, sliders = {}, widgets = {} }
-    table.insert(refs.sliders, {
-        widget = progress,
-        get    = getValue,
-        set    = setValue,
-        min    = opts.min,
-        max    = opts.max,
-    })
+    table.insert(refs.sliders, { widget = progress })
 
     return { widget = group, refs = refs }
 end
