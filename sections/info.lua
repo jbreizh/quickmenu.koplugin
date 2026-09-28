@@ -59,7 +59,7 @@ function Info.build(ctx)
     local shadow_gap = (section.show_shadow and btn_shadow_offset or 0)
 
     if not section or not section.enabled_r or not reader then return nil end
-    local refs = { buttons = {}, sliders = {}, widgets = {} }
+    local refs
 
     local group = VerticalGroup:new{ align = "center" }
 
@@ -139,6 +139,7 @@ function Info.build(ctx)
         local skimSection = SkimSection.build(ctx, section.show_shadow)
         table.insert(info_col, VerticalSpan:new{ width = h_gap })
         table.insert(info_col, skimSection.widget)
+        refs = { buttons = {}, sliders = {}, widgets = {} }
         table.insert(refs.sliders, skimSection.refs.sliders[1])
     end
 
@@ -222,6 +223,7 @@ function Info.build(ctx)
             local skimSection = SkimSection.build(opts, section.show_shadow)
             table.insert(info_col, VerticalSpan:new{ width = h_gap })
             table.insert(info_col, skimSection.widget)
+            refs = { buttons = {}, sliders = {}, widgets = {} }
             table.insert(refs.sliders, skimSection.refs.sliders[1])
         end
     end
