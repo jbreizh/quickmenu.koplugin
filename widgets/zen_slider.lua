@@ -233,6 +233,16 @@ function ZenSlider:handleTap(ges)
     return true
 end
 
+--- Hold on the track (away from the knob): apply hold_callback
+-- Hold near the knob are intentionally ignored — they are likely the
+-- beginning of a drag and should not trigger a navigation jump.
+function ZenSlider:handleHold(ges)
+    if not self.dimen or not ges.pos:intersectWith(self.dimen) then return false end
+    if self:_isNearKnob(ges.pos.x) then return false end
+    if self.hold_callback then self.hold_callback() return true end
+    return false
+end
+
 --- Pan: begins dragging when the gesture starts near the knob with any
 -- direction that has a horizontal component (i.e. not purely north/south).
 -- A fast grab rarely produces a pure "east"/"west" first pan event; diagonals

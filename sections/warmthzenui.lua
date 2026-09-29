@@ -19,6 +19,7 @@ local HorizontalSpan  = require("ui/widget/horizontalspan")
 local LeftContainer   = require("ui/widget/container/leftcontainer")
 local TextWidget      = require("ui/widget/textwidget")
 local UIManager       = require("ui/uimanager")
+local Event           = require("ui/event")
 local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
 
@@ -117,6 +118,10 @@ function WarmthZenUI.build(ctx)
         value_max = nl.max,
         show_parent = show_parent,
         --knob_radius = screen:scaleBySize(13),
+        hold_callback      =  function()
+            UIManager:broadcastEvent(Event:new("ToggleNightMode"))
+            Utils.updateMenu(ctx.touch_menu, {delay = 0}) -- need instant update
+        end,
     }
 
     local nl_row  -- forward-declare for on_change closure
