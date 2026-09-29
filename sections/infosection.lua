@@ -17,9 +17,11 @@ local ShadowDeco      = require("widgets/shadowdeco")
 local Utils           = require("common/utils")
 local _               = require("common/i18n").gettext
 
-local InfoSection = {}
+local InfoSection = {
+    id = "info"
+}
 
-function InfoSection.build(ctx, show_shadow)
+function InfoSection.build(ctx)
     -- ctx import
     local config             = ctx.config
     local touch_menu         = ctx.touch_menu
@@ -43,6 +45,9 @@ function InfoSection.build(ctx, show_shadow)
     local btn_shadow_radius    = screen:scaleBySize(config.style.btn_shadow_radius or 6)
     local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
+
+    local section    = Utils.getSection(config, InfoSection.id)
+    local show_shadow = section.show_shadow or false
     local shadow_gap = (show_shadow and btn_shadow_offset or 0)
 
     if not reader then return nil end

@@ -6,13 +6,16 @@ local VerticalSpan    = require("ui/widget/verticalspan")
 
 local Event           = require("ui/event")
 
+local Config          = require("config")
 local SliderSection   = require("sections/slidersection")
 local ShadowDeco      = require("widgets/shadowdeco")
 local Utils           = require("common/utils")
 
-local SkimSection = {}
+local SkimSection = {
+    id = "info"
+}
 
-function SkimSection.build(ctx, show_shadow)
+function SkimSection.build(ctx)
     -- ctx import
     local config             = ctx.config
     local touch_menu         = ctx.touch_menu
@@ -36,6 +39,8 @@ function SkimSection.build(ctx, show_shadow)
     local btn_shadow_radius    = screen:scaleBySize(config.style.btn_shadow_radius or 6)
     local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
+    local section    = Utils.getSection(config, SkimSection.id)
+    local show_shadow = section.show_shadow or false
     local shadow_gap = (show_shadow and btn_shadow_offset or 0)
 
     local skim = {
@@ -92,19 +97,16 @@ function SkimSection.build(ctx, show_shadow)
         max                = skim.page_count,
         get                = function() return skim.curr_page end,
         set                = goToPage,
-        show_shadow        = show_shadow or false,
+        ticks              = reader.toc:getTocTicksFlattened(),
+        show_shadow        = show_shadow,
+        progress_hold_callback =  function() Utils.closeMenu(touch_menu); goEvent("ShowPageBrowser") end,
+        alt                = reader.document.flows,
+        initial_pos_marker = true,
+        initial_percentage = (touch_menu._qs_orig_page or skim.curr_page) / skim.page_count,
 
         text_minus         = "\u{F056}",
         text_plus          = "\u{F055}",
-        initial_pos_marker = true,
-        --progress_hold_callback      =  function() print("incroyable") end,
     }
-
-    local progress = row1.refs.sliders[1].widget
-    progress.ticks              = reader.toc:getTocTicksFlattened()
-    progress.tick_width         = slider_ticks_width
-    progress.alt                = reader.document.flows
-    progress.initial_percentage = (touch_menu._qs_orig_page or skim.curr_page) / skim.page_count
 
     -- Row 2: Navigation
     local function createBtn(props)

@@ -56,7 +56,8 @@ function Info.build(ctx)
     local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
 
     local section    = Utils.getSection(config, Info.id)
-    local shadow_gap = (section.show_shadow and btn_shadow_offset or 0)
+    local show_shadow = section.show_shadow or false
+    local shadow_gap = (show_shadow and btn_shadow_offset or 0)
 
     if not section or not section.enabled_r or not reader then return nil end
     local refs
@@ -132,11 +133,11 @@ function Info.build(ctx)
 
     --
     local info_col = VerticalGroup:new{ align = "center" }
-    local infoSection = InfoSection.build(ctx, section.show_shadow)
+    local infoSection = InfoSection.build(ctx)
     table.insert(info_col, infoSection.widget)
 
     if section.show_skim then
-        local skimSection = SkimSection.build(ctx, section.show_shadow)
+        local skimSection = SkimSection.build(ctx)
         table.insert(info_col, VerticalSpan:new{ width = h_gap })
         table.insert(info_col, skimSection.widget)
         refs = { buttons = {}, sliders = {}, widgets = {} }
@@ -200,7 +201,7 @@ function Info.build(ctx)
         end
 
         -- create shadow
-        if section.show_shadow then
+        if show_shadow then
             ShadowDeco.attach(info_thumbnail, btn_shadow_offset, btn_shadow_intensity, btn_shadow_radius)
         end
 
@@ -216,11 +217,11 @@ function Info.build(ctx)
         opts.inner_width = inner_width - info_thumbnail:getSize().w - h_gap - shadow_gap
 
         info_col = VerticalGroup:new{ align = "left" }
-        local infoSection = InfoSection.build(opts, section.show_shadow)
+        local infoSection = InfoSection.build(opts)
         table.insert(info_col, infoSection.widget)
 
         if section.show_skim then
-            local skimSection = SkimSection.build(opts, section.show_shadow)
+            local skimSection = SkimSection.build(opts)
             table.insert(info_col, VerticalSpan:new{ width = h_gap })
             table.insert(info_col, skimSection.widget)
             refs = { buttons = {}, sliders = {}, widgets = {} }

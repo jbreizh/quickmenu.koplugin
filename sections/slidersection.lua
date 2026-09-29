@@ -34,8 +34,9 @@ function SliderSection.build(opts)
     local btn_shadow_intensity = opts.btn_shadow_intensity or 0.6
     local btn_shadow_radius    = opts.btn_shadow_radius or screen:scaleBySize(6)
     local slider_ticks_width   = opts.slider_ticks_width or screen:scaleBySize(1)
+    local show_shadow          = opts.show_shadow or false
 
-    local shadow_gap = (opts.show_shadow and btn_shadow_offset or 0)
+    local shadow_gap = (show_shadow and btn_shadow_offset) or 0
 
     -- logic
     local progress
@@ -67,7 +68,7 @@ function SliderSection.build(opts)
         hold_callback  = opts.minus_hold_callback or function() setValue(opts.min) end,
     }
 
-    if opts.show_shadow then
+    if show_shadow then
         ShadowDeco.attach(minus, btn_shadow_offset, btn_shadow_intensity, btn_shadow_radius)
     end
 
@@ -80,15 +81,17 @@ function SliderSection.build(opts)
         ticks              = opts.ticks,
         tick_width         = slider_ticks_width,
         last               = opts.max,
-        initial_pos_marker = opts.initial_pos_marker,
         hold_callback      = opts.progress_hold_callback or nil,
         min                = opts.min,
         max                = opts.max,
         set                = setValue,
         get                = getValue,
+        alt                = opts.alt,
+        initial_pos_marker = opts.initial_pos_marker,
+        initial_percentage = opts.initial_percentage,
     }
 
-    if opts.show_shadow then
+    if show_shadow then
         ShadowDeco.attach(progress, btn_shadow_offset, btn_shadow_intensity, btn_shadow_radius)
     end
 
@@ -103,7 +106,7 @@ function SliderSection.build(opts)
         hold_callback  = opts.plus_hold_callback or function() setValue(opts.max) end,
     }
 
-    if opts.show_shadow then
+    if show_shadow then
         ShadowDeco.attach(plus, btn_shadow_offset, btn_shadow_intensity, btn_shadow_radius)
     end
 
