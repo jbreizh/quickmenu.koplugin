@@ -52,7 +52,7 @@ local function patchTouchMenu(plugin)
 
     -- grab zenslider
     local function get_sliders(touch_menu)
-        local refs = touch_menu._qs_refs
+        local refs = touch_menu._qm_refs
         if not refs then return {} end
         local sliders = {}
         for idx, sr in ipairs(refs.sliders or {}) do
@@ -63,7 +63,7 @@ local function patchTouchMenu(plugin)
 
     -- Gesture handler for panel taps/pans
     local function handlePanelGesture(touch_menu, ges, is_hold)
-        local refs = touch_menu._qs_refs
+        local refs = touch_menu._qm_refs
         if not refs then return false end
         for _i, sr in ipairs(refs.sliders or {}) do
             local w = sr.slider or sr.widget -- slider = zen_slider / widget = generic
@@ -137,9 +137,6 @@ local function patchTouchMenu(plugin)
             self.max_per_page_default = config.items_per_page or 20
         end
 
-        -- store orig_page for initial_pos_marker in skim to survive redraw
-        self._qs_orig_page = nil
-
         -- force quick menu first
         if config.open_on_start then
             self.last_index = config.idx_quickmenu_tab or 1
@@ -188,6 +185,7 @@ local function patchTouchMenu(plugin)
                 end
             end
         end
+
         ensure_panel_gestures(self)
     end
 
@@ -195,13 +193,14 @@ local function patchTouchMenu(plugin)
     local orig_updateItems = TouchMenu.updateItems
     function TouchMenu:updateItems(target_page, target_item_id)
         -- FileManager may create its TouchMenu before we patches the class.
+        plugin.touch_menu = self
         ensure_panel_gestures(self)
 
         -- switching away from quickmenu tab
         if not self.item_table or not self.item_table.panel then
              -- clear flag
-            self._qs_refs = nil
-            self._qs_full_refresh = nil
+            self._qm_refs = nil
+            self._qm_full_refresh = nil
 
             -- clear and rebuild default footer
             QuickMenu.createFooter(plugin)
@@ -210,9 +209,9 @@ local function patchTouchMenu(plugin)
         end
 
         -- zenSlider
-        if not self._qs_refs then
-            self._qs_slider_locked = true
-            UIManager:scheduleIn(0.35, function() self._qs_slider_locked = false end)
+        if not self._qm_refs then
+            self._qm_slider_locked = true
+            UIManager:scheduleIn(0.35, function() self._qm_slider_locked = false end)
         end
 
         -- Custom panel mode: render the panel widget instead of menu items
@@ -221,7 +220,7 @@ local function patchTouchMenu(plugin)
         table.insert(self.item_group, self.bar)
         table.insert(self.layout, self.bar.icon_widgets)
 
-        -- Build panel (also sets self._qs_refs)
+        -- Build panel (also sets self._qm_refs)
         local panel_fn = self.item_table.panel
         local panel = type(panel_fn) == "function" and panel_fn(self) or panel_fn
         table.insert(self.item_group, panel)
@@ -246,9 +245,9 @@ local function patchTouchMenu(plugin)
 
         -- keep background or not
         local keep_bg = old_dimen and self.dimen.h >= old_dimen.h
-        if self._qs_full_refresh then
+        if self._qm_full_refresh then
             keep_bg = false
-            self._qs_full_refresh = false
+            self._qm_full_refresh = false
         end
 
         -- Refresh screen
@@ -266,9 +265,9 @@ local function patchTouchMenu(plugin)
     -- Hook for zenSlider
     local orig_onPan = TouchMenu.onPan
     function TouchMenu:onPanCloseAllMenus(arg, ges_ev)
-        if self._qs_refs and self.item_table and self.item_table.panel then -- in the panel
-            if self._qs_slider_locked then self._qs_opening_pan = true; return true end -- slider lock
-            self._qs_opening_pan = false
+        if self._qm_refs and self.item_table and self.item_table.panel then -- in the panel
+            if self._qm_slider_locked then self._qm_opening_pan = true; return true end -- slider lock
+            self._qm_opening_pan = false
             for _i, sl in ipairs(get_sliders(self)) do
                 if sl:handlePan(ges_ev) then return true end
             end
@@ -277,8 +276,8 @@ local function patchTouchMenu(plugin)
     end
 
     function TouchMenu:onPanReleaseCloseAllMenus(arg, ges_ev)
-        if self._qs_refs and self.item_table and self.item_table.panel then -- in the panel
-            if self._qs_slider_locked or self._qs_opening_pan then self._qs_opening_pan = false; return end --slider lock
+        if self._qm_refs and self.item_table and self.item_table.panel then -- in the panel
+            if self._qm_slider_locked or self._qm_opening_pan then self._qm_opening_pan = false; return end --slider lock
             for _i, sl in ipairs(get_sliders(self)) do
                 if sl:handlePanRelease(ges_ev, self.show_parent, self.dimen) then return true end
             end
@@ -287,8 +286,8 @@ local function patchTouchMenu(plugin)
 
     local orig_onSwipe = TouchMenu.onSwipe
     function TouchMenu:onSwipe(arg, ges_ev)
-        if self._qs_refs and self.item_table and self.item_table.panel then -- in the panel
-            if not self._qs_slider_locked then --slider not lock
+        if self._qm_refs and self.item_table and self.item_table.panel then -- in the panel
+            if not self._qm_slider_locked then --slider not lock
                 for _i, sl in ipairs(get_sliders(self)) do
                     if sl:handleSwipe(ges_ev, self.show_parent, self.dimen) then return true end
                 end
@@ -301,7 +300,7 @@ local function patchTouchMenu(plugin)
 
     local orig_onMultiSwipe = TouchMenu.onMultiSwipe
     function TouchMenu:onMultiSwipe(arg, ges_ev)
-        if self._qs_refs and self.item_table and self.item_table.panel then -- in the panel
+        if self._qm_refs and self.item_table and self.item_table.panel then -- in the panel
             for _i, sl in ipairs(get_sliders(self)) do
                 if sl:handleMultiSwipe(ges_ev, self.show_parent, self.dimen) then return true end
             end
@@ -313,8 +312,8 @@ local function patchTouchMenu(plugin)
     -- Hook onTapCloseAllMenus to intercept taps on panel widgets
     local orig_onTapCloseAllMenus = TouchMenu.onTapCloseAllMenus
     function TouchMenu:onTapCloseAllMenus(arg, ges_ev)
-        if self._qs_refs and self.item_table and self.item_table.panel then
-            if self._qs_slider_locked then return true end
+        if self._qm_refs and self.item_table and self.item_table.panel then
+            if self._qm_slider_locked then return true end
             if handlePanelGesture(self, ges_ev, false) then return true end
         end
         return orig_onTapCloseAllMenus(self, arg, ges_ev)
@@ -322,8 +321,8 @@ local function patchTouchMenu(plugin)
 
     -- Hook onHoldCloseAllMenus to intercept holds on panel buttons
     function TouchMenu:onHoldCloseAllMenus(arg, ges_ev)
-        if self._qs_refs and self.item_table and self.item_table.panel then
-            if not self._qs_slider_locked then handlePanelGesture(self, ges_ev, true) end
+        if self._qm_refs and self.item_table and self.item_table.panel then
+            if not self._qm_slider_locked then handlePanelGesture(self, ges_ev, true) end
         end
         -- Holds outside the menu do nothing (don't close it)
         return true

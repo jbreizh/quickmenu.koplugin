@@ -50,9 +50,9 @@ function SkimSection.build(ctx)
 
     -- Logic
     local function addOrigin()
-        if not touch_menu._qs_orig_page then
+        if not touch_menu._qm_orig_page then
             reader.link:addCurrentLocationToStack()
-            touch_menu._qs_orig_page = reader:getCurrentPage()
+            touch_menu._qm_orig_page = reader:getCurrentPage()
         end
     end
 
@@ -65,9 +65,9 @@ function SkimSection.build(ctx)
     end
 
     local function goToOrig()
-        if touch_menu._qs_orig_page then
+        if touch_menu._qm_orig_page then
             reader.link:onGoBackLink()
-            touch_menu._qs_orig_page = nil
+            touch_menu._qm_orig_page = nil
             Utils.updateMenu(touch_menu, {delay = 0})
         end
     end
@@ -102,7 +102,7 @@ function SkimSection.build(ctx)
         progress_hold_callback =  function() Utils.closeMenu(touch_menu); goEvent("ShowPageBrowser") end,
         alt                = reader.document.flows,
         initial_pos_marker = true,
-        initial_percentage = (touch_menu._qs_orig_page or skim.curr_page) / skim.page_count,
+        initial_percentage = (touch_menu._qm_orig_page or skim.curr_page) / skim.page_count,
 
         text_minus         = "\u{F056}",
         text_plus          = "\u{F055}",

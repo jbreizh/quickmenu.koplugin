@@ -214,16 +214,16 @@ function M.updateMenu(touch_menu, opts)
     local delay = opts.delay -- delay before update in s (default : nil)
     local full = opts.full -- true force fullscreen refresh (default : nil)
     -- full refresh
-    if full then touch_menu._qs_full_refresh = true end
+    if full then touch_menu._qm_full_refresh = true end
     -- instant update
     if delay == 0 then touch_menu:updateItems(); return end
     -- Debouncing
-    if touch_menu._qs_pending_refresh then return end
+    if touch_menu._qm_pending_refresh then return end
     local UIManager = require("ui/uimanager")
-    touch_menu._qs_pending_refresh = true
+    touch_menu._qm_pending_refresh = true
     --
     local function do_update()
-        touch_menu._qs_pending_refresh = false
+        touch_menu._qm_pending_refresh = false
         if touch_menu.updateItems then touch_menu:updateItems() end
     end
     -- delay update or nextTick update

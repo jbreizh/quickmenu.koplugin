@@ -88,7 +88,6 @@ function Frontlight.build(ctx)
             local collapse_btn = Button:new{
                 text           = section.collapse and "▶" or "▼",
                 width          = btn_width,
-                radius         = btn_radius,
                 bordersize     = 0,
                 text_font_size = btn_font_size,
                 show_parent    = touch_menu.show_parent,
@@ -115,7 +114,6 @@ function Frontlight.build(ctx)
             local settings_btn = Button:new{
                 text           = "\u{EB92}",
                 width          = btn_width,
-                radius         = btn_radius,
                 bordersize     = 0,
                 text_font_size = btn_font_size,
                 show_parent    = touch_menu.show_parent,

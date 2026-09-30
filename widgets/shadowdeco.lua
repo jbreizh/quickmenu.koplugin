@@ -4,8 +4,8 @@ local Blitbuffer = require("ffi/blitbuffer")
 local ShadowDeco = {}
 
 function ShadowDeco.attach(widget, shadow_offset, shadow_intensity, shadow_radius)
-    if not widget or widget._qs_btn_shadow then return widget end
-    widget._qs_btn_shadow = true
+    if not widget or widget._qm_btn_shadow then return widget end
+    widget._qm_btn_shadow = true
     local orig_paintTo = widget.paintTo
     if not orig_paintTo then return widget end
     widget.paintTo = function(self, bb, x, y)

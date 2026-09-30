@@ -66,24 +66,22 @@ local function mergeRefs(dst, src)
 end
 
 function QuickMenu.createPanel(plugin)
-    local refs = { buttons = {}, sliders = {}, widgets = {} }
-    QuickMenu.updatePlugin(plugin) -- update plugin = ctx in section
+    -- update plugin = ctx in section
+    QuickMenu.updatePlugin(plugin)
     --
     local config = plugin.config
     local touch_menu = plugin.touch_menu
-
     if not config.section_order or type(config.section_order) ~= "table" then
         logger.err("[QuickMenu] config.section_order is missing or invalid in QuickMenu.createPanel.")
         return VerticalGroup:new{}
     end
-
+    -- build section and refs
     local panel = VerticalGroup:new{
         align = "center",
         VerticalSpan:new{ width = Screen:scaleBySize( 2 ) } -- to not cover tab menu underline
     }
-
+    local refs = { buttons = {}, sliders = {}, widgets = {} }
     local added_count = 0
-    -- Utilisation de l'ordre défini dans le fichier de config
     for idx, id in ipairs(config.section_order) do
         local ok, section_mod = pcall(require, "sections/" .. id)
         if ok and section_mod and type(section_mod.build) == "function" then
@@ -104,8 +102,8 @@ function QuickMenu.createPanel(plugin)
             logger.err("[QuickMenu] Failed to load section module or missing 'build' method: " .. tostring(id))
         end
     end
+    touch_menu._qm_refs = refs
 
-    touch_menu._qs_refs = refs
     return panel
 end
 
@@ -113,8 +111,8 @@ end
 -- Footer Creator
 -- ============================================================
 function QuickMenu.createFooter(plugin)
-    --
-    QuickMenu.updatePlugin(plugin) -- update plugin = ctx in
+    --update plugin = ctx in section
+    QuickMenu.updatePlugin(plugin)
     --
     local ok, footer_mod = pcall(require, "sections/footer")
     if ok and footer_mod and type(footer_mod.build) == "function" then
@@ -495,8 +493,8 @@ function QuickMenu.showSettings(plugin)
 
     local buttons = Utils.wrap_items(QuickMenu.buildGlobalSubmenu(plugin, close, refresh))
 
-    -- Ajout du bouton de sortie en bas
-    table.insert(buttons, {}) -- séparateur
+    table.insert(buttons, {}) -- separator
+
     table.insert(buttons, {{
         text = _("Exit"),
         callback = close()
