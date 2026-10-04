@@ -432,7 +432,28 @@ function QuickMenuPlugin:addToMainMenu(menu_items)
     else logger.err("[QuickMenu] Failed to build settings menu: " .. tostring(result)) end
 end
 
+function QuickMenuPlugin:deletePluginSettings()
+    -- flag to prevent onFlushSettings
+    self.settings_deleted = true
+
+    -- delete settings
+    local DataStorage = require("datastorage")
+    local settings_dir = DataStorage:getSettingsDir()
+    for _i, file in ipairs({
+        "quick_menu_settings.lua",
+    }) do
+        os.remove(settings_dir .. "/" .. file)
+        os.remove(settings_dir .. "/" .. file .. ".old")
+    end
+
+    logger.info("[Quickmenu] deletePluginSettings: removing all plugin data")
+end
+
 function QuickMenuPlugin:onFlushSettings()
+    -- don't flush if settings deleted
+    if self.settings_deleted then return end
+
+    -- flush settings
     local Config = require("config")
     Config.save(self.config)
 end
