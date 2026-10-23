@@ -118,7 +118,7 @@ function IntensityZenUI.build(ctx, settings_func)
             fl_drag_suffix, -- add suffix
         }
         if section.collapse and hasNaturalLight then
-            local nl_label = TextWidget:new{ text = " - " .. _("Warmth") .. " : " .. powerd:frontlightWarmth() .. "%", face = medium_font, bold = true }
+            local nl_label = TextWidget:new{ text = " - " .. _("Warmth") .. " : " .. powerd:toNativeWarmth(powerd:frontlightWarmth()) .. (powerd.fl_warmth_max == 100 and "%" or ""), face = medium_font, bold = true }
             table.insert(fl_label_group, nl_label)
             table.insert(fl_label_group, HorizontalSpan:new{ width = inner_width - fl_drag_ref_w - btn_width -nl_label:getSize().w})
         else

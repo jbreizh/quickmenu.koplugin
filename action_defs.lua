@@ -172,7 +172,7 @@ function ActionDefs.get()
             label = _("Warmth"),
             label_func = function(ctx)
                 if not ctx.powerd:isFrontlightOn() or ctx.powerd:frontlightWarmth() == 0 then return _("Off") end
-                return ("%d%%"):format(ctx.powerd:frontlightWarmth())
+                return ctx.powerd:toNativeWarmth(ctx.powerd:frontlightWarmth()) .. (ctx.powerd.fl_warmth_max == 100 and "%" or "")
             end,
             category = "system",
             active_func = function(ctx) return ctx.powerd:isFrontlightOn() and ctx.powerd:frontlightWarmth() ~= 0 end,
