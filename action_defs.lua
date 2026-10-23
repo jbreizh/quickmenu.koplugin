@@ -148,7 +148,7 @@ function ActionDefs.get()
             label = _("Light"),
             label_func = function(ctx)
                 if not ctx.powerd:isFrontlightOn() then return _("Off") end
-                return ("%d%%"):format(ctx.powerd:frontlightIntensity())
+                return ctx.powerd:frontlightIntensity() .. (ctx.powerd.fl_max == 100 and "%" or "")
             end,
             category = "system",
             active_func = function(ctx) return ctx.powerd:isFrontlightOn() end,

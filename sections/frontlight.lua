@@ -99,7 +99,7 @@ function Frontlight.build(ctx)
             }
             table.insert(row_title, collapse_btn)
             -- label
-            local label = Frontlight.label .. " : " .. powerd:frontlightIntensity() .. "%"
+            local label = Frontlight.label .. " : " .. powerd:frontlightIntensity() .. (powerd.fl_max == 100 and "%" or "")
             if  hasNaturalLight and section.collapse then
                 label = label .. " - " .._("Warmth") .. " : " .. powerd:frontlightWarmth() .. "%"
             end

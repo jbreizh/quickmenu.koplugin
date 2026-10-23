@@ -86,7 +86,7 @@ function IntensityZenUI.build(ctx, settings_func)
         fl_max_num_sample:free()
 
         -- add suffix
-        local fl_suffix_text = "%"
+        local fl_suffix_text = fl.max == 100 and "%" or ""
         local fl_drag_suffix = TextWidget:new{ text = fl_suffix_text, face = medium_font, bold = true }
         local fl_drag_suffix_w = fl_drag_suffix:getSize().w
 
