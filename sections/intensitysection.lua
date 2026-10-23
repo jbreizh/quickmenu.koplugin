@@ -34,7 +34,7 @@ function IntensitySection.build(ctx, show_shadow)
 
     local min_val    = powerd.fl_min or 0
     local max_val    = powerd.fl_max or 100
-    local tick_count = 25
+    local tick_count = math.min(25, max_val - min_val)
     local step_val   = 1
 
     local function getValue()
