@@ -99,9 +99,9 @@ function Frontlight.build(ctx)
             }
             table.insert(row_title, collapse_btn)
             -- label
-            local label = Frontlight.label .. " : " .. powerd:frontlightIntensity() .. "%"
+            local label = Frontlight.label .. " : " .. powerd:frontlightIntensity() .. (powerd.fl_max == 100 and "%" or "")
             if  hasNaturalLight and section.collapse then
-                label = label .. " - " .._("Warmth") .. " : " .. powerd:frontlightWarmth() .. "%"
+                label = label .. " - " .._("Warmth") .. " : " .. powerd:toNativeWarmth(powerd:frontlightWarmth()) .. (powerd.fl_warmth_max == 100 and "%" or "")
             end
             local label_title = TextWidget:new{
                 text = label,
@@ -142,7 +142,7 @@ function Frontlight.build(ctx)
         else
             if section.show_title then
                 local label_title = TextWidget:new{
-                    text = _("Warmth") .. " : " .. powerd:frontlightWarmth() .. "%",
+                    text = _("Warmth") .. " : " .. powerd:toNativeWarmth(powerd:frontlightWarmth()) .. (powerd.fl_warmth_max == 100 and "%" or ""),
                     face =  Font:getFace("cfont", btn_font_size), bold = true,
                     max_width = inner_width,
                 }

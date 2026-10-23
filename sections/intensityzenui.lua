@@ -86,7 +86,7 @@ function IntensityZenUI.build(ctx, settings_func)
         fl_max_num_sample:free()
 
         -- add suffix
-        local fl_suffix_text = "%"
+        local fl_suffix_text = fl.max == 100 and "%" or ""
         local fl_drag_suffix = TextWidget:new{ text = fl_suffix_text, face = medium_font, bold = true }
         local fl_drag_suffix_w = fl_drag_suffix:getSize().w
 
@@ -118,7 +118,7 @@ function IntensityZenUI.build(ctx, settings_func)
             fl_drag_suffix, -- add suffix
         }
         if section.collapse and hasNaturalLight then
-            local nl_label = TextWidget:new{ text = " - " .. _("Warmth") .. " : " .. powerd:frontlightWarmth() .. "%", face = medium_font, bold = true }
+            local nl_label = TextWidget:new{ text = " - " .. _("Warmth") .. " : " .. powerd:toNativeWarmth(powerd:frontlightWarmth()) .. (powerd.fl_warmth_max == 100 and "%" or ""), face = medium_font, bold = true }
             table.insert(fl_label_group, nl_label)
             table.insert(fl_label_group, HorizontalSpan:new{ width = inner_width - fl_drag_ref_w - btn_width -nl_label:getSize().w})
         else
