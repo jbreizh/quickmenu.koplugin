@@ -14,8 +14,8 @@ local UIManager    = require("ui/uimanager")
 
 local Util         = require("util")
 
-local Utils            = require("common/utils")
-local _                = require("common/i18n").gettext
+local Utils            = require("utils")
+local _                = require("locale/i18n").gettext
 
 local ActionDefs = {}
 
@@ -44,6 +44,7 @@ function ActionDefs.getSorted(action_list)
         table.insert(sorted_list, {
             id = id,
             label = def.label or _("None"),
+            text = def.text or "",
             icon = def.icon or "",
             def = def
         })
@@ -86,8 +87,13 @@ end
 function ActionDefs.get()
     return {
         wifi = {
-            icon = "\u{ECA8}", --"\u{F1EB}"
+            icon = "qm_wifi_on",
             icon_func =  function(ctx)
+                if NetworkMgr:isWifiOn() then return "qm_wifi_on" end
+                return "qm_wifi_off"
+            end,
+            text = "\u{ECA8}", --"\u{F1EB}"
+            text_func =  function(ctx)
                 if NetworkMgr:isWifiOn() then return "\u{ECA8}" end
                 return "\u{ECA9}"
             end,
@@ -119,8 +125,13 @@ function ActionDefs.get()
             end
         },
         night = {
-            icon = "\u{EC0D}", -- theme-light-dark
+            icon = "qm_night_on",
             icon_func = function(ctx)
+                if G_reader_settings:isTrue("night_mode") then return "qm_night_on" end
+                return "qm_night_off"
+            end,
+            text = "\u{EC0D}", -- theme-light-dark
+            text_func = function(ctx)
                 if G_reader_settings:isTrue("night_mode") then return "\u{EC93}" end -- weather-night
                 return "\u{EC98}" -- weather-sunny
             end,
@@ -140,8 +151,13 @@ function ActionDefs.get()
             hold_callback = function(ctx) Utils.closeMenu(ctx.touch_menu); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
         },
         light = {
-            icon = "\u{EA2B}", -- led-on
+            icon = "qm_light_on",
             icon_func = function(ctx)
+            if ctx.powerd:isFrontlightOn() then return "qm_light_on" end
+                return "qm_light_off"
+            end,
+            text = "\u{EA2B}", -- led-on
+            text_func = function(ctx)
             if ctx.powerd:isFrontlightOn() then return "\u{EA2B}" end -- led-on
                 return "\u{EA2D}" -- led-variant-off "\u{EA2A}"
             end,
@@ -164,8 +180,13 @@ function ActionDefs.get()
             end
         },
         warmth = {
-            icon = "\u{F490}", -- flame
+            icon = "qm_warmth_on",
             icon_func = function(ctx)
+                if not ctx.powerd:isFrontlightOn() or ctx.powerd:frontlightWarmth() == 0 then return "qm_warmth_on" end
+                return "qm_warmth_off"
+            end,
+            text = "\u{F490}", -- flame
+            text_func = function(ctx)
                 if not ctx.powerd:isFrontlightOn() or ctx.powerd:frontlightWarmth() == 0 then return "\u{F2DC}" end -- frozen
                 return "\u{F490}" -- flamme
             end,
@@ -185,8 +206,10 @@ function ActionDefs.get()
             end
         },
         rotate = {
-            icon = "\u{EB74}",
+            icon = "qm_rotate",
             -- icon_func
+            text = "\u{EB74}",
+            -- text_func
             label = _("Rotate"),
             label_func =  function(ctx)
                 local rot = ctx.device.screen:getRotationMode()
@@ -204,8 +227,13 @@ function ActionDefs.get()
             hold_callback = function(ctx) UIManager:broadcastEvent(Event:new("InvertRotation")) end
         },
         lock = {
-            icon = "\u{F023}",
+            icon = "qm_lock_on",
             icon_func =  function(ctx)
+                if G_reader_settings:isTrue("input_lock_gsensor") or G_reader_settings:isTrue("input_ignore_gsensor") then return "qm_lock_on" end
+                return "qm_lock_off"
+            end,
+            text = "\u{F023}",
+            text_func =  function(ctx)
                 if G_reader_settings:isTrue("input_lock_gsensor") or G_reader_settings:isTrue("input_ignore_gsensor") then return "\u{F023}" end
                 return "\u{F09C}"
             end,
@@ -234,8 +262,10 @@ function ActionDefs.get()
             end
         },
         usb = {
-            icon = "\u{F287}",
+            icon = "qm_usb_storage",
             -- icon_func
+            text = "\u{F287}",
+            -- text_func
             label = _("USB"),
             -- label_func
             category = "system",
@@ -246,8 +276,10 @@ function ActionDefs.get()
             hold_callback = function(ctx) Utils.closeMenu(ctx.touch_menu); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
         },
         restart = {
-            icon = "\u{F021}",
+            icon = "qm_power_restart",
             -- icon_func
+            text = "\u{F021}",
+            -- text_func
             label = _("Restart"),
             -- label_func
             category = "power",
@@ -272,8 +304,10 @@ function ActionDefs.get()
             end,
         },
         exit = {
-            icon = "\u{274C}",
+            icon = "qm_power_exit",
             -- icon_func
+            text = "\u{274C}",
+            -- text_func
             label = _("Exit"),
             -- label_func
             category = "power",
@@ -298,8 +332,10 @@ function ActionDefs.get()
             end,
         },
         reboot = {
-            icon = "\u{F01E}",
+            icon = "qm_power_reboot",
             -- icon_func
+            text = "\u{F01E}",
+            -- text_func
             label = _("Reboot"),
             -- label_func
             category = "power",
@@ -324,8 +360,10 @@ function ActionDefs.get()
             end,
         },
         sleep = {
-            icon = "\u{EBB1}", -- sleep
+            icon = "qm_power_sleep",
             -- icon_func
+            text = "\u{EBB1}", -- sleep
+            -- text_func
             label = _("Sleep"),
             -- label_func
             category = "power",
@@ -343,8 +381,10 @@ function ActionDefs.get()
             hold_callback = function(ctx) Utils.closeMenu(ctx.touch_menu); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
         },
         poweroff = {
-            icon = "\u{F011}",
+            icon = "qm_power",
             -- icon_func
+            text = "\u{F011}",
+            -- text_func
             label = _("Power off"),
             -- label_func
             category = "power",
@@ -369,8 +409,10 @@ function ActionDefs.get()
             end,
         },
         power = {
-            icon = "\u{F011}",
+            icon = "qm_power",
             -- icon_func
+            text = "\u{F011}",
+            -- text_func
             label = _("Power"),
             -- label_func
             category = "power",
@@ -456,8 +498,10 @@ function ActionDefs.get()
             hold_callback = function(ctx) Utils.closeMenu(ctx.touch_menu); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
         },
         dictionary = {
-            icon = "\u{F02D}",
+            icon = "qm_search_dictionary",
             -- icon_func
+            text = "\u{F02D}",
+            -- text_func
             label = _("Dictionary"),
             -- label_func
             category = "search",
@@ -474,8 +518,10 @@ function ActionDefs.get()
             end
         },
         wikipedia = {
-            icon = "\u{F266}",
+            icon = "qm_search_wikipedia",
             -- icon_func
+            text = "\u{F266}",
+            -- text_func
             label = _("Wikipedia"),
             -- label_func
             category = "search",
@@ -492,8 +538,10 @@ function ActionDefs.get()
             end
         },
         history = {
-            icon = "\u{F1DA}",
+            icon = "qm_history",
             -- icon_func
+            text = "\u{F1DA}",
+            -- text_func
             label = _("History"),
             -- label_func
             category = "shortcut",
@@ -510,8 +558,10 @@ function ActionDefs.get()
             end
         },
         resume = {
-            icon = "\u{F04B}",
+            icon = "qm_resume",
             -- icon_func
+            text = "\u{F04B}",
+            -- text_func
             label = _("Resume"),
             --  label_func
             category = "shortcut",
@@ -528,8 +578,10 @@ function ActionDefs.get()
             end
         },
         collections = {
-            icon = "\u{F0C9}",
+            icon = "qm_collections",
             -- icon_func
+            text = "\u{F0C9}",
+            -- text_func
             label = _("Collections"),
             -- label_func
             category = "shortcut",
@@ -546,8 +598,10 @@ function ActionDefs.get()
             end
         },
         favorites = {
-            icon = "\u{F005}",
+            icon = "qm_favorites",
             -- icon_func
+            text = "\u{F005}",
+            -- text_func
             label = _("Favorites"),
             -- label_func
             category = "shortcut",
@@ -564,8 +618,10 @@ function ActionDefs.get()
             end
         },
         cloud = {
-            icon = "\u{F0C2}",
+            icon = "qm_cloud",
             -- icon_func
+            text = "\u{F0C2}",
+            -- text_func
             label = _("Cloud"),
             -- label_func
             category = "network",
@@ -583,8 +639,10 @@ function ActionDefs.get()
             end
         },
         opds = {
-            icon = "\u{F0ED}",
+            icon = "qm_opds",
             -- icon_func
+            text = "\u{F0ED}",
+            -- text_func
             label = _("OPDS"),
             -- label_func
             category = "network",
@@ -601,8 +659,10 @@ function ActionDefs.get()
             end
         },
         ssh = {
-            icon = "\u{EA17}", -- lan-connect -- lan-disconnect
-            icon_func = function(ctx) return is_ssh_active() and "\u{EA17}" or "\u{EA18}" end,
+            icon = "qm_ssh_on", -- lan-connect -- lan-disconnect
+            icon_func = function(ctx) return is_ssh_active() and "qm_ssh_on" or "qm_ssh_off" end,
+            text = "\u{EA17}", -- lan-connect -- lan-disconnect
+            text_func = function(ctx) return is_ssh_active() and "\u{EA17}" or "\u{EA18}" end,
             label = _("SSH"),
             label_func = function(ctx) return is_ssh_active() and _("On") or _("Off") end,
             category = "network",
@@ -616,8 +676,10 @@ function ActionDefs.get()
             hold_callback = function(ctx) Utils.closeMenu(ctx.touch_menu); UIManager:show(InfoMessage:new{ text =  _("Nothing to do") }) end
         },
         calibre = {
-            icon = "\u{EB8C}", -- server-network -- server-network-off
-            icon_func = function(ctx) return is_calibre_active() and "\u{EB8C}" or "\u{EB8D}" end,
+            icon = "qm_calibre_on", -- server-network -- server-network-off
+            icon_func = function(ctx) return is_calibre_active() and "qm_calibre_on" or "qm_calibre_off" end,
+            text = "\u{EB8C}", -- server-network -- server-network-off
+            text_func = function(ctx) return is_calibre_active() and "\u{EB8C}" or "\u{EB8D}" end,
             label = "Calibre",
             label_func = function(ctx) return is_calibre_active() and _("On") or _("Off") end,
             category = "network",
@@ -634,8 +696,10 @@ function ActionDefs.get()
             hold_callback = function(ctx) Utils.closeMenu(ctx.touch_menu); UIManager:show(InfoMessage:new{ text = _("Nothing to do") }) end
         },
         kosync = {
-            icon = "\u{ED3E}",
+            icon = "qm_kosync",
             -- icon_func
+            text = "\u{ED3E}",
+            -- text_func
             label = _("KOSync"),
             -- label_func
             category = "network",
@@ -692,8 +756,10 @@ function ActionDefs.get()
             end,
         },
         localsend = {
-            icon = "\u{F1D8}",
-            icon_func = function(ctx) return is_localsend_active() and "\u{F1D9}" or "\u{F1D8}" end,
+            icon = "qm_localsend_on",
+            icon_func = function(ctx) return is_localsend_active() and "qm_localsend_on" or "qm_localsend_off" end,
+            text = "\u{F1D8}",
+            text_func = function(ctx) return is_localsend_active() and "\u{F1D9}" or "\u{F1D8}" end,
             label = "LocalSend",
             label_func = function(ctx) return is_localsend_active() and _("On") or _("Off") end,
             category = "network",
@@ -748,8 +814,10 @@ function ActionDefs.get()
             end,
         },
         filebrowserplus = {
-            icon = "\u{F15C}",
-            icon_func = function(ctx) return is_filebrowserplus_active() and "\u{F0F6}" or "\u{F15C}" end,
+            icon = "qm_filebrowserplus_on",
+            icon_func = function(ctx) return is_filebrowserplus_active() and "qm_filebrowserplus_on" or "qm_filebrowserplus_off" end,
+            text = "\u{F15C}",
+            text_func = function(ctx) return is_filebrowserplus_active() and "\u{F0F6}" or "\u{F15C}" end,
             label = "FileBrowserPlus",
             label_func = function(ctx) return is_filebrowserplus_active() and _("On") or _("Off") end,
             category = "network",
@@ -765,8 +833,10 @@ function ActionDefs.get()
             hold_callback = function(ctx) Utils.closeMenu(ctx.touch_menu); UIManager:show(InfoMessage:new{ text = _("Nothing to do") }) end
         },
         search = {
-            icon = "\u{F002}",
+            icon = "qm_search",
             -- icon_func
+            text = "\u{F002}",
+            -- text_func
             label = _("Search"),
             -- label_func
             category = "search",
@@ -784,8 +854,10 @@ function ActionDefs.get()
             end
         },
         searchcalibre = {
-            icon = "\u{F00E}",
+            icon = "qm_search_calibre",
             -- icon_func
+            text = "\u{F00E}",
+            -- text_func
             label = "Calibre",
             -- label_func
             category = "search",
@@ -802,8 +874,10 @@ function ActionDefs.get()
                 end
         },
         statistics = {
-            icon = "\u{F200}",
+            icon = "qm_statistics",
             -- icon_func
+            text = "\u{F200}",
+            -- text_func
             label = _("Statistics"),
             -- label_func
             category = "shortcut",
@@ -820,8 +894,10 @@ function ActionDefs.get()
             end
         },
         statisticscalendar = {
-            icon = "\u{F073}",
+            icon = "qm_statistics_calendar",
             -- icon_func
+            text = "\u{F073}",
+            -- text_func
             label = _("Calendar"),
             -- label_func
             category = "shortcut",
@@ -838,8 +914,10 @@ function ActionDefs.get()
             end
         },
         process = {
-            icon = "\u{E8F9}", -- engine
+            icon = "qm_process",
             --icon_func
+            text = "\u{E8F9}", -- engine
+            --text_func
             label = _("Process") .. " (" .. _("MB") .. ")",
             label_func = function(ctx)
                 local statm = io.open("/proc/self/statm", "r")
@@ -869,8 +947,10 @@ function ActionDefs.get()
             end
         },
         cpuusedp = {
-            icon = "\u{ED19}",
+            icon = "qm_cpu",
             --icon_func
+            text = "\u{ED19}",
+            --text_func
             label = _("CPU") .. " (%)",
             label_func = function(ctx) return ctx.stat and ctx.stat.cpu and ctx.stat.cpu.usedp and string.format("%d%%", ctx.stat.cpu.usedp) or "" end,
             category = "footer",
@@ -887,8 +967,10 @@ function ActionDefs.get()
             end
         },
         memusedp = {
-            icon = "\u{EA5A}",
+            icon = "qm_memory",
             --icon_func
+            text = "\u{EA5A}",
+            --text_func
             label = _("Memory") .. " " .. _("used") .. " (%)",
             label_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.usedp and string.format("%d%%", ctx.stat.memory.usedp) or "" end,
             category = "footer",
@@ -905,8 +987,10 @@ function ActionDefs.get()
             end,
         },
         memavailablep = {
-            icon = "\u{EA5A}",
+            icon = "qm_memory",
             --icon_func
+            text = "\u{EA5A}",
+            --text_func
             label = _("Memory") .. " " .. _("available") .. " (%)",
             label_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.availablep and string.format("%d%%", ctx.stat.memory.availablep) or "" end,
             category = "footer",
@@ -923,8 +1007,10 @@ function ActionDefs.get()
             end
         },
         memused = {
-            icon = "\u{EA5A}",
+            icon = "qm_memory",
             --icon_func
+            text = "\u{EA5A}",
+            --text_func
             label = _("Memory") .. " " .. _("used") .. " (" .. _("MB") .. ")",
             label_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.used and string.format("%d", math.floor((ctx.stat.memory.used) / 1024)) .. _("MB") or "" end,
             category = "footer",
@@ -941,8 +1027,10 @@ function ActionDefs.get()
             end
         },
         memavailable = {
-            icon = "\u{EA5A}",
+            icon = "qm_memory",
             --icon_func
+            text = "\u{EA5A}",
+            --text_func
             label = _("Memory") .. " " .. _("available") .. " (" .. _("MB") .. ")",
             label_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.available and string.format("%d", math.floor((ctx.stat.memory.available) / 1024)) .. _("MB") or "" end,
             category = "footer",
@@ -959,8 +1047,10 @@ function ActionDefs.get()
             end
         },
         memtotal = {
-            icon = "\u{EA5A}",
+            icon = "qm_memory",
             --icon_func
+            text = "\u{EA5A}",
+            --text_func
             label = _("Memory") .. " " .. _("total") .. " (" .. _("MB") .. ")",
             label_func = function(ctx) return ctx.stat and ctx.stat.memory and ctx.stat.memory.total and string.format("%d", math.floor(ctx.stat.memory.total / 1024)) .. _("MB") or "" end,
             category = "footer",
@@ -977,8 +1067,10 @@ function ActionDefs.get()
             end
         },
         storageusedp = {
-            icon = "\u{F0C7}",
+            icon = "qm_storage",
             --icon_func
+            text = "\u{F0C7}",
+            --text_func
             label = _("Storage") .. " " .. _("used") .. " (%)",
             label_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.usedp and string.format("%d%%", ctx.stat.storage.usedp) or "" end,
             category = "footer",
@@ -995,8 +1087,10 @@ function ActionDefs.get()
             end
         },
         storageavailablep = {
-            icon = "\u{F0C7}",
+            icon = "qm_storage",
             --icon_func
+            text = "\u{F0C7}",
+            --text_func
             label = _("Storage") .. " " .. _("available") .. " (%)",
             label_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.availablep and string.format("%d%%", ctx.stat.storage.availablep) or "" end,
             category = "footer",
@@ -1013,8 +1107,10 @@ function ActionDefs.get()
             end
         },
         storageused = {
-            icon = "\u{F0C7}",
+            icon = "qm_storage",
             --icon_func
+            text = "\u{F0C7}",
+            --text_func
             label = _("Storage") .. " " .. _("used") .. " (" .. _("GB") .. ")",
             label_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.used and string.format("%d", math.floor((ctx.stat.storage.used) / 1024 / 1024)) .. _("GB") or "" end,
             category = "footer",
@@ -1031,8 +1127,10 @@ function ActionDefs.get()
             end
         },
         storageavailable = {
-            icon = "\u{F0C7}",
+            icon = "qm_storage",
             --icon_func
+            text = "\u{F0C7}",
+            --text_func
             label = _("Storage") .. " " .. _("available") .. " (" .. _("GB") .. ")",
             label_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.available and string.format("%d", math.floor((ctx.stat.storage.available) / 1024 / 1024)) .. _("GB") or "" end,
             category = "footer",
@@ -1049,8 +1147,10 @@ function ActionDefs.get()
             end
         },
         storagetotal = {
-            icon = "\u{F0C7}",
+            icon = "qm_storage",
             --icon_func
+            text = "\u{F0C7}",
+            --text_func
             label = _("Storage") .. " " .. _("total") .. " (" .. _("GB") .. ")",
             label_func = function(ctx) return ctx.stat and ctx.stat.storage and ctx.stat.storage.total and string.format("%d", math.floor(ctx.stat.storage.total / 1024 / 1024)) .. _("GB") or "" end,
             category = "footer",
@@ -1067,8 +1167,10 @@ function ActionDefs.get()
             end
         },
         time = {
-            icon = "\u{F017}",
+            icon = "qm_time",
             -- icon_func
+            text = "\u{F017}",
+            -- text_func
             label = _("Time"),
             label_func = function(ctx)
                 return ctx.datetime.secondsToHour(os.time(), G_reader_settings:isTrue("twelve_hour_clock"))
@@ -1085,8 +1187,10 @@ function ActionDefs.get()
             -- hold_callback
         },
         battery = {
-            icon = "\u{E790}",
-            icon_func = function(ctx)
+            icon = "qm_battery",
+            -- icon_func
+            text = "\u{E790}",
+            text_func = function(ctx)
                 local batt_lvl = ctx.powerd:getCapacity()
                 return ctx.powerd:getBatterySymbol(ctx.powerd:isCharged(), ctx.powerd:isCharging(), batt_lvl)
             end,
@@ -1110,8 +1214,10 @@ function ActionDefs.get()
             end
         },
         auxbattery = {
-            icon = "\u{E78E}",
-            icon_func = function(ctx)
+            icon = "qm_battery",
+            -- icon_func
+            text = "\u{E78E}",
+            text_func = function(ctx)
                 local aux_batt_lvl = ctx.powerd:getAuxCapacity()
                 return ctx.powerd:getBatterySymbol(ctx.powerd:isAuxCharged(), ctx.powerd:isAuxCharging(), aux_batt_lvl)
             end,

@@ -1,11 +1,12 @@
 -- Quick Menu tab for KOReader top menu
 -- Adds a new tab at the far left with Wi-Fi, action buttons, and frontlight/warmth sliders.
 -- Works in both File Manager and Book Reader views.
--- require("common/inject_icons") can be use to inject svg icon (not use now)
 
 -- TODO TODO TODO patch readermenu and filemanagermenu last_tab_index instead of TouchMenu last_index
 -- TODO in this can use readermenu:onShowMenu(tab_index, do_not_show) to reopen
 -- TODO use self.config.idx_quickmenu_tab
+
+require("icons/inject_icons")
 
 -- ============================================================
 -- Definition
@@ -14,6 +15,7 @@ local WidgetContainer = require("ui/widget/container/widgetcontainer")
 
 local QuickMenuPlugin = WidgetContainer:extend{
     name = "quickmenu",
+    is_doc_only = false,
     config = nil,
     touch_menu = nil,
     menu_instance = nil,

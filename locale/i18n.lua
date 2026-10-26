@@ -5,7 +5,7 @@
 -- module, avoiding potential interference with KOReader's own translations.
 --
 -- Usage:
---   local _ = require("common/i18n").gettext
+--   local _ = require("locale/i18n").gettext
 --
 -- HOW TO ADD A LANGUAGE
 --   1. Copy locale/quickmenu.pot -> locale/<lang>.po (e.g. locale/es.po)
@@ -14,14 +14,8 @@
 
 local logger = require("logger")
 
--- This module lives in common/, but the .po files live in the plugin root's
--- locale/ dir (one level up). Strip a trailing "common/" so the locale path
--- resolves to the root whether the module is loaded from common/ or the
--- root. Without this, parsePO opened a nonexistent common/locale/<lang>.po,
--- translations stayed nil, and every string fell back to ko_gettext --
--- i.e. all plugin translations were silently dead from v2.0.0 onward.
 local _dir = (debug.getinfo(1, "S").source:match("^@(.+/)") or "./")
-local _base = (_dir:gsub("common/$", ""))
+local _base = (_dir:gsub("locale/$", ""))
 
 -- Minimal .po parser
 local function parsePO(path)
@@ -99,7 +93,7 @@ if lang ~= "en" and lang ~= "en_US" then
     end
 end
 
---- Translation function: checks Bookshelf .po first, then KOReader gettext.
+--- Translation function: checks Quickmenu .po first, then KOReader gettext.
 local function gettext(msgid)
     if translations then
         local t = translations[msgid]

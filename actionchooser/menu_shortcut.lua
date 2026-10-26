@@ -214,7 +214,7 @@ end
 -- capture it (never executes the real item). on_pick is called with
 -- { label, menu_path } on capture.
 function MenuShortcut.openCapture(on_pick)
-    local _    = require("common/i18n").gettext
+    local _    = require("locale/i18n").gettext
     local tree = MenuShortcut.buildMenuTree()
     if not tree then
         local Notification = require("ui/widget/notification")
@@ -277,7 +277,7 @@ end
 -- Replay a saved menu_path: re-assemble the menu, walk to the leaf, fire its
 -- callback with a minimal touchmenu shim. Fail safe: any miss -> toast, no fire.
 function MenuShortcut.replay(menu_path)
-    local _            = require("common/i18n").gettext
+    local _            = require("locale/i18n").gettext
     local UIManager    = require("ui/uimanager")
     local Notification = require("ui/widget/notification")
     local function unavailable()
@@ -305,7 +305,7 @@ end
 -- back all handled there). Same fail-safe toast as replay() when the node or
 -- its children can't be resolved.
 function MenuShortcut.replayPage(menu_path, label)
-    local _            = require("common/i18n").gettext
+    local _            = require("locale/i18n").gettext
     local UIManager    = require("ui/uimanager")
     local Notification = require("ui/widget/notification")
     local function unavailable()

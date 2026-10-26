@@ -3,9 +3,9 @@ local UIManager    = require("ui/uimanager")
 local ButtonDialog = require("ui/widget/buttondialog")
 local ConfirmBox   = require("ui/widget/confirmbox")
 
-local Utils       = require("common/utils")
+local Utils       = require("utils")
 local Config      = require("config")
-local _           = require("common/i18n").gettext
+local _           = require("locale/i18n").gettext
 
 local StyleManage = {}
 

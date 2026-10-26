@@ -9,11 +9,14 @@ start menu (issue #140).
 local ButtonDialog = require("ui/widget/buttondialog")
 local Notification = require("ui/widget/notification")
 local UIManager    = require("ui/uimanager")
-local _            = require("common/i18n").gettext
+local _            = require("locale/i18n").gettext
 
-local PLUGIN_DEFAULT_ICON = "\xEE\xAC\xB0" -- U+EB30 mdi-puzzle (start-menu default)
-local MENU_DEFAULT_ICON   = "\xEE\xB5\x84" -- U+ED44 (default for menu shortcuts)
-local ACTION_DEFAULT_ICON   = "\xEE\xAD\xA2" -- U+EB62 (default for menu shortcuts)
+local PLUGIN_DEFAULT_TEXT = "\xEE\xAC\xB0" -- U+EB30 mdi-puzzle (start-menu default)
+local PLUGIN_DEFAULT_ICON = "qm_default"
+local MENU_DEFAULT_TEXT   = "\xEE\xB5\x84" -- U+ED44 (default for menu shortcuts)
+local MENU_DEFAULT_ICON = "qm_default"
+local ACTION_DEFAULT_TEXT   = "\xEE\xAD\xA2" -- U+EB62 (default for menu shortcuts)
+local ACTION_DEFAULT_ICON = "qm_default"
 
 local Chooser = {}
 
@@ -31,13 +34,12 @@ function Chooser.actionRows(close, on_pick)
             local host
             local picker_items = {}
             for _i, p in ipairs(found) do
-                local entry_icon = p.icon or PLUGIN_DEFAULT_ICON
+                local entry_text = p.icon or PLUGIN_DEFAULT_TEXT
                 picker_items[#picker_items + 1] = {
                     text = (p.icon and (p.icon .. "  ") or "") .. p.title,
                     callback = function()
                         MenuHost.close(host)
-                        on_pick{ label = p.title, icon = entry_icon,
-                                 plugin = { key = p.key, method = p.method } }
+                        on_pick{ label = p.title, text = entry_text, icon = PLUGIN_DEFAULT_ICON, plugin = { key = p.key, method = p.method } }
                     end,
                 }
             end
@@ -48,18 +50,14 @@ function Chooser.actionRows(close, on_pick)
             local ActionPicker = require("actionchooser/action_picker")
             ActionPicker.show{
                 on_pick = function(action, name)
-                    on_pick{ label = name, icon = ACTION_DEFAULT_ICON, action = action }
+                    on_pick{ label = name, text = ACTION_DEFAULT_TEXT, icon = ACTION_DEFAULT_ICON, action = action }
                 end,
             }
         end) } },
         { { text = _("Menu action") .. "\xE2\x80\xA6", callback = close(function()
             local MenuShortcut = require("actionchooser/menu_shortcut")
             MenuShortcut.openCapture(function(picked)
-                -- Toggle items get a live checkbox icon at render time
-                -- (menu_toggle); the static icon is the fallback / non-toggle case.
-                on_pick{ label = picked.label, icon = MENU_DEFAULT_ICON,
-                         menu_path = picked.menu_path, menu_toggle = picked.menu_toggle,
-                         menu_page = picked.menu_page }
+                on_pick{ label = picked.label, text = MENU_DEFAULT_TEXT, icon = MENU_DEFAULT_ICON, menu_path = picked.menu_path, menu_toggle = picked.menu_toggle, menu_page = picked.menu_page }
             end)
         end) } },
     }

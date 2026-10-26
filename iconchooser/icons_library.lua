@@ -18,7 +18,7 @@ local VerticalSpan = require("ui/widget/verticalspan")
 local Catalogue = require("iconchooser/icons_catalogue")
 local DataStorage = require("datastorage")
 local lfs = require("libs/libkoreader-lfs")
-local _ = require("common/i18n").gettext
+local _ = require("locale/i18n").gettext
 local T = require("ffi/util").template
 
 local Screen = Device.screen

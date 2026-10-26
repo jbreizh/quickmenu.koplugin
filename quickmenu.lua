@@ -12,7 +12,9 @@ local ConfirmBox    = require("ui/widget/confirmbox")
 local InputDialog   = require("ui/widget/inputdialog")
 local ButtonDialog  = require("ui/widget/buttondialog")
 local SortWidget    = require("ui/widget/sortwidget")
+local TextWidget    = require("ui/widget/textwidget")
 
+local Font          = require("ui/font")
 local UIManager     = require("ui/uimanager")
 local Event         = require("ui/event")
 
@@ -21,8 +23,8 @@ local logger        = require("logger")
 local StyleManage   = require("style_manage")
 local ActionCustom  = require("action_custom")
 local Config        = require("config")
-local Utils         = require("common/utils")
-local _             = require("common/i18n").gettext
+local Utils         = require("utils")
+local _             = require("locale/i18n").gettext
 
 
 local QuickMenu = {
@@ -45,8 +47,14 @@ function QuickMenu.updatePlugin(plugin)
     plugin.datetime    = Datetime
     plugin.stat        = Utils.systemInfo()
     plugin.panel_width = (plugin.touch_menu and plugin.touch_menu.item_width) or 0
+    -- inner_width
     local padding      = Screen:scaleBySize(plugin.config.style.padding or 10)
     plugin.inner_width = plugin.panel_width - padding * 2
+    -- icon_height
+    local btn_font_size = plugin.config.style.btn_font_size or 16
+    local sample = TextWidget:new{ text = "text", face = Font:getFace("cfont", btn_font_size), bold = true }
+    plugin.icon_height = sample:getSize().h
+    sample:free()
 end
 
 
@@ -276,6 +284,16 @@ function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
         separator = true,
     })
 
+    table.insert(global_items, {
+        text = _("Show icons"),
+        checked_func = function() return config.show_icon end,
+        callback = function()
+            config.show_icon = not config.show_icon
+            Config.saveAndRefresh(plugin)
+        end,
+        separator = true,
+    })
+
     -- style
     table.insert(global_items, {
         text = _("Style") .. "\xE2\x80\xA6",
@@ -295,7 +313,6 @@ function QuickMenu.buildGlobalSubmenu(plugin, close, refresh)
         callback = close(function()
             ActionCustom:showActionCustomMenu(plugin, refresh)
         end),
-
     })
 
     -- sections order

@@ -13,8 +13,10 @@ local UIManager = require("ui/uimanager")
 
 local CircleButton = InputContainer:extend{
     icon = nil,
-    size = 64,
     icon_size = 26,
+    text = nil,
+    text_size = 26,
+    size = 64,
     radius = 32,
     is_active = false,
     bordersize = 0,
@@ -26,28 +28,22 @@ local CircleButton = InputContainer:extend{
 
 function CircleButton:init()
     local content_widget
-    local icon_val = self.icon or ""
 
-    -- On cherche si la chaîne correspond au format [icon=nom_icone]
-    local extracted_icon = icon_val:match("^%[icon=(.+)%]$")
-
-    if extracted_icon then
+    if self.icon then
         content_widget = IconWidget:new{
-            icon  = extracted_icon,
-            width = self.size * 0.4, -- TODO Hack
-            height = self.size * 0.4,
+            icon  = self.icon,
+            width = self.icon_size,
+            height = self.icon_size,
             alpha = true,
         }
     else
-        -- Sinon, on traite le contenu comme un caractère Unicode
         content_widget = TextWidget:new{
-            text = self.icon or "",
-            face = Font:getFace("cfont", self.icon_size),
+            text = self.text or "",
+            face = Font:getFace("cfont", self.text_size),
             color = Blitbuffer.COLOR_BLACK,
         }
     end
 
-    -- Création du cercle (le widget visuel)
     self.circle = FrameContainer:new{
         width = self.size,
         height = self.size,
@@ -74,7 +70,6 @@ function CircleButton:init()
     }
 end
 
--- Gestionnaire de clic
 function CircleButton:onTapSelect()
     if self.callback then
         self.callback()
@@ -83,7 +78,6 @@ function CircleButton:onTapSelect()
     return false
 end
 
--- Gestionnaire de maintien
 function CircleButton:onHoldSelect()
     if self.hold_callback then
         self.hold_callback()
@@ -92,7 +86,6 @@ function CircleButton:onHoldSelect()
     return false
 end
 
--- Méthode pour changer l'état dynamiquement
 function CircleButton:update_state(is_active)
     self.is_active = is_active
     self.circle.background = self.is_active and self.bg_active or self.bg_inactive

@@ -7,7 +7,7 @@ clean pick wins; toggling something off just resets and waits.
 ]]
 local MenuHost = require("actionchooser/menu_host")
 local logger   = require("logger")
-local _        = require("common/i18n").gettext
+local _        = require("locale/i18n").gettext
 
 local ActionPicker = {}
 

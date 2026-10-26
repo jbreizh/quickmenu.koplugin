@@ -14,8 +14,8 @@ local Event           = require("ui/event")
 
 local ClickableGroup  = require("widgets/clickablegroup")
 local ShadowDeco      = require("widgets/shadowdeco")
-local Utils           = require("common/utils")
-local _               = require("common/i18n").gettext
+local Utils           = require("utils")
+local _               = require("locale/i18n").gettext
 
 local InfoSection = {
     id = "info"
@@ -34,6 +34,7 @@ function InfoSection.build(ctx)
     local stat               = ctx.stat
     local panel_width        = ctx.panel_width
     local inner_width        = ctx.inner_width
+    local icon_height        = ctx.icon_height
     local h_gap              = screen:scaleBySize(config.style.h_gap or 4)
     local v_gap              = screen:scaleBySize(config.style.v_gap or 4)
     local btn_width          = screen:scaleBySize(config.style.btn_width or 50)

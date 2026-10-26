@@ -870,3 +870,9 @@ msgstr "ZenFooter verwenden"
 
 msgid "Show on all tab"
 msgstr "Auf allen Tabs anzeigen"
+
+msgid "Show icons"
+msgstr "Icons anzeigen"
+
+msgid "Text"
+msgstr "Text"

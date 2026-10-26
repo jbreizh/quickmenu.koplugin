@@ -10,7 +10,6 @@
 --   })
 
 local Blitbuffer      = require("ffi/blitbuffer")
-local Button          = require("ui/widget/button")
 local CenterContainer = require("ui/widget/container/centercontainer")
 local Font            = require("ui/font")
 local Geom            = require("ui/geometry")
@@ -23,10 +22,11 @@ local Event           = require("ui/event")
 local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
 
-local Utils           = require("common/utils")
+local Utils           = require("utils")
+local Button          = require("widgets/button")
 local ZenSlider       = require("widgets/zen_slider")
 local Config          = require("config")
-local _               = require("common/i18n").gettext
+local _               = require("locale/i18n").gettext
 
 local IntensityZenUI = {
     id = "frontlight"
@@ -44,6 +44,7 @@ function IntensityZenUI.build(ctx, settings_func)
     local stat               = ctx.stat
     local panel_width        = ctx.panel_width
     local inner_width        = ctx.inner_width
+    local icon_height        = ctx.icon_height
     local h_gap              = screen:scaleBySize(config.style.h_gap or 4)
     local v_gap              = screen:scaleBySize(config.style.v_gap or 4)
     local btn_width          = screen:scaleBySize(config.style.btn_width or 50)
@@ -99,7 +100,9 @@ function IntensityZenUI.build(ctx, settings_func)
         }
         -- collapse_btn
         local collapse_btn = Button:new{
-            text           = section.collapse and "▶" or "▼",
+            icon_func      = (config.show_icon and function() return section.collapse and "qm_left" or "qm_down" end) or nil,
+            icon_height    = icon_height,
+            text_func      = (not config.show_icon and function() return section.collapse and "▶" or "▼" end) or nil,
             width          = btn_width,
             bordersize     = 0,
             text_font_size = btn_font_size,
@@ -126,7 +129,9 @@ function IntensityZenUI.build(ctx, settings_func)
         end
         -- settings
         local settings_btn = Button:new{
-            text           = "\u{EB92}",
+            icon           = (config.show_icon and "qm_settings") or nil,
+            icon_height    = icon_height,
+            text           = (not config.show_icon and "\u{EB92}") or nil,
             width          = btn_width,
             bordersize     = 0,
             text_font_size = btn_font_size,
@@ -229,9 +234,10 @@ function IntensityZenUI.build(ctx, settings_func)
     end
 
     local fl_minus = Button:new{
-        text           = "\u{EA2D}", --"−"
+        icon           = section.show_icon and "qm_light_off" or nil,
+        icon_height    = icon_height,
+        text           = (not section.show_icon and "\u{EA2D}") or nil,
         text_font_size = btn_font_size,
-        --text_font_bold = false,
         width          = btn_width,
         bordersize     = 0,
         show_parent    = show_parent,
@@ -240,9 +246,10 @@ function IntensityZenUI.build(ctx, settings_func)
     }
 
     local fl_plus = Button:new{
-        text           = "\u{EA2B}", --"＋"
+        icon           = section.show_icon and "qm_light_on" or nil,
+        icon_height    = icon_height,
+        text           = (not section.show_icon and "\u{EA2B}") or nil,
         text_font_size = btn_font_size,
-        --text_font_bold = false,
         width          = btn_width,
         bordersize     = 0,
         show_parent    = show_parent,

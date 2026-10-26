@@ -1,4 +1,3 @@
-local Button           = require("ui/widget/button")
 local TextWidget       = require("ui/widget/textwidget")
 local Font             = require("ui/font")
 local VerticalGroup    = require("ui/widget/verticalgroup")
@@ -16,8 +15,9 @@ local WarmthSection    = require("sections/warmthsection")
 local WarmthZenUI      = require("sections/warmthzenui")
 
 local Config           = require("config")
-local Utils            = require("common/utils")
-local _                = require("common/i18n").gettext
+local Utils            = require("utils")
+local Button           = require("widgets/button")
+local _                = require("locale/i18n").gettext
 
 local Frontlight = {
     id = "frontlight",
@@ -43,6 +43,7 @@ function Frontlight.build(ctx)
     local stat               = ctx.stat
     local panel_width        = ctx.panel_width
     local inner_width        = ctx.inner_width
+    local icon_height        = ctx.icon_height
     local h_gap              = screen:scaleBySize(config.style.h_gap or 4)
     local v_gap              = screen:scaleBySize(config.style.v_gap or 4)
     local btn_width          = screen:scaleBySize(config.style.btn_width or 50)
@@ -86,7 +87,9 @@ function Frontlight.build(ctx)
             local row_title = HorizontalGroup:new{ align = "center" }
             -- collapse
             local collapse_btn = Button:new{
-                text           = section.collapse and "▶" or "▼",
+                icon_func      = (config.show_icon and function() return section.collapse and "qm_left" or "qm_down" end) or nil,
+                icon_height    = icon_height,
+                text_func      = (not config.show_icon and function() return section.collapse and "▶" or "▼" end) or nil,
                 width          = btn_width,
                 bordersize     = 0,
                 text_font_size = btn_font_size,
@@ -112,7 +115,9 @@ function Frontlight.build(ctx)
             table.insert(row_title, HorizontalSpan:new{ width = inner_width - label_title:getSize().w - btn_width*2 })
             -- settings
             local settings_btn = Button:new{
-                text           = "\u{EB92}",
+                icon           = (config.show_icon and "qm_settings") or nil,
+                icon_height    = icon_height,
+                text           = (not config.show_icon and "\u{EB92}") or nil,
                 width          = btn_width,
                 bordersize     = 0,
                 text_font_size = btn_font_size,
@@ -129,7 +134,7 @@ function Frontlight.build(ctx)
             if section.collapse then  return { widget = group , refs = refs} end
         end
         -- slider
-        local intensitySection = IntensitySection.build(ctx, section.show_shadow)
+        local intensitySection = IntensitySection.build(ctx)
         table.insert(group, intensitySection.widget)
         table.insert(refs.sliders, intensitySection.refs.sliders[1])
     end
@@ -156,7 +161,7 @@ function Frontlight.build(ctx)
             else
                 table.insert(group, VerticalSpan:new{ width = v_gap }) -- better for visual
             end
-            local warmthSection = WarmthSection.build(ctx, section.show_shadow)
+            local warmthSection = WarmthSection.build(ctx)
             table.insert(group, warmthSection.widget)
             table.insert(refs.sliders, warmthSection.refs.sliders[1])
         end
@@ -197,6 +202,11 @@ function Frontlight.getSettings(ctx, close, refresh)
             text = _("Show shadows"),
             checked_func = function() return section.show_shadow end,
             callback = function() section.show_shadow = not section.show_shadow; Config.saveAndRefresh(ctx) end
+        },
+        {
+            text = _("Show icons"),
+            checked_func = function() return section.show_icon end,
+            callback = function() section.show_icon = not section.show_icon; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Use ZenSlider"),

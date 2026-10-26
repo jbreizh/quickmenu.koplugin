@@ -10,7 +10,6 @@
 --   end
 
 local Blitbuffer      = require("ffi/blitbuffer")
-local Button          = require("ui/widget/button")
 local CenterContainer = require("ui/widget/container/centercontainer")
 local Font            = require("ui/font")
 local Geom            = require("ui/geometry")
@@ -23,9 +22,10 @@ local Event           = require("ui/event")
 local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
 
-local Utils           = require("common/utils")
+local Utils           = require("utils")
+local Button          = require("widgets/button")
 local ZenSlider       = require("widgets/zen_slider")
-local _               = require("common/i18n").gettext
+local _               = require("locale/i18n").gettext
 
 local WarmthZenUI = {
     id = "frontlight"
@@ -43,6 +43,7 @@ function WarmthZenUI.build(ctx)
     local stat               = ctx.stat
     local panel_width        = ctx.panel_width
     local inner_width        = ctx.inner_width
+    local icon_height        = ctx.icon_height
     local h_gap              = screen:scaleBySize(config.style.h_gap or 4)
     local v_gap              = screen:scaleBySize(config.style.v_gap or 4)
     local btn_width          = screen:scaleBySize(config.style.btn_width or 50)
@@ -192,9 +193,10 @@ function WarmthZenUI.build(ctx)
     end
 
     local nl_minus = Button:new{
-        text           = "\u{F2DC}", --"−"
+        icon           = section.show_icon and "qm_warmth_off" or nil,
+        icon_height    = icon_height,
+        text           = (not section.show_icon and "\u{F2DC}") or nil,
         text_font_size = btn_font_size,
-        --text_font_bold = false,
         width          = btn_width,
         bordersize     = 0,
         show_parent    = show_parent,
@@ -203,9 +205,10 @@ function WarmthZenUI.build(ctx)
     }
 
     local nl_plus = Button:new{
-        text           = "\u{F490}", --"＋"
+        icon           = section.show_icon and "qm_warmth_on" or nil,
+        icon_height    = icon_height,
+        text           = (not section.show_icon and "\u{F490}") or nil,
         text_font_size = btn_font_size,
-        --text_font_bold = false,
         width          = btn_width,
         bordersize     = 0,
         show_parent    = show_parent,

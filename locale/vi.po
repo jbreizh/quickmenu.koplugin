@@ -870,3 +870,9 @@ msgstr "Sử dụng ZenFooter"
 
 msgid "Show on all tab"
 msgstr "Hiển thị trên tất cả các tab"
+
+msgid "Show icons"
+msgstr "Hiển thị biểu tượng"
+
+msgid "Text"
+msgstr "Văn bản"

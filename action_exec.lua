@@ -1,7 +1,7 @@
-local UIManager       = require("ui/uimanager")
+local UIManager = require("ui/uimanager")
 
-local Utils           = require("common/utils")
-local _ = require("common/i18n").gettext
+local Utils     = require("utils")
+local _         = require("locale/i18n").gettext
 
 local ActionExec = {}
 

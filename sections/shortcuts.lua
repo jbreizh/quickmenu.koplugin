@@ -1,4 +1,3 @@
-local Button          = require("ui/widget/button")
 local ButtonDialog    = require("ui/widget/buttondialog")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
@@ -15,9 +14,10 @@ local ActionExec      = require("action_exec")
 local ActionDefs      = require("action_defs")
 local ActionManage    = require("action_manage")
 local Config          = require("config")
-local Utils           = require("common/utils")
+local Utils           = require("utils")
+local Button          = require("widgets/button")
 local ShadowDeco      = require("widgets/shadowdeco")
-local _               = require("common/i18n").gettext
+local _               = require("locale/i18n").gettext
 
 local Shortcuts = {
     id    = "shortcuts",
@@ -43,6 +43,7 @@ function Shortcuts.build(ctx)
     local stat               = ctx.stat
     local panel_width        = ctx.panel_width
     local inner_width        = ctx.inner_width
+    local icon_height        = ctx.icon_height
     local h_gap              = screen:scaleBySize(config.style.h_gap or 4)
     local v_gap              = screen:scaleBySize(config.style.v_gap or 4)
     local action_size        = screen:scaleBySize(config.style.action_size or 64)
@@ -87,7 +88,9 @@ function Shortcuts.build(ctx)
     if section.show_title then
         -- collapse
         local collapse_btn = Button:new{
-            text           = section.collapse and "▶" or "▼",
+            icon_func      = (config.show_icon and function() return section.collapse and "qm_left" or "qm_down" end) or nil,
+            icon_height    = icon_height,
+            text_func      = (not config.show_icon and function() return section.collapse and "▶" or "▼" end) or nil,
             width          = btn_width,
             bordersize     = 0,
             text_font_size = btn_font_size,
@@ -98,24 +101,26 @@ function Shortcuts.build(ctx)
             end,
             --hold_callback = function() end,
         }
-        -- add icon near section name when collapse
-        local label_icon = ""
+        -- add shortcuts near section name when collapse
+        local label_shortcuts = ""
         if section.collapse then
             for _, entry in ipairs(visible_actions) do
                 local def = entry.def
-                local icon = def.icon_func and def.icon_func(ctx) or (def.icon or "")
-                label_icon = label_icon .. " " .. Utils.get_safe_icon(icon)
+                local text = (def.text_func and def.text_func(ctx)) or def.text or "\u{F059}"
+                label_shortcuts = label_shortcuts .. " " .. text
             end
         end
         -- section name
         local label_title = TextWidget:new{
-            text = Shortcuts.label .. " : " .. label_icon,
+            text = Shortcuts.label .. " : " .. label_shortcuts,
             face =  Font:getFace("cfont", btn_font_size), bold = true,
             max_width = inner_width - btn_width * 2,
         }
         -- settings
         local settings_btn = Button:new{
-            text           = "\u{EB92}",
+            icon           = (config.show_icon and "qm_settings") or nil,
+            icon_height    = icon_height,
+            text           = (not config.show_icon and "\u{EB92}") or nil,
             width          = btn_width,
             bordersize     = 0,
             text_font_size = btn_font_size,
@@ -149,18 +154,17 @@ function Shortcuts.build(ctx)
 
     -- shortcuts btn construction
     local function createButton(def)
-        local icon = def.icon_func and def.icon_func(ctx) or (def.icon or "")
-        local label = def.label_func and def.label_func(ctx) or (def.label or "")
-        local shortcuts_text = section.show_label and (Utils.get_safe_icon(icon) .. " " .. _(label)) or Utils.get_safe_icon(icon) -- btn doesnt't support svg
+        local text = (def.text_func and def.text_func(ctx)) or def.text or "\u{F059}"
+        local label = (def.label_func and def.label_func(ctx)) or def.label or ""
         local btn = Button:new{
-            text           = shortcuts_text,
+            text           = (section.show_label and (text .. " " .. label)) or text,
             width          = shortcuts_width,
             radius         = btn_radius,
             bordersize     = btn_bordersize,
             text_font_size = btn_font_size,
             show_parent    = touch_menu.show_parent,
-            callback       = def.callback and function() ActionExec.exec_action(ctx, def.callback) end or nil,
-            hold_callback  = def.hold_callback and function() ActionExec.exec_action(ctx, def.hold_callback) end or nil,
+            callback       = (def.callback and function() ActionExec.exec_action(ctx, def.callback) end) or nil,
+            hold_callback  = (def.hold_callback and function() ActionExec.exec_action(ctx, def.hold_callback) end) or nil,
         }
         -- attach the shadow
         if section.show_shadow then
@@ -228,6 +232,11 @@ function Shortcuts.getSettings(ctx, close, refresh)
             text = _("Show shadows"),
             checked_func = function() return section.show_shadow end,
             callback = function() section.show_shadow = not section.show_shadow; Config.saveAndRefresh(ctx) end
+        },
+        {
+            text = _("Show icons"),
+            checked_func = function() return section.show_icon end,
+            callback = function() section.show_icon = not section.show_icon; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Show labels"),

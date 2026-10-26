@@ -1,4 +1,4 @@
-local _ = require("common/i18n").gettext
+local _ = require("locale/i18n").gettext
 return {
     name = "quickmenu",
     fullname = _("Quick Menu"),

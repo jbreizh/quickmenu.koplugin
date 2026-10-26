@@ -20,7 +20,7 @@ Owners may wrap host._shim methods (action picker wraps updateItems to
 observe async commits, e.g. Dispatcher's SpinWidget OK path); because a
 wrapper can close the host mid-callback, _refresh no-ops once closed.
 ]]
-local _            = require("common/i18n").gettext
+local _            = require("locale/i18n").gettext
 
 local MenuHost = {}
 

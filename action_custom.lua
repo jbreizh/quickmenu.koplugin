@@ -10,9 +10,9 @@ local UIManager    = require("ui/uimanager")
 local IconsLibrary  = require("iconchooser/icons_library")
 local ActionExec    = require("action_exec")
 local ActionChooser = require("actionchooser/action_chooser")
-local Utils         = require("common/utils")
+local Utils         = require("utils")
 local Config        = require("config")
-local _             = require("common/i18n").gettext
+local _             = require("locale/i18n").gettext
 
 local ActionCustom = {}
 
@@ -30,7 +30,7 @@ function ActionCustom:showActionCustomMenu(ctx, refresh)
     if config.custom_actions and #config.custom_actions > 0 then
         for i, action in ipairs(config.custom_actions) do
             table.insert(buttons, {{
-                text = (Utils.get_safe_icon(action.icon) or _("None")) .. " " ..(action.label or _("None")), -- btn doesnt't support svg
+                text = (action.text or "\u{F059}") .. " " ..(action.label or _("None")),
                 -- update action
                 callback = function()
                     UIManager:close(dialog)
@@ -99,7 +99,12 @@ function ActionCustom:applyActionCustomDialog(ctx, action, refresh)
             end
         }},
         {{
-            text = _("Icon") .. " : " .. (Utils.get_safe_icon(action.icon) or _("None")), -- btn doesnt't support svg
+            text = _("Text") .. " : " .. (action.text or "\u{F059}"),
+            callback = function()
+            end
+        }},
+        {{
+            text = _("Icon") .. " : " .. (action.icon or _("None")), -- btn doesnt't support svg
             callback = function()
             end
         }},
@@ -154,9 +159,11 @@ function ActionCustom:addActionCustom(ctx, fields)
         id         = os.time() .. math.random(100, 999),
         category   = "custom",
         label      = fields.label or "",
+        text       = fields.text or "",
         icon       = fields.icon or "",
         callback   = {
             label       = fields.label,
+            text        = fields.text,
             icon        = fields.icon,
             plugin      = fields.plugin,
             action      = fields.action,
@@ -225,6 +232,7 @@ function ActionCustom:callbackActionCustom(action, fields, is_hold_callback)
     local target_key = is_hold_callback and "hold_callback" or "callback"
     action[target_key] = {
         label       = fields.label,
+        text        = fields.text,
         icon        = fields.icon,
         plugin      = fields.plugin,
         action      = fields.action,
@@ -382,11 +390,25 @@ function ActionCustom:updateActionCustomDialog(ctx, action, index, refresh)
             end
         }},
         {{
-            text = _("Icon") .. " : " .. (Utils.get_safe_icon(temp_action.icon) or _("None")), -- btn doesnt't support svg
+            text = _("Text") .. " : " .. (temp_action.text or "\u{F059}"),
             callback = function()
                 IconsLibrary:show(function(glyph)
                     if glyph and glyph ~= "" then
-                        temp_action.icon = glyph
+                        temp_action.text = glyph
+                        UIManager:close(dialog)
+                        self:updateActionCustomDialog(ctx, temp_action, index, refresh)
+                    end
+                end, { dynamic = false, svg = false})
+                --UIManager:close(dialog)
+            end
+        }},
+        {{
+            text = _("Icon") .. " : " .. (temp_action.icon or _("None")), -- btn doesnt't support svg
+            callback = function()
+                IconsLibrary:show(function(glyph)
+                    if glyph and glyph ~= "" then
+                        local extracted_icon = glyph:match("^%[icon=(.+)%]$")
+                        if extracted_icon then temp_action.icon = extracted_icon end
                         UIManager:close(dialog)
                         self:updateActionCustomDialog(ctx, temp_action, index, refresh)
                     end

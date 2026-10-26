@@ -1,4 +1,3 @@
-local Button          = require("ui/widget/button")
 local ButtonDialog    = require("ui/widget/buttondialog")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
@@ -15,10 +14,11 @@ local ActionExec      = require("action_exec")
 local ActionDefs      = require("action_defs")
 local ActionManage    = require("action_manage")
 local Config          = require("config")
+local Button          = require("widgets/button")
 local ActionButton    = require("widgets/actionbutton")
 local ShadowDeco      = require("widgets/shadowdeco")
-local Utils           = require("common/utils")
-local _               = require("common/i18n").gettext
+local Utils           = require("utils")
+local _               = require("locale/i18n").gettext
 
 local Actions = {
     id = "actions",
@@ -44,6 +44,7 @@ function Actions.build(ctx)
     local stat               = ctx.stat
     local panel_width        = ctx.panel_width
     local inner_width        = ctx.inner_width
+    local icon_height        = ctx.icon_height
     local h_gap              = screen:scaleBySize(config.style.h_gap or 4)
     local v_gap              = screen:scaleBySize(config.style.v_gap or 4)
     local action_size        = screen:scaleBySize(config.style.action_size or 64)
@@ -88,7 +89,9 @@ function Actions.build(ctx)
     if section.show_title then
         -- collapse
         local collapse_btn = Button:new{
-            text           = section.collapse and "▶" or "▼",
+            icon_func      = (config.show_icon and function() return section.collapse and "qm_left" or "qm_down" end) or nil,
+            icon_height    = icon_height,
+            text_func      = (not config.show_icon and function() return section.collapse and "▶" or "▼" end) or nil,
             width          = btn_width,
             bordersize     = 0,
             text_font_size = btn_font_size,
@@ -99,23 +102,25 @@ function Actions.build(ctx)
             end,
             --hold_callback = function() end,
         }
-        -- add icon near section name when collapse
-        local label_icon = ""
+        -- add actions near section name when collapse
+        local label_actions = ""
         if section.collapse then
             for _, entry in ipairs(visible_actions) do
                 local def = entry.def
-                local icon = def.icon_func and def.icon_func(ctx) or (def.icon or "")
-                label_icon = label_icon .. " " .. Utils.get_safe_icon(icon)
+                local text = (def.text_func and def.text_func(ctx)) or def.text or "\u{F059}"
+                label_actions = label_actions .. " " .. text
             end
         end
         -- section name
         local label_title = TextWidget:new{
-            text = Actions.label .. " : " .. label_icon,
+            text = Actions.label .. " : " .. label_actions,
             face =  Font:getFace("cfont", btn_font_size), bold = true,
             max_width = inner_width - btn_width*2,
         }
         local settings_btn = Button:new{
-            text           = "\u{EB92}",
+            icon           = (config.show_icon and "qm_settings") or nil,
+            icon_height    = icon_height,
+            text           = (not config.show_icon and "\u{EB92}") or nil,
             width          = btn_width,
             bordersize     = 0,
             text_font_size = btn_font_size,
@@ -156,7 +161,8 @@ function Actions.build(ctx)
     local action_radius_ratio = action_radius / action_size -- 0 square 0.5 circle
     local ratio = screen:scaleBySize(100) / 100
     local action_btn_radius = math.floor(action_btn_size * action_radius_ratio)
-    local action_icon_size = math.floor((action_btn_size * 0.4) / ratio + 0.5)
+    local action_icon_size = math.floor((action_btn_size * 0.4) + 0.5)
+    local action_text_size = math.floor((action_btn_size * 0.4) / ratio + 0.5)
     local action_label_size = math.floor((action_btn_size * 0.18) / ratio + 0.5)
 
     local function create_btn(entry)
@@ -164,10 +170,12 @@ function Actions.build(ctx)
         -- create btn and shadow
         local def = entry.def
         local btn = ActionButton:new{
-            icon          = def.icon_func and def.icon_func(ctx) or (def.icon or ""),
+            icon          = section.show_icon and (def.icon_func and def.icon_func(ctx) or def.icon or "") or nil,
+            icon_size     = action_icon_size,
+            text          = (def.text_func and def.text_func(ctx)) or def.text or "\u{F059}",
+            text_size     = action_text_size,
             size          = action_btn_size,
             radius        = action_btn_radius,
-            icon_size     = action_icon_size,
             bordersize    = btn_bordersize,
             is_active     = def.active_func and def.active_func(ctx) or false,
             callback      = def.callback and function() ActionExec.exec_action(ctx, def.callback) end or nil,
@@ -265,6 +273,11 @@ function Actions.getSettings(ctx, close, refresh)
             text = _("Show shadows"),
             checked_func = function() return section.show_shadow end,
             callback = function() section.show_shadow = not section.show_shadow; Config.saveAndRefresh(ctx) end
+        },
+        {
+            text = _("Show icons"),
+            checked_func = function() return section.show_icon end,
+            callback = function() section.show_icon = not section.show_icon; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Show labels"),

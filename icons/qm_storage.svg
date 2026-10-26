@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="24"
+   height="24"
+   viewBox="0 0 24 24"
+   fill="none"
+   stroke="currentColor"
+   stroke-width="1.5"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="qm_storage.svg"
+   inkscape:version="1.4.4 (dcaf3e7d9e, 2026-05-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs5" />
+  <sodipodi:namedview
+     id="namedview5"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="26.074563"
+     inkscape:cx="10.815138"
+     inkscape:cy="12.636837"
+     inkscape:window-width="1376"
+     inkscape:window-height="1094"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg5" />
+  <!-- Contour principal de la disquette avec biseau en haut à droite -->
+  <path
+     d="M4 3.5A1.5 1.5 0 0 0 2.5 5v14A1.5 1.5 0 0 0 4 20.5h16a1.5 1.5 0 0 0 1.5-1.5V7.5L17.5 3.5H4z"
+     id="path1"
+     style="fill:#9a93de;fill-opacity:1;stroke-width:0.75;stroke-dasharray:none" />
+  <!-- Volet métallique (haut) -->
+  <rect
+     x="6.5"
+     y="3.5"
+     width="9"
+     height="5.5"
+     rx="0.5"
+     id="rect1"
+     style="fill:#ffffff;fill-opacity:1;stroke-width:0.75;stroke-dasharray:none" />
+  <!-- Fenêtre du volet -->
+  <!-- Étiquette (bas) -->
+  <rect
+     x="5.5"
+     y="12.5"
+     width="13"
+     height="8"
+     rx="0.5"
+     id="rect3"
+     style="fill:#ffffff;fill-opacity:1;stroke-width:0.75;stroke-dasharray:none" />
+  <!-- Lignes sur l’étiquette -->
+  <line
+     x1="8"
+     y1="15"
+     x2="16"
+     y2="15"
+     id="line3"
+     style="stroke-width:0.75;stroke-dasharray:none" />
+  <line
+     x1="8"
+     y1="17.5"
+     x2="16"
+     y2="17.5"
+     id="line4"
+     style="stroke-width:0.75;stroke-dasharray:none" />
+  <!-- Les deux trous/points en bas -->
+</svg>

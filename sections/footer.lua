@@ -3,7 +3,6 @@ local ConfirmBox   = require("ui/widget/confirmbox")
 local UIManager    = require("ui/uimanager")
 local SortWidget   = require("ui/widget/sortwidget")
 local ButtonDialog = require("ui/widget/buttondialog")
-local Button       = require("ui/widget/button")
 local HorizontalGroup  = require("ui/widget/horizontalgroup")
 
 local InfoMessage  = require("ui/widget/infomessage")
@@ -15,8 +14,9 @@ local ActionExec   = require("action_exec")
 local ActionDefs   = require("action_defs")
 local ActionManage = require("action_manage")
 local Config       = require("config")
-local Utils        = require("common/utils")
-local _            = require("common/i18n").gettext
+local Button       = require("widgets/button")
+local Utils        = require("utils")
+local _            = require("locale/i18n").gettext
 
 local Footer = {
     id = "footer",
@@ -42,6 +42,7 @@ function Footer.build(ctx)
     local stat               = ctx.stat
     local panel_width        = ctx.panel_width
     local inner_width        = ctx.inner_width
+    local icon_height        = ctx.icon_height
     local h_gap              = screen:scaleBySize(config.style.h_gap or 4)
     local v_gap              = screen:scaleBySize(config.style.v_gap or 4)
     local btn_width          = screen:scaleBySize(config.style.btn_width or 50)
@@ -98,7 +99,9 @@ function Footer.build(ctx)
         table.insert(touch_menu.footer[3][1], touch_menu.page_info)
         -- settings_btn
         local settings_btn = Button:new{
-            text           = "\u{EB92}",
+            icon           = (config.show_icon and "qm_settings") or nil,
+            icon_height    = icon_height,
+            text           = (not config.show_icon and "\u{EB92}") or nil,
             width          = btn_width,
             bordersize     = 0,
             text_font_size = btn_font_size,
@@ -133,11 +136,11 @@ function Footer.build(ctx)
         local item_def = action_defs[id]
 
             if item_def and (not item_def.visible_func or item_def.visible_func(ctx)) then
-                local icon = item_def.icon_func and item_def.icon_func(ctx) or (item_def.icon or "")
-                local val = item_def.label_func and item_def.label_func(ctx) or (item_def.label or "")
+                local text = (item_def.text_func and item_def.text_func(ctx)) or item_def.text or "\u{F059}"
+                local label = (item_def.label_func and item_def.label_func(ctx)) or item_def.label or ""
                 -- create btn
                 local btn = Button:new{
-                    text = Utils.get_safe_icon(icon) .. " " .. val, -- btn doesnt't support svg
+                    text = text .. " " .. label,
                     text_font_bold = false,
                     bordersize = 0,
                     show_parent = touch_menu.show_parent,
@@ -151,14 +154,16 @@ function Footer.build(ctx)
                     table.insert(touch_menu.footer[3][1], btn)
                 else
                     has_overflow = true
-                    overflow_icon = table.insert(overflow_items, "• " .. Utils.get_safe_icon(item_def.icon or "") .. " " .. (item_def.label or ""))
+                    table.insert(overflow_items, "• " .. text .. " " .. label)
                 end
             end
         end
 
         -- settings_btn_overflow
         local settings_btn_overflow = Button:new{
-            text           = (has_overflow and "\u{F071}") or "\u{EB92}", -- warning icon if overflow
+            icon_func      = (config.show_icon and function() return has_overflow and "qm_warning" or "qm_settings" end) or nil,
+            icon_height    = icon_height,
+            text_func      = (not config.show_icon and function() return has_overflow and "\u{F071}" or "\u{EB92}" end) or nil, -- warning icon if overflow
             width          = btn_width,
             bordersize     = 0,
             text_font_size = btn_font_size,
@@ -207,6 +212,11 @@ function Footer.getSettings(ctx, close, refresh)
             text = _("Show title"),
             checked_func = function() return section.show_title end,
             callback = function() section.show_title = not section.show_title; Config.saveAndRefresh(ctx) end
+        },
+        {
+            text = _("Show icons"),
+            checked_func = function() return section.show_icon end,
+            callback = function() section.show_icon = not section.show_icon; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Show on all tab"),

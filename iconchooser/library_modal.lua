@@ -21,7 +21,7 @@ local UIManager = require("ui/uimanager")
 local VerticalGroup = require("ui/widget/verticalgroup")
 local VerticalSpan = require("ui/widget/verticalspan")
 -- local BFont = require("iconchooser/fonts") HACK
-local _ = require("common/i18n").gettext
+local _ = require("locale/i18n").gettext
 
 -- Uniform gap applied everywhere below the title bar separator.
 local MARGIN = Device.screen:scaleBySize(10)

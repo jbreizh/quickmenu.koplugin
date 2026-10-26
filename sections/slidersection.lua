@@ -1,13 +1,13 @@
-local Button          = require("ui/widget/button")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
 local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
 local ProgressWidget  = require("ui/widget/progresswidget")
 
+local Button          = require("widgets/button")
 local QmSlider        = require("widgets/qm_slider")
 local ShadowDeco      = require("widgets/shadowdeco")
-local Utils           = require("common/utils")
+local Utils           = require("utils")
 
 local SliderSection = {}
 
@@ -58,7 +58,9 @@ function SliderSection.build(opts)
 
     -- widgets
     local minus = Button:new{
-        text           = opts.text_minus or "−",
+        icon           = opts.icon_minus,
+        icon_height    = opts.icon_height,
+        text           = opts.text_minus,
         width          = btn_width,
         radius         = btn_radius,
         bordersize     = btn_bordersize,
@@ -96,7 +98,9 @@ function SliderSection.build(opts)
     end
 
     local plus = Button:new{
-        text           = opts.text_plus or "+",
+        icon           = opts.icon_plus,
+        icon_height    = opts.icon_height,
+        text           = opts.text_plus,
         width          = btn_width,
         radius         = btn_radius,
         bordersize     = btn_bordersize,

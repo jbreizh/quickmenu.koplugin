@@ -870,3 +870,9 @@ msgstr "Usar ZenFooter"
 
 msgid "Show on all tab"
 msgstr "Mostrar em todas as abas"
+
+msgid "Show icons"
+msgstr "Mostrar ícones"
+
+msgid "Text"
+msgstr "Texto"

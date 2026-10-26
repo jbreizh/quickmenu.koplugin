@@ -10,7 +10,7 @@ local HorizontalSpan  = require("ui/widget/horizontalspan")
 local Device          = require("device")
 local Screen          = Device.screen
 local T               = require("ffi/util").template
-local _               = require("common/i18n").gettext
+local _               = require("locale/i18n").gettext
 
 local Pagination = {}
 

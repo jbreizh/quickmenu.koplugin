@@ -12,7 +12,7 @@
 --- Optional fields: `label` (override the cmap name), `insert_value` (token
 --- string inserted instead of the literal glyph -- used for dynamic icons).
 
-local _ = require("common/i18n").gettext
+local _ = require("locale/i18n").gettext
 
 local M = {}
 

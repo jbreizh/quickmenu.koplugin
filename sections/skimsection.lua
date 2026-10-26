@@ -1,4 +1,3 @@
-local Button          = require("ui/widget/button")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
 local VerticalGroup   = require("ui/widget/verticalgroup")
@@ -8,8 +7,9 @@ local Event           = require("ui/event")
 
 local Config          = require("config")
 local SliderSection   = require("sections/slidersection")
+local Button          = require("widgets/button")
 local ShadowDeco      = require("widgets/shadowdeco")
-local Utils           = require("common/utils")
+local Utils           = require("utils")
 
 local SkimSection = {
     id = "info"
@@ -28,6 +28,7 @@ function SkimSection.build(ctx)
     local stat               = ctx.stat
     local panel_width        = ctx.panel_width
     local inner_width        = ctx.inner_width
+    local icon_height        = ctx.icon_height
     local h_gap              = screen:scaleBySize(config.style.h_gap or 4)
     local v_gap              = screen:scaleBySize(config.style.v_gap or 4)
     local btn_width          = screen:scaleBySize(config.style.btn_width or 50)
@@ -42,6 +43,7 @@ function SkimSection.build(ctx)
     local section    = Utils.getSection(config, SkimSection.id)
     local show_shadow = section.show_shadow or false
     local shadow_gap = (show_shadow and btn_shadow_offset or 0)
+    local show_icon   = section.show_icon or false
 
     local skim = {
         curr_page  = reader:getCurrentPage(),
@@ -104,8 +106,11 @@ function SkimSection.build(ctx)
         initial_pos_marker = true,
         initial_percentage = (touch_menu._qm_orig_page or skim.curr_page) / skim.page_count,
 
-        text_minus         = "\u{F056}",
-        text_plus          = "\u{F055}",
+        icon_minus         = (show_icon and "qm_minus") or nil,
+        icon_plus          = (show_icon and "qm_plus") or nil,
+        icon_height        = icon_height,
+        text_minus         = (not show_icon and "\u{F056}") or nil,
+        text_plus          = (not show_icon and "\u{F055}") or nil,
     }
 
     -- Row 2: Navigation
@@ -115,6 +120,7 @@ function SkimSection.build(ctx)
         props.bordersize = btn_bordersize
         props.text_font_size = btn_font_size
         props.show_parent = touch_menu.show_parent
+        props.icon_height = icon_height
         local btn = Button:new(props)
         if show_shadow then
             ShadowDeco.attach(btn, btn_shadow_offset, btn_shadow_intensity, btn_shadow_radius)
@@ -125,21 +131,52 @@ function SkimSection.build(ctx)
     local center_gap = math.floor((inner_width - 7 * btn_width - 7 * shadow_gap - 4 * h_gap) / 2)
     local row2 = HorizontalGroup:new{ align = "center" }
 
-    table.insert(row2, createBtn{ text = "\u{25C0}", callback = function() local p = reader.toc:getPreviousChapter(skim.curr_page); if p then goToPage(p) end; Utils.updateMenu(touch_menu, {delay = 0}) end, hold_callback = function() goToPage(1); Utils.updateMenu(touch_menu, {delay = 0}) end })
+    table.insert(row2, createBtn{
+        icon          = (section.show_icon and "qm_right") or nil,
+        text          = (not section.show_icon and "\u{25C0}") or nil,
+        callback      = function() local p = reader.toc:getPreviousChapter(skim.curr_page); if p then goToPage(p) end; Utils.updateMenu(touch_menu, {delay = 0}) end,
+        hold_callback = function() goToPage(1); Utils.updateMenu(touch_menu, {delay = 0}) end
+    })
     table.insert(row2, HorizontalSpan:new{ width = h_gap + shadow_gap })
-    table.insert(row2, createBtn{ text = "\u{F0C9}", callback = function() Utils.closeMenu(touch_menu); goEvent("ShowToc") end, hold_callback = function() Utils.closeMenu(touch_menu); goEvent("ShowBookMap") end })
+    table.insert(row2, createBtn{
+        icon          = (section.show_icon and "qm_chapter") or nil,
+        text          = (not section.show_icon and "\u{F0C9}") or nil,
+        callback      = function() Utils.closeMenu(touch_menu); goEvent("ShowToc") end,
+        hold_callback = function() Utils.closeMenu(touch_menu); goEvent("ShowBookMap") end
+    })
     table.insert(row2, HorizontalSpan:new{ width = h_gap + shadow_gap })
-    table.insert(row2, createBtn{ text = "\u{25B6}", callback = function() local p = reader.toc:getNextChapter(skim.curr_page); if p then goToPage(p) end; Utils.updateMenu(touch_menu, {delay = 0}) end, hold_callback = function() goToPage(skim.page_count); Utils.updateMenu(touch_menu, {delay = 0}) end })
+    table.insert(row2, createBtn{
+        icon          = (section.show_icon and "qm_left") or nil,
+        text          = (not section.show_icon and "\u{25B6}") or nil,
+        callback      = function() local p = reader.toc:getNextChapter(skim.curr_page); if p then goToPage(p) end; Utils.updateMenu(touch_menu, {delay = 0}) end,
+        hold_callback = function() goToPage(skim.page_count); Utils.updateMenu(touch_menu, {delay = 0}) end
 
+    })
     table.insert(row2, HorizontalSpan:new{ width = center_gap + shadow_gap})
-    table.insert(row2, createBtn{ text_func = function() return tostring(skim.curr_page) end, callback = function() Utils.closeMenu(touch_menu); goEvent("ShowGotoDialog") end, hold_callback = function() goToOrig() end })
+    table.insert(row2, createBtn{
+        text_func     = function() return tostring(skim.curr_page) end,
+        callback      = function() Utils.closeMenu(touch_menu); goEvent("ShowGotoDialog") end,
+        hold_callback = function() goToOrig() end
+    })
     table.insert(row2, HorizontalSpan:new{ width = center_gap + shadow_gap})
-
-    table.insert(row2, createBtn{ text = "\u{25C0}", callback = function() goEvent("GotoPreviousBookmarkFromPage"); Utils.updateMenu(touch_menu, {delay = 0}) end })
+    table.insert(row2, createBtn{
+        icon          = (section.show_icon and "qm_right") or nil,
+        text          = (not section.show_icon and "\u{25C0}") or nil,
+        callback      = function() goEvent("GotoPreviousBookmarkFromPage"); Utils.updateMenu(touch_menu, {delay = 0}) end
+    })
     table.insert(row2, HorizontalSpan:new{ width = h_gap + shadow_gap })
-    table.insert(row2, createBtn{ text_func = function() return reader.view.dogear_visible and "\u{F02E}" or "\u{F097}" end, callback = function() goEvent("ToggleBookmark"); Utils.updateMenu(touch_menu, {delay = 0}) end, hold_callback = function() Utils.closeMenu(touch_menu); goEvent("ShowBookmark") end })
+    table.insert(row2, createBtn{
+        icon_func     = (section.show_icon and function() return reader.view.dogear_visible and "qm_bookmark_on" or "qm_bookmark_off" end) or nil,
+        text_func     = (not section.show_icon and function() return reader.view.dogear_visible and "\u{F02E}" or "\u{F097}" end) or nil,
+        callback      = function() goEvent("ToggleBookmark");Utils.updateMenu(touch_menu, {delay = 0}) end,
+        hold_callback = function() Utils.closeMenu(touch_menu); goEvent("ShowBookmark") end
+    })
     table.insert(row2, HorizontalSpan:new{ width = h_gap + shadow_gap })
-    table.insert(row2, createBtn{ text = "\u{25B6}", callback = function() goEvent("GotoNextBookmarkFromPage"); Utils.updateMenu(touch_menu, {delay = 0}) end })
+    table.insert(row2, createBtn{
+        icon          = (section.show_icon and "qm_left") or nil,
+        text          = (not section.show_icon and "\u{25B6}") or nil,
+        callback      = function() goEvent("GotoNextBookmarkFromPage"); Utils.updateMenu(touch_menu, {delay = 0}) end
+    })
     table.insert(row2, HorizontalSpan:new{ width = shadow_gap })
 
     -- group

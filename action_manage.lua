@@ -5,9 +5,9 @@ local ConfirmBox   = require("ui/widget/confirmbox")
 local UIManager    = require("ui/uimanager")
 
 local ActionDefs   = require("action_defs")
-local Utils        = require("common/utils")
+local Utils        = require("utils")
 local Config       = require("config")
-local _            = require("common/i18n").gettext
+local _            = require("locale/i18n").gettext
 
 local ActionManage = {}
 
@@ -181,7 +181,7 @@ function ActionManage:selectActionManageDialog(ctx, section_name, on_close)
             for _, action in ipairs(categorized[cat]) do
                 local def = action.def
                 local is_currently_visible = (not def.visible_func or def.visible_func(ctx))
-                local label = (Utils.get_safe_icon(def.icon) or "") .. " " .. (def.label or _("None")) .. (not is_currently_visible and " (n/a)" or "")
+                local label = (def.text or "\u{F059}") .. " " .. (def.label or _("None")) .. (not is_currently_visible and " (n/a)" or "")
                 table.insert(buttons, {{
                     text = "      " .. label,
                     checked_func = function()
@@ -238,7 +238,7 @@ function ActionManage:sortActionManageDialog(ctx, section_name)
         if def then
             local is_currently_visible = (not def.visible_func or def.visible_func(ctx))
             -- btn doesnt't support svg
-            local label = (Utils.get_safe_icon(def.icon) or "") .. " " .. (def.label or _("None")) .. (not is_currently_visible and " (n/a)" or "")
+            local label = (def.text or "\u{F059}") .. " " .. (def.label or _("None")) .. (not is_currently_visible and " (n/a)" or "")
             table.insert(sort_items, { text = label, orig_item = id })
         end
     end

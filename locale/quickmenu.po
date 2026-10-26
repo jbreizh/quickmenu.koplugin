@@ -870,3 +870,9 @@ msgstr ""
 
 msgid "Show on all tab"
 msgstr ""
+
+msgid "Show icons"
+msgstr ""
+
+msgid "Text"
+msgstr ""

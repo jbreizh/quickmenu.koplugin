@@ -1,4 +1,3 @@
-local Button          = require("ui/widget/button")
 local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
@@ -15,10 +14,11 @@ local UIManager       = require("ui/uimanager")
 local Config          = require("config")
 local InfoSection     = require("sections/infosection")
 local SkimSection     = require("sections/skimsection")
+local Button          = require("widgets/button")
 local CoverButton     = require("widgets/coverbutton")
 local ShadowDeco      = require("widgets/shadowdeco")
-local Utils           = require("common/utils")
-local _               = require("common/i18n").gettext
+local Utils           = require("utils")
+local _               = require("locale/i18n").gettext
 
 local Info = {
     id = "info",
@@ -44,6 +44,7 @@ function Info.build(ctx)
     local stat               = ctx.stat
     local panel_width        = ctx.panel_width
     local inner_width        = ctx.inner_width
+    local icon_height        = ctx.icon_height
     local h_gap              = screen:scaleBySize(config.style.h_gap or 4)
     local v_gap              = screen:scaleBySize(config.style.v_gap or 4)
     local btn_width          = screen:scaleBySize(config.style.btn_width or 50)
@@ -67,7 +68,9 @@ function Info.build(ctx)
     if section.show_title then
         -- collapse
         local collapse_btn = Button:new{
-            text           = section.collapse and "▶" or "▼",
+            icon_func      = (config.show_icon and function() return section.collapse and "qm_left" or "qm_down" end) or nil,
+            icon_height    = icon_height,
+            text_func      = (not config.show_icon and function() return section.collapse and "▶" or "▼" end) or nil,
             width          = btn_width,
             bordersize     = 0,
             text_font_size = btn_font_size,
@@ -103,7 +106,9 @@ function Info.build(ctx)
         }
         -- settings
         local settings_btn = Button:new{
-            text           = "\u{EB92}",
+            icon           = (config.show_icon and "qm_settings") or nil,
+            icon_height    = icon_height,
+            text           = (not config.show_icon and "\u{EB92}") or nil,
             width          = btn_width,
             bordersize     = 0,
             text_font_size = btn_font_size,
@@ -263,6 +268,11 @@ function Info.getSettings(ctx, close, refresh)
             text = _("Show thumbnail"),
             checked_func = function() return section.show_thumbnail end,
             callback = function() section.show_thumbnail = not section.show_thumbnail; Config.saveAndRefresh(ctx) end
+        },
+        {
+            text = _("Show icons"),
+            checked_func = function() return section.show_icon end,
+            callback = function() section.show_icon = not section.show_icon; Config.saveAndRefresh(ctx) end
         },
         {
             text = _("Show skim"),

@@ -870,3 +870,9 @@ msgstr "ZenFooterを使用"
 
 msgid "Show on all tab"
 msgstr "すべてのタブに表示"
+
+msgid "Show icons"
+msgstr "アイコンを表示"
+
+msgid "Text"
+msgstr "テキスト"

@@ -1,7 +1,7 @@
 local DataStorage = require("datastorage")
 local LuaSettings = require("luasettings")
 
-local Utils           = require("common/utils")
+local Utils           = require("utils")
 
 local SETTINGS_PATH = DataStorage:getSettingsDir() .. "/quick_menu_settings.lua"
 local _settings = LuaSettings:open(SETTINGS_PATH)
@@ -18,6 +18,7 @@ Config.DEFAULTS = {
             show_title = true,
             show_label = true,
             show_shadow = true,
+            show_icon = false,
             fit_ctrl = true,
             justified_ctrl = true,
             items = { "wifi", "night", "light", "rotate", "lock", "usb", "power" }
@@ -28,6 +29,7 @@ Config.DEFAULTS = {
             collapse = false,
             show_title = true,
             show_shadow = true,
+            show_icon = false,
             use_zenslider = false,
         },
         shortcuts = {
@@ -37,6 +39,7 @@ Config.DEFAULTS = {
             show_title = true,
             show_label = true,
             show_shadow = true,
+            show_icon = false,
             max_cols = 3,
             items = { "history", "collections", "statistics", "search", "dictionary", "cloud" }
         },
@@ -47,12 +50,14 @@ Config.DEFAULTS = {
             show_thumbnail = true,
             show_skim = true,
             show_shadow = true,
+            show_icon = false,
         },
         footer = {
             enabled_f = true,
             enabled_r = true,
             show_title = true,
             show_all_tab = false,
+            show_icon = false,
             use_zenfooter = false,
             items = {"memusedp", "storageusedp", "time", "battery", "auxbattery"}
         },
@@ -76,6 +81,7 @@ Config.DEFAULTS = {
     open_on_start = true,
     add_exit_tab = false,
     add_quickmenu_tab = true,
+    show_icon = false,
     idx_quickmenu_tab = 1,
     items_per_page = 20,
 }
@@ -136,6 +142,7 @@ function Config.load()
     if cfg.open_on_start == nil then cfg.open_on_start = Config.DEFAULTS.open_on_start end
     if cfg.add_exit_tab == nil then cfg.add_exit_tab = Config.DEFAULTS.add_exit_tab end
     if cfg.add_quickmenu_tab == nil then cfg.add_quickmenu_tab = Config.DEFAULTS.add_quickmenu_tab end
+    if cfg.show_icon == nil then cfg.show_icon = Config.DEFAULTS.show_icon end
     if cfg.idx_quickmenu_tab == nil then cfg.idx_quickmenu_tab = Config.DEFAULTS.idx_quickmenu_tab end
     if cfg.items_per_page == nil then cfg.items_per_page = Config.DEFAULTS.items_per_page end
 

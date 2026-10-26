@@ -2,13 +2,13 @@ local Event        = require("ui/event")
 local UIManager    = require("ui/uimanager")
 local Math          = require("optmath")
 local SliderSection = require("sections/slidersection")
-local Utils        = require("common/utils")
+local Utils        = require("utils")
 
 local IntensitySection = {
     id = "frontlight"
 }
 
-function IntensitySection.build(ctx, show_shadow)
+function IntensitySection.build(ctx)
     -- ctx import
     local config             = ctx.config
     local touch_menu         = ctx.touch_menu
@@ -21,6 +21,7 @@ function IntensitySection.build(ctx, show_shadow)
     local stat               = ctx.stat
     local panel_width        = ctx.panel_width
     local inner_width        = ctx.inner_width
+    local icon_height        = ctx.icon_height
     local h_gap              = screen:scaleBySize(config.style.h_gap or 4)
     local v_gap              = screen:scaleBySize(config.style.v_gap or 4)
     local btn_width          = screen:scaleBySize(config.style.btn_width or 50)
@@ -31,6 +32,10 @@ function IntensitySection.build(ctx, show_shadow)
     local btn_shadow_intensity = config.style.btn_shadow_intensity or 0.6
     local btn_shadow_radius    = screen:scaleBySize(config.style.btn_shadow_radius or 6)
     local slider_ticks_width = screen:scaleBySize(config.style.slider_ticks_width or 1)
+
+    local section     = Utils.getSection(config, IntensitySection.id)
+    local show_shadow = section.show_shadow or false
+    local show_icon   = section.show_icon or false
 
     local min_val    = powerd.fl_min or 0
     local max_val    = powerd.fl_max or 100
@@ -67,10 +72,13 @@ function IntensitySection.build(ctx, show_shadow)
         get                = getValue,
         set                = setValue,
         ticks              = SliderSection.buildTicks(min_val, max_val, tick_count),
-        show_shadow        = show_shadow or false,
+        show_shadow        = show_shadow,
 
-        text_minus         = "\u{EA2D}", -- led-off
-        text_plus          = "\u{EA2B}", -- led-on
+        icon_minus         = show_icon and "qm_light_off" or nil,
+        icon_plus          = show_icon and "qm_light_on" or nil,
+        icon_height        = icon_height,
+        text_minus         = (not show_icon and "\u{EA2D}") or nil, -- led-off
+        text_plus          = (not show_icon and "\u{EA2B}") or nil, -- led-on
         progress_hold_callback      =  function()
             UIManager:broadcastEvent(Event:new("ToggleFrontlight"))
             Utils.updateMenu(ctx.touch_menu, {delay = 0}) -- need instant update
