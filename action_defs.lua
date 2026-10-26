@@ -164,7 +164,7 @@ function ActionDefs.get()
             label = _("Light"),
             label_func = function(ctx)
                 if not ctx.powerd:isFrontlightOn() then return _("Off") end
-                return ("%d%%"):format(ctx.powerd:frontlightIntensity())
+                return ("%d/%d"):format(ctx.powerd:frontlightIntensity(),ctx.powerd.fl_max)
             end,
             category = "system",
             active_func = function(ctx) return ctx.powerd:isFrontlightOn() end,
@@ -193,7 +193,7 @@ function ActionDefs.get()
             label = _("Warmth"),
             label_func = function(ctx)
                 if not ctx.powerd:isFrontlightOn() or ctx.powerd:frontlightWarmth() == 0 then return _("Off") end
-                return ("%d%%"):format(ctx.powerd:frontlightWarmth())
+                return ("%d/%d"):format(ctx.powerd:toNativeWarmth(ctx.powerd:frontlightWarmth()), ctx.powerd.fl_warmth_max)
             end,
             category = "system",
             active_func = function(ctx) return ctx.powerd:isFrontlightOn() and ctx.powerd:frontlightWarmth() ~= 0 end,

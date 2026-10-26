@@ -13,17 +13,6 @@ function M.isFontInstalled(filename)
     return false
 end
 
---- Converts a native value to a percentage (0-100).
---- @param val number The current value (e.g., nl.cur).
---- @param min number The minimum value (e.g., nl.min).
---- @param max number The maximum value (e.g., nl.max).
---- @return number The rounded percentage (0-100).
-function M.get_percentage(val, min, max)
-    if not val or not min or not max or (max - min) == 0 then return 0 end
-    local percent = ((val - min) / (max - min)) * 100
-    return math.floor(percent + 0.5) -- +0.5 for correct rounding
-end
-
 --- Normalizes a string by removing accents for sorting purposes.
 --- @param str string The string to normalize.
 --- @return string     The normalized string.

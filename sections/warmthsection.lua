@@ -39,7 +39,7 @@ function WarmthSection.build(ctx)
 
     local min_val    = powerd.fl_warmth_min or 0
     local max_val    = powerd.fl_warmth_max or 100
-    local tick_count = 10
+    local tick_count = math.min(25, max_val - min_val)
     local step_val   = math.max(1, Math.round((max_val - min_val) / tick_count))
 
     local function getValue()
