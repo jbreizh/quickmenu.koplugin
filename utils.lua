@@ -358,8 +358,8 @@ function M.systemInfo()
                         end
                     end
                 end
+                std_out:close()
             end
-            std_out:close()
         end
     end
 
