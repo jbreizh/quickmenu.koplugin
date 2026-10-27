@@ -34,6 +34,8 @@ local QuickMenu = {
 }
 
 local WIDTHFACTOR = 0.8
+-- systemInfo forks a df pipeline; too costly to run on every menu refresh
+local STAT_TTL = 30
 
 -- ============================================================
 -- Shared Context Builder
@@ -45,7 +47,11 @@ function QuickMenu.updatePlugin(plugin)
     plugin.powerd      = Device:getPowerDevice()
     plugin.screen      = Screen
     plugin.datetime    = Datetime
-    plugin.stat        = Utils.systemInfo()
+    local now = os.time()
+    if not plugin.stat or now - (plugin.stat_time or 0) >= STAT_TTL then
+        plugin.stat      = Utils.systemInfo()
+        plugin.stat_time = now
+    end
     plugin.panel_width = (plugin.touch_menu and plugin.touch_menu.item_width) or 0
     -- inner_width
     local padding      = Screen:scaleBySize(plugin.config.style.padding or 10)
