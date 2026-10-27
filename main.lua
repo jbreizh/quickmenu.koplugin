@@ -34,7 +34,7 @@ local QuickMenuPlugin = WidgetContainer:extend{
 -- ============================================================
 -- Hook TouchMenu to support panel tabs
 -- ============================================================
-local function patchTouchMenu(plugin)
+local function patchTouchMenu(get_plugin)
     local TouchMenu       = require("ui/widget/touchmenu")
     local FocusManager    = require("ui/widget/focusmanager")
     local HorizontalGroup = require("ui/widget/horizontalgroup")
@@ -49,8 +49,6 @@ local function patchTouchMenu(plugin)
     local Screen          = Device.screen
 
     local QuickMenu       = require("quickmenu")
-
-    local config          = plugin.config
 
     -- grab zenslider
     local function get_sliders(touch_menu)
@@ -131,7 +129,8 @@ local function patchTouchMenu(plugin)
     -- Hook init to
     local orig_init = TouchMenu.init
     function TouchMenu:init(...)
-        --
+        local plugin = get_plugin()
+        local config = plugin.config
         plugin.touch_menu = self
 
         -- increase menu size to 20 if show_bottom_menu is disable
@@ -195,6 +194,7 @@ local function patchTouchMenu(plugin)
     local orig_updateItems = TouchMenu.updateItems
     function TouchMenu:updateItems(target_page, target_item_id)
         -- FileManager may create its TouchMenu before we patches the class.
+        local plugin = get_plugin()
         plugin.touch_menu = self
         ensure_panel_gestures(self)
 
@@ -351,13 +351,13 @@ end
 -- ============================================================
 -- Patch FileManagerMenu
 -- ============================================================
-local function patchFileManagerMenu(plugin)
+local function patchFileManagerMenu(get_plugin)
     local FileManagerMenu = require("apps/filemanager/filemanagermenu")
     local QuickMenu       = require("quickmenu")
-    local config          = plugin.config
     --
     local orig_fm_setUpdateItemTable = FileManagerMenu.setUpdateItemTable
     function FileManagerMenu:setUpdateItemTable()
+        local plugin = get_plugin()
         plugin.menu_instance = self -- critical : need to be before orig or addToMainMenu will get nil
         plugin.is_filemanager = true -- critical : need to be before orig or addToMainMenu will get nil
         orig_fm_setUpdateItemTable(self) -- orig
@@ -368,7 +368,7 @@ local function patchFileManagerMenu(plugin)
     local _getTabIndexFromLocation_orig = FileManagerMenu._getTabIndexFromLocation
     function FileManagerMenu:_getTabIndexFromLocation(ges)
         local index = _getTabIndexFromLocation_orig(self, ges) -- run ori
-        if config.add_exit_tab and index == #self.tab_item_table then -- exclude exit tab
+        if get_plugin().config.add_exit_tab and index == #self.tab_item_table then -- exclude exit tab
             index = #self.tab_item_table - 1
         end
         return index
@@ -378,13 +378,13 @@ end
 -- ============================================================
 -- Patch ReaderMenu
 -- ============================================================
-local function patchReaderMenu(plugin)
+local function patchReaderMenu(get_plugin)
     local ReaderMenu = require("apps/reader/modules/readermenu")
     local QuickMenu  = require("quickmenu")
-    local config     = plugin.config
     --
     local orig_reader_setUpdateItemTable = ReaderMenu.setUpdateItemTable
     function ReaderMenu:setUpdateItemTable()
+        local plugin = get_plugin()
         plugin.menu_instance = self -- critical : need to be before orig or addToMainMenu will get nil
         plugin.is_filemanager = false -- critical : need to be before orig or addToMainMenu will get nil
         orig_reader_setUpdateItemTable(self) -- orig
@@ -395,7 +395,7 @@ local function patchReaderMenu(plugin)
     local _getTabIndexFromLocation_reader_orig = ReaderMenu._getTabIndexFromLocation
     function ReaderMenu:_getTabIndexFromLocation(ges)
         local index = _getTabIndexFromLocation_reader_orig(self, ges) -- run ori
-        if config.add_exit_tab and index == #self.tab_item_table then -- exclude exit tab
+        if get_plugin().config.add_exit_tab and index == #self.tab_item_table then -- exclude exit tab
             index = #self.tab_item_table - 1
         end
         return index
@@ -412,9 +412,18 @@ function QuickMenuPlugin:init()
     local status, err = pcall(function()
         local Config = require("config")
         self.config = Config.load()
-        patchTouchMenu(self)
-        patchFileManagerMenu(self)
-        patchReaderMenu(self)
+        -- KOReader creates a plugin instance per ReaderUI/FileManager, but the patched
+        -- classes are shared: patch once and route wrappers to the latest instance,
+        -- otherwise wrappers stack up and retain every closed UI.
+        local QuickMenu = require("quickmenu")
+        QuickMenu.active_plugin = self
+        if not QuickMenu.classes_patched then
+            local get_plugin = function() return QuickMenu.active_plugin end
+            patchTouchMenu(get_plugin)
+            patchFileManagerMenu(get_plugin)
+            patchReaderMenu(get_plugin)
+            QuickMenu.classes_patched = true
+        end
         self.ui.menu:registerToMainMenu(self)
         logger.info("[QuickMenu] Initialized successfully.")
     end)
