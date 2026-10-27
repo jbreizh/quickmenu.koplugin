@@ -58,9 +58,12 @@ function QuickMenu.updatePlugin(plugin)
     plugin.inner_width = plugin.panel_width - padding * 2
     -- icon_height
     local btn_font_size = plugin.config.style.btn_font_size or 16
-    local sample = TextWidget:new{ text = "text", face = Font:getFace("cfont", btn_font_size), bold = true }
-    plugin.icon_height = sample:getSize().h
-    sample:free()
+    if plugin.icon_height_font_size ~= btn_font_size then
+        local sample = TextWidget:new{ text = "text", face = Font:getFace("cfont", btn_font_size), bold = true }
+        plugin.icon_height = sample:getSize().h
+        plugin.icon_height_font_size = btn_font_size
+        sample:free()
+    end
 end
 
 

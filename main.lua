@@ -49,6 +49,7 @@ local function patchTouchMenu(get_plugin)
     local Screen          = Device.screen
 
     local QuickMenu       = require("quickmenu")
+    local Utils           = require("utils")
 
     -- grab zenslider
     local function get_sliders(touch_menu)
@@ -204,8 +205,13 @@ local function patchTouchMenu(get_plugin)
             self._qm_refs = nil
             self._qm_full_refresh = nil
 
-            -- clear and rebuild default footer
-            QuickMenu.createFooter(plugin)
+            -- the stock footer only needs restoring once after the panel replaced it,
+            -- unless the custom footer is shown on every tab
+            local footer_section = Utils.getSection(plugin.config, "footer")
+            if self._qm_footer_modified or (footer_section and footer_section.show_all_tab) then
+                QuickMenu.createFooter(plugin)
+                self._qm_footer_modified = footer_section and footer_section.show_all_tab or nil
+            end
 
             return orig_updateItems(self, target_page, target_item_id)
         end
@@ -238,6 +244,7 @@ local function patchTouchMenu(get_plugin)
         self.page_num = 1
         self.page = 1
         QuickMenu.createFooter(plugin)
+        self._qm_footer_modified = true
 
         -- Recalculate dimen
         local old_dimen = self.dimen:copy()
