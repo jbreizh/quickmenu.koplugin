@@ -467,6 +467,10 @@ function QuickMenuPlugin:deletePluginSettings()
     logger.info("[Quickmenu] deletePluginSettings: removing all plugin data")
 end
 
+function QuickMenuPlugin:onCloseDocument()
+    require("sections/info").freeCover()
+end
+
 function QuickMenuPlugin:onFlushSettings()
     -- don't flush if settings deleted
     if self.settings_deleted then return end
