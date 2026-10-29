@@ -183,8 +183,7 @@ function WarmthZenUI.build(ctx)
                 })
             end
             -- update touch_menu after dragging
-            UIManager:unschedule(update_touch_menu)
-            UIManager:scheduleIn(0.5, update_touch_menu)
+            Utils.updateMenu(touch_menu, {delay = 0.5, restart = true})
         else
             if section.show_title then nl_drag_num:setText(tostring(nl.cur)) end
             update_touch_menu()
