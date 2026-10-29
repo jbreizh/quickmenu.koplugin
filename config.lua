@@ -178,7 +178,7 @@ function Config.saveAndRefresh(ctx, opts)
     opts = opts or {}
     local flush = opts.flush ~= false -- default : true
     local delay = opts.delay          -- default : nil
-    local full  = opts.full ~= false  -- default : true
+    local full  = opts.full == true   -- default : false; updateItems already repaints everything when the panel shrinks
     -- Save settings
     local config = ctx.config
     if config then Config.save(config, { flush = flush }) end

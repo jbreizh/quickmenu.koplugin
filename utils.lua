@@ -179,28 +179,40 @@ function M.closeMenu(touch_menu)
     if touch_menu and touch_menu.touch_menu_callback then touch_menu.touch_menu_callback() end -- close bottom menu
 end
 
---- Update touch_menu
+--- Update touch_menu; a menu has at most one pending update.
 --- @param touch_menu   table   touch_menu
---- @param opts table   options (delay, full)
+--- @param opts table   options (delay, full, restart)
 function M.updateMenu(touch_menu, opts)
     if not (touch_menu and touch_menu.updateItems) then return end
     -- options
     opts = opts or {}
     local delay = opts.delay -- delay before update in s (default : nil)
     local full = opts.full -- true force fullscreen refresh (default : nil)
+    local restart = opts.restart -- true restart the pending timer, to update once input settles (default : nil)
     -- full refresh
     if full then touch_menu._qm_full_refresh = true end
-    -- instant update
-    if delay == 0 then touch_menu:updateItems(); return end
-    -- Debouncing
-    if touch_menu._qm_pending_refresh then return end
     local UIManager = require("ui/uimanager")
-    touch_menu._qm_pending_refresh = true
-    --
-    local function do_update()
-        touch_menu._qm_pending_refresh = false
-        if touch_menu.updateItems then touch_menu:updateItems() end
+    local pending = touch_menu._qm_pending_update
+    -- instant update supersedes the pending one
+    if delay == 0 then
+        if pending then
+            UIManager:unschedule(pending)
+            touch_menu._qm_pending_update = nil
+        end
+        touch_menu:updateItems()
+        return
     end
+    -- Debouncing
+    if pending then
+        if not restart then return end
+        UIManager:unschedule(pending)
+    end
+    local function do_update()
+        touch_menu._qm_pending_update = nil
+        if UIManager.isWidgetShown and not UIManager:isWidgetShown(touch_menu.show_parent) then return end
+        touch_menu:updateItems()
+    end
+    touch_menu._qm_pending_update = do_update
     -- delay update or nextTick update
     if type(delay) == "number" and delay > 0 then
         UIManager:scheduleIn(delay, do_update)

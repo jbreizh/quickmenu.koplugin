@@ -17,6 +17,7 @@ local CoverButton = InputContainer:extend{
 function CoverButton:init()
     local image_widget = ImageWidget:new{
         image = self.image,
+        image_disposable = false, -- the image is owned by the info section's cover cache
         width = self.width,
         height = self.height,
     }
