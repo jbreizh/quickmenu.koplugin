@@ -28,6 +28,30 @@ local Info = {
 
 local WIDTHFACTOR = 0.8
 
+-- Decoding the cover is the most expensive part of a panel build, so keep one scaled copy.
+local cover_cache = { key = nil, bb = nil }
+
+function Info.freeCover()
+    if cover_cache.bb then cover_cache.bb:free() end
+    cover_cache.key, cover_cache.bb = nil, nil
+end
+
+function Info.getCover(reader, w, h)
+    if not (reader and reader.bookinfo and reader.document) then return nil end
+    local key = tostring(reader.document.file) .. ":" .. w .. "x" .. h
+    if cover_cache.key == key then return cover_cache.bb or nil end
+    Info.freeCover()
+    local ok, orig = pcall(function() return reader.bookinfo:getCoverImage(reader.document) end)
+    local bb
+    if ok and orig then
+        ok, bb = pcall(function() return RenderImage:scaleBlitBuffer(orig, w, h, true) end)
+        if not ok then orig:free() end
+    end
+    cover_cache.key = key
+    cover_cache.bb = (ok and bb) or false -- false caches "no cover" so we don't retry every build
+    return cover_cache.bb or nil
+end
+
 -- ============================================================
 -- Info Builder
 -- ============================================================
@@ -153,14 +177,8 @@ function Info.build(ctx)
         local cover_w = math.floor(2 * cover_h / 3 + 0.5)
 
         -- try to get and resize cover
-        local thumbnail
-        local ok = false
-        if reader.bookinfo and reader.document then
-            ok, thumbnail = pcall(function() return reader.bookinfo:getCoverImage(reader.document) end)
-            if ok and thumbnail then
-                ok, thumbnail = pcall(function() return RenderImage:scaleBlitBuffer(thumbnail, cover_w, cover_h, true) end)
-            end
-        end
+        local thumbnail = Info.getCover(reader, cover_w, cover_h)
+        local ok = thumbnail ~= nil
 
         --
         local thumbnail_col = VerticalGroup:new{ align = "center" }

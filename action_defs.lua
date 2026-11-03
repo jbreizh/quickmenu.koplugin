@@ -56,7 +56,8 @@ function ActionDefs.getSorted(action_list)
 end
 
 function ActionDefs.getMerged(action_list)
-    local action_system = ActionDefs.get()
+    local action_system = {}
+    for id, def in pairs(ActionDefs.get()) do action_system[id] = def end
     if action_list then
         for i, action in ipairs(action_list) do
             if action.id then action_system[action.id] = action end
@@ -84,7 +85,7 @@ local function is_ssh_active()
     return Util.pathExists("/tmp/dropbear_koreader.pid")
 end
 
-function ActionDefs.get()
+local function buildDefs()
     return {
         wifi = {
             icon = "qm_wifi_on",
@@ -1243,6 +1244,13 @@ function ActionDefs.get()
             end
         }
     }
+end
+
+-- state is read by the *_func callbacks at call time, so the table itself never changes
+local cached_defs
+function ActionDefs.get()
+    cached_defs = cached_defs or buildDefs()
+    return cached_defs
 end
 
 return ActionDefs

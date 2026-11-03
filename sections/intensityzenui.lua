@@ -224,8 +224,7 @@ function IntensityZenUI.build(ctx, settings_func)
                 })
             end
             -- update touch_menu after dragging
-            UIManager:unschedule(update_touch_menu)
-            UIManager:scheduleIn(0.5, update_touch_menu)
+            Utils.updateMenu(touch_menu, {delay = 0.5, restart = true})
         else
             if section.show_title then fl_drag_num:setText(tostring(fl.cur)) end
             update_touch_menu()
