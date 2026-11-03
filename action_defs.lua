@@ -182,8 +182,8 @@ function ActionDefs.get()
         warmth = {
             icon = "qm_warmth_on",
             icon_func = function(ctx)
-                if not ctx.powerd:isFrontlightOn() or ctx.powerd:frontlightWarmth() == 0 then return "qm_warmth_on" end
-                return "qm_warmth_off"
+                if not ctx.powerd:isFrontlightOn() or ctx.powerd:frontlightWarmth() == 0 then return "qm_warmth_off" end
+                return "qm_warmth_on"
             end,
             text = "\u{F490}", -- flame
             text_func = function(ctx)

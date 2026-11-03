@@ -233,11 +233,11 @@ function Shortcuts.getSettings(ctx, close, refresh)
             checked_func = function() return section.show_shadow end,
             callback = function() section.show_shadow = not section.show_shadow; Config.saveAndRefresh(ctx) end
         },
-        {
-            text = _("Show icons"),
-            checked_func = function() return section.show_icon end,
-            callback = function() section.show_icon = not section.show_icon; Config.saveAndRefresh(ctx) end
-        },
+--         {
+--             text = _("Show icons"),
+--             checked_func = function() return section.show_icon end,
+--             callback = function() section.show_icon = not section.show_icon; Config.saveAndRefresh(ctx) end
+--         },
         {
             text = _("Show labels"),
             checked_func = function() return section.show_label end,

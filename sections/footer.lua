@@ -213,11 +213,11 @@ function Footer.getSettings(ctx, close, refresh)
             checked_func = function() return section.show_title end,
             callback = function() section.show_title = not section.show_title; Config.saveAndRefresh(ctx) end
         },
-        {
-            text = _("Show icons"),
-            checked_func = function() return section.show_icon end,
-            callback = function() section.show_icon = not section.show_icon; Config.saveAndRefresh(ctx) end
-        },
+--         {
+--             text = _("Show icons"),
+--             checked_func = function() return section.show_icon end,
+--             callback = function() section.show_icon = not section.show_icon; Config.saveAndRefresh(ctx) end
+--         },
         {
             text = _("Show on all tab"),
             checked_func = function() return section.show_all_tab end,
